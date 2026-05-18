@@ -5597,12 +5597,12 @@ function getCupGWs() {
 }
 
 async function saveCupGWs(gws) {
-  // Write to Firestore (shared) + localStorage (offline fallback)
+  // Write to settings/site (same doc the Python build scripts read from) + localStorage fallback
   try {
-    await db.collection('settings').doc('cup').set({
-      cupGWs: gws,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    await db.collection('settings').doc('site').set(
+      { cupGWs: gws, updatedAt: firebase.firestore.FieldValue.serverTimestamp() },
+      { merge: true }
+    );
     _firestoreCupGWs = gws;
   } catch(e) { console.warn('Firestore cup save failed:', e); }
   localStorage.setItem('cupSettings', JSON.stringify({ cupGWs: gws }));
@@ -5744,7 +5744,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 // Load Firestore cup settings early (non-blocking — falls back to defaults if slow/offline)
-db.collection('settings').doc('cup').get()
+db.collection('settings').doc('site').get()
   .then(doc => { if (doc.exists && Array.isArray(doc.data().cupGWs)) _firestoreCupGWs = doc.data().cupGWs; })
   .catch(() => {});
 
