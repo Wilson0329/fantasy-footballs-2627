@@ -1706,23 +1706,24 @@
     .draft-grid { display: table; border-collapse: collapse; min-width: max-content; font-size: 0.68rem; }
     .draft-grid-row { display: table-row; }
     .draft-grid-cell { display: table-cell; border: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
-    .draft-round-col {
-      width: 46px; min-width: 46px; text-align: center; padding: 3px 5px;
+    /* Manager name column (left, sticky) */
+    .draft-mgr-label-col {
+      min-width: 72px; width: 72px; text-align: left; padding: 4px 8px;
       background: var(--surface2); position: sticky; left: 0; z-index: 2;
-      white-space: nowrap;
+      white-space: nowrap; font-size: 0.7rem; font-weight: 700; color: var(--muted);
+    }
+    .draft-mgr-label-col.picking-now {
+      color: var(--accent); background: rgba(0,212,170,0.12);
+    }
+    /* Round header cells (top row) */
+    .draft-rnd-header-col {
+      background: var(--surface2); text-align: center; padding: 5px 3px;
+      min-width: 58px; width: 58px;
     }
     .draft-round-label { font-weight: 700; color: var(--muted); font-size: 0.65rem; display: block; }
     .draft-round-arrow { color: var(--accent2); font-size: 0.6rem; display: block; line-height: 1; }
-    .draft-grid-header .draft-manager-col {
-      background: var(--surface2); text-align: center; font-weight: 700;
-      font-size: 0.65rem; padding: 6px 3px; white-space: nowrap; color: var(--muted);
-      min-width: 66px; width: 66px;
-    }
-    .draft-grid-header .draft-manager-col.picking-now {
-      color: var(--accent); background: rgba(0,212,170,0.1);
-    }
     .draft-pick-cell {
-      width: 66px; min-width: 66px; max-width: 66px; height: 44px;
+      width: 58px; min-width: 58px; max-width: 58px; height: 44px;
       text-align: center; padding: 2px 3px; background: var(--surface);
     }
     .draft-pick-cell.filled { background: var(--surface2); cursor: pointer; }
@@ -1747,7 +1748,7 @@
     .pick-pos-badge-sm.pos-def { color: var(--accent); }
     .pick-pos-badge-sm.pos-mid { color: #818cf8; }
     .pick-pos-badge-sm.pos-fwd { color: #f87171; }
-    .pick-player-name { display: block; font-size: 0.64rem; font-weight: 600; color: var(--text); line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60px; }
+    .pick-player-name { display: block; font-size: 0.64rem; font-weight: 600; color: var(--text); line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 52px; }
     .pick-player-club { display: block; font-size: 0.58rem; color: var(--muted); line-height: 1; }
     .pick-current-dot { color: var(--accent); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; height: 44px; }
 
@@ -4877,16 +4878,17 @@ function buildDraftRoomTab() {
   }
 
   // ── Mutable state ──
-  let managers     = Array.from({ length: 12 }, (_, i) => ({ id: `p${i}`, name: `Player ${i + 1}` }));
-  let picks        = new Map();   // pickNumber → pick object
-  let draftStatus  = 'pending';   // 'pending' | 'active' | 'complete'
-  let editingPick  = null;        // pick number being edited, or null
-  let posFilter    = 'all';
-  let searchQuery  = '';
-  let allPlayers   = null;
-  let teamMap      = {};
-  let unsubPicks   = null;
+  let managers      = Array.from({ length: 12 }, (_, i) => ({ id: `p${i}`, name: `Player ${i + 1}` }));
+  let picks         = new Map();   // pickNumber → pick object
+  let draftStatus   = 'pending';   // 'pending' | 'active' | 'complete'
+  let editingPick   = null;        // pick number being edited, or null
+  let posFilter     = 'all';
+  let searchQuery   = '';
+  let allPlayers    = null;
+  let teamMap       = {};
+  let unsubPicks    = null;
   let unsubSettings = null;
+  let currentLeagueId = null;      // tracked so we only reload names when it actually changes
 
   function computeCurrentPick() {
     for (let i = 0; i < TOTAL_PICKS; i++) { if (!picks.has(i)) return i; }
@@ -4964,38 +4966,40 @@ function buildDraftRoomTab() {
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
-  // ── Grid render ──
+  // ── Grid render (managers = rows, rounds = columns, picks flow top→bottom each round) ──
   function renderGrid() {
     gridScroll.innerHTML = '';
     const curr  = computeCurrentPick();
     const table = el('div', { className: 'draft-grid' });
 
-    // Header: round col + 12 manager cols
+    // Header row: blank manager-label cell + R1↓ R2↑ … R15↓
     const hdrRow = el('div', { className: 'draft-grid-row draft-grid-header' });
-    hdrRow.appendChild(el('div', { className: 'draft-grid-cell draft-round-col' }, ''));
-    managers.forEach((m, mIdx) => {
-      const isCurrMgr = draftStatus === 'active' && curr < TOTAL_PICKS && managerForPick(curr) === mIdx;
-      hdrRow.appendChild(el('div', {
-        className: `draft-grid-cell draft-manager-col${isCurrMgr ? ' picking-now' : ''}`
-      }, m.name.split(' ')[0]));
-    });
-    table.appendChild(hdrRow);
-
-    // Round rows
+    hdrRow.appendChild(el('div', { className: 'draft-grid-cell draft-mgr-label-col' }, ''));
     for (let r = 0; r < TOTAL_ROUNDS; r++) {
       const reversed = r % 2 === 1;
+      const hCell = el('div', { className: 'draft-grid-cell draft-rnd-header-col' });
+      hCell.appendChild(el('span', { className: 'draft-round-label' }, `R${r + 1}`));
+      hCell.appendChild(el('span', { className: 'draft-round-arrow' }, reversed ? '↑' : '↓'));
+      hdrRow.appendChild(hCell);
+    }
+    table.appendChild(hdrRow);
+
+    // One row per manager
+    managers.forEach((m, mIdx) => {
+      const isCurrMgr = draftStatus === 'active' && curr < TOTAL_PICKS && managerForPick(curr) === mIdx;
       const row = el('div', { className: 'draft-grid-row' });
 
-      const roundCell = el('div', { className: 'draft-grid-cell draft-round-col' });
-      roundCell.appendChild(el('span', { className: 'draft-round-label' }, `R${r + 1}`));
-      roundCell.appendChild(el('span', { className: 'draft-round-arrow' }, reversed ? '←' : '→'));
-      row.appendChild(roundCell);
+      // Manager name cell (left, sticky)
+      row.appendChild(el('div', {
+        className: `draft-grid-cell draft-mgr-label-col${isCurrMgr ? ' picking-now' : ''}`
+      }, m.name.split(' ')[0]));
 
-      for (let mIdx = 0; mIdx < TOTAL_MANAGERS; mIdx++) {
-        const pNum  = pickNumForCell(mIdx, r);
-        const pick  = picks.get(pNum);
-        const isCurr = pNum === curr && draftStatus === 'active' && curr < TOTAL_PICKS;
-        const isEdit = pNum === editingPick;
+      // One cell per round
+      for (let r = 0; r < TOTAL_ROUNDS; r++) {
+        const pNum     = pickNumForCell(mIdx, r);
+        const pick     = picks.get(pNum);
+        const isCurr   = pNum === curr && draftStatus === 'active' && curr < TOTAL_PICKS;
+        const isEdit   = pNum === editingPick;
         const isFuture = !pick && pNum > curr;
 
         let cls = 'draft-grid-cell draft-pick-cell';
@@ -5010,7 +5014,7 @@ function buildDraftRoomTab() {
           cell.appendChild(el('span', { className: `pick-pos-badge-sm pos-${pos}` }, pick.position || ''));
           cell.appendChild(el('span', { className: 'pick-player-name' }, pick.playerName || ''));
           cell.appendChild(el('span', { className: 'pick-player-club' }, pick.playerClub || ''));
-          cell.title = `${pick.playerName} (${pick.playerClub}) — R${r+1}, ${managers[mIdx]?.name}`;
+          cell.title = `${pick.playerName} (${pick.playerClub}) — R${r + 1}, ${m.name}`;
           cell.addEventListener('click', () => openPicker(pNum));
         } else if (isCurr) {
           cell.appendChild(el('div', { className: 'pick-current-dot' }, '●'));
@@ -5018,7 +5022,8 @@ function buildDraftRoomTab() {
         row.appendChild(cell);
       }
       table.appendChild(row);
-    }
+    });
+
     gridScroll.appendChild(table);
   }
 
@@ -5288,12 +5293,23 @@ function buildDraftRoomTab() {
         fullRender();
       });
 
-      // Subscribe to settings in real time (e.g. draft started/reset)
-      unsubSettings = db.collection('settings').doc('draft').onSnapshot(snap => {
-        if (snap.exists) {
-          const newStatus = snap.data().status || 'pending';
-          if (newStatus !== draftStatus) { draftStatus = newStatus; fullRender(); }
+      // Subscribe to settings in real time (draft started/reset/league ID updated)
+      unsubSettings = db.collection('settings').doc('draft').onSnapshot(async snap => {
+        if (!snap.exists) return;
+        const data       = snap.data();
+        const newStatus  = data.status    || 'pending';
+        const newLeague  = data.leagueId  || null;
+        let needsRender  = false;
+
+        if (newStatus !== draftStatus) { draftStatus = newStatus; needsRender = true; }
+
+        // Reload manager names if league ID changed (syncs to all open browsers)
+        if (newLeague && newLeague !== currentLeagueId) {
+          currentLeagueId = newLeague;
+          await loadManagersFromLeague(newLeague);
+          needsRender = true;
         }
+        if (needsRender) fullRender();
       });
 
     } catch(e) {
