@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cup Debug — Fantasy Footballs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #0b0f1a;
+      --surface:  #111827;
+      --surface2: #1a2236;
+      --border:   #1f2d45;
+      --accent:   #00d4aa;
+      --accent2:  #6366f1;
+      --gold:     #f59e0b;
+      --red:      #ef4444;
+      --text:     #f1f5f9;
+      --muted:    #64748b;
+      --win:      #16a34a;
+      --lose:     #dc2626;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Debug banner ── */
+    .debug-banner {
+      background: #1a1035;
+      border-bottom: 2px solid rgba(99,102,241,0.4);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .debug-title { font-size: 0.78rem; font-weight: 700; color: #a5b4fc; text-transform: uppercase; letter-spacing: 1px; }
+    .debug-gw-badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.4);
+      border-radius: 999px; padding: 0.2rem 0.75rem;
+      font-size: 0.8rem; font-weight: 700; color: #a5b4fc;
+    }
+    .debug-gw-badge .live-indicator {
+      width: 7px; height: 7px; border-radius: 50%; background: #f87171; animation: pulse 1.2s infinite;
+    }
+    .debug-meta { font-size: 0.75rem; color: var(--muted); margin-left: auto; }
+    .debug-controls { display: flex; gap: 0.5rem; }
+    .debug-btn {
+      background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3);
+      color: #a5b4fc; border-radius: 7px; padding: 0.3rem 0.8rem;
+      font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
+    }
+    .debug-btn:hover { background: rgba(99,102,241,0.28); }
+    .debug-btn.danger { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #f87171; }
+    .debug-btn.danger:hover { background: rgba(239,68,68,0.2); }
+
+    /* ── Final Hero ── */
+    .final-hero {
+      background: linear-gradient(160deg, #0f0c1a 0%, #1a1035 40%, #0d1a0f 100%);
+      border-bottom: 1px solid rgba(245,158,11,0.2);
+      padding: 2.5rem 1.5rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .final-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(245,158,11,0.08) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 50%, rgba(245,158,11,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .final-hero-label { text-align: center; font-size: 0.7rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; opacity: 0.8; }
+    .final-hero-gw { text-align: center; font-size: 0.72rem; color: var(--muted); margin-bottom: 2rem; }
+    .final-hero-matchup { display: flex; align-items: center; justify-content: center; gap: 1rem; max-width: 700px; margin: 0 auto; }
+    .final-hero-team { flex: 1; text-align: center; }
+    .final-hero-team-name { font-size: clamp(1.1rem, 3vw, 1.6rem); font-weight: 800; line-height: 1.2; color: var(--text); }
+    .final-hero-team-name.winner { color: var(--gold); }
+    .final-hero-manager { font-size: 0.75rem; color: var(--muted); margin-top: 0.35rem; }
+    .final-hero-vs { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; flex-shrink: 0; padding: 0 0.5rem; }
+    .final-hero-scores { display: flex; align-items: center; gap: 0.5rem; }
+    .final-hero-score { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 800; min-width: 2.5rem; text-align: center; color: var(--muted); }
+    .final-hero-score.winner { color: var(--gold); }
+    .final-hero-score.live { color: var(--accent); animation: pulse 2s infinite; }
+    .final-hero-dash { color: var(--muted); font-size: 1.5rem; font-weight: 300; }
+    .final-hero-upcoming { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+    .final-hero-q { font-size: 3rem; font-weight: 800; color: rgba(245,158,11,0.25); }
+    .final-hero-upcoming-label { font-size: 0.72rem; font-weight: 600; color: rgba(245,158,11,0.6); letter-spacing: 1px; text-transform: uppercase; }
+    .final-hero-banner { text-align: center; margin-top: 1.5rem; font-size: 0.8rem; color: rgba(245,158,11,0.7); font-weight: 500; }
+    .final-hero-banner.champion { font-size: 1rem; font-weight: 700; color: var(--gold); }
+
+    /* ── Container ── */
+    .container { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .section-title {
+      font-size: 1.05rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--accent); margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── Groups ── */
+    .groups-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
+    @media (max-width: 900px) { .groups-grid { grid-template-columns: 1fr; } }
+    .group-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .group-header { padding: 1rem 1.25rem; background: var(--surface2); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem; }
+    .group-badge { width: 32px; height: 32px; border-radius: 8px; background: var(--accent2); color: white; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+    .group-header h2 { font-size: 1rem; font-weight: 700; }
+
+    /* ── Standings ── */
+    .standings-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .standings-table thead th { padding: 0.5rem 0.75rem; text-align: center; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); }
+    .standings-table thead th:first-child { text-align: left; }
+    .standings-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    .standings-table tbody tr:last-child { border-bottom: none; }
+    .standings-table tbody tr:hover { background: var(--surface2); }
+    .standings-table td { padding: 0.6rem 0.75rem; text-align: center; color: var(--text); }
+    .standings-table td:first-child { text-align: left; }
+    .pos-cell { display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
+    .pos-num { font-weight: 700; width: 1.2rem; text-align: right; color: var(--muted); }
+    .team-name { font-weight: 600; }
+    .manager-name { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+    .qualified-pill { font-size: 0.62rem; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: 4px; background: rgba(0,212,170,0.15); color: var(--accent); border: 1px solid rgba(0,212,170,0.3); white-space: nowrap; }
+    .pts-cell { font-weight: 700; font-size: 1rem; }
+    .separator-row td { background: rgba(0,0,0,0.3); padding: 2px 0; }
+
+    /* ── Fixtures ── */
+    .fixtures-accordion { border-top: 1px solid var(--border); }
+    .round-toggle { width: 100%; background: none; border: none; border-bottom: 1px solid var(--border); padding: 0.65rem 1rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: var(--text); font-size: 0.8rem; font-weight: 600; transition: background 0.15s; font-family: 'Inter', sans-serif; }
+    .round-toggle:hover { background: var(--surface2); }
+    .round-info { display: flex; align-items: center; gap: 0.5rem; }
+    .round-gw { font-size: 0.7rem; color: var(--muted); padding: 0.15rem 0.4rem; border: 1px solid var(--border); border-radius: 4px; }
+    .chevron { transition: transform 0.2s; color: var(--muted); }
+    .chevron.open { transform: rotate(180deg); }
+    .round-matches { display: none; }
+    .round-matches.open { display: block; }
+    .match-row { display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.82rem; gap: 0.5rem; }
+    .match-row:last-child { border-bottom: none; }
+    .match-team { flex: 1; }
+    .match-team.home { text-align: right; font-weight: 600; }
+    .match-team.away { text-align: left; font-weight: 600; }
+    .match-score { display: flex; align-items: center; gap: 0.25rem; min-width: 80px; justify-content: center; }
+    .score-box { padding: 0.25rem 0.6rem; border-radius: 6px; font-weight: 700; font-size: 0.95rem; min-width: 2.2rem; text-align: center; }
+    .score-box.win      { background: rgba(22,163,74,0.2);  color: #4ade80; }
+    .score-box.lose     { background: rgba(220,38,38,0.2);  color: #f87171; }
+    .score-box.draw     { background: rgba(202,138,4,0.2);  color: #fbbf24; }
+    .score-box.upcoming { background: var(--surface2); color: var(--muted); }
+    .score-box.live     { color: var(--accent); background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.25); }
+    .vs-sep { color: var(--muted); font-size: 0.75rem; }
+
+    /* ── Semi-finals ── */
+    .semis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    @media (max-width: 700px) { .semis-grid { grid-template-columns: 1fr; } }
+    .sf-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .sf-header { padding: 0.75rem 1rem; background: var(--surface2); border-bottom: 1px solid var(--border); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent2); }
+    .sf-matchup { padding: 1rem; display: flex; align-items: center; gap: 0.75rem; justify-content: space-between; }
+    .sf-team { flex: 1; }
+    .sf-team-name { font-weight: 700; font-size: 0.9rem; }
+    .sf-team-name.winner { color: var(--accent); }
+    .sf-manager { font-size: 0.72rem; color: var(--muted); }
+    .sf-vs { color: var(--muted); font-size: 0.75rem; font-weight: 600; }
+    .sf-agg { display: flex; align-items: center; gap: 0.5rem; justify-content: center; padding: 0.5rem 0; }
+    .agg-score { font-size: 1.6rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 8px; }
+    .agg-score.winner { background: rgba(0,212,170,0.1); color: var(--accent); }
+    .agg-score.loser  { background: rgba(0,0,0,0.3); color: var(--muted); }
+    .agg-dash { color: var(--muted); font-size: 1.2rem; }
+    .sf-legs { border-top: 1px solid var(--border); }
+    .sf-leg { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem; font-size: 0.8rem; border-bottom: 1px solid var(--border); }
+    .sf-leg:last-child { border-bottom: none; }
+    .sf-leg-label { color: var(--muted); font-weight: 600; font-size: 0.72rem; }
+    .sf-leg-scores { display: flex; align-items: center; gap: 0.5rem; }
+    .leg-score { font-weight: 700; font-size: 0.9rem; }
+    .leg-score.win  { color: #4ade80; }
+    .leg-score.lose { color: #f87171; }
+    .leg-score.live { color: var(--accent); }
+    .sf-winner-banner { padding: 0.6rem 1rem; background: rgba(0,212,170,0.08); border-top: 1px solid rgba(0,212,170,0.2); font-size: 0.8rem; font-weight: 600; color: var(--accent); text-align: center; }
+
+    /* ── Live ── */
+    .live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #ef4444; margin-right: 4px; animation: pulse 1.2s infinite; }
+    .score-live { color: var(--accent) !important; background: rgba(0,212,170,0.1) !important; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    /* ── Loading / error ── */
+    .loading { text-align: center; padding: 5rem 2rem; color: var(--muted); }
+    .loading-spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-box { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 1rem 1.25rem; color: #f87171; font-size: 0.83rem; margin: 1rem 0; }
+
+    /* ── Kit fallbacks ── */
+    .kit-img-fallback { border-radius: 4px; }
+    .kit-img-fallback.gkp { background: #92400e; }
+    .kit-img-fallback.def { background: #1e3a5f; }
+    .kit-img-fallback.mid { background: #1e4d2b; }
+    .kit-img-fallback.fwd { background: #7c1d1d; }
+
+    /* ── Squads toggle per match ── */
+    .squads-btn {
+      display: flex; align-items: center; gap: 0.3rem;
+      background: none; border: none; font-family: 'Inter', sans-serif;
+      font-size: 0.68rem; font-weight: 600; color: var(--accent);
+      cursor: pointer; padding: 0.2rem 1rem 0.35rem; opacity: 0.8;
+    }
+    .squads-btn:hover { opacity: 1; }
+    .match-pitch-wrap {
+      padding: 0.5rem 0.75rem 0.75rem;
+      background: var(--surface2);
+      border-top: 1px solid var(--border);
+    }
+    .match-pitch-bg {
+      background:
+        repeating-linear-gradient(180deg,
+          rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 36px,
+          transparent 36px, transparent 72px),
+        linear-gradient(180deg, #14532d 0%, #166534 50%, #14532d 100%);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 0.35rem 0.5rem;
+      position: relative; overflow: hidden;
+    }
+    .match-pitch-team-label {
+      text-align: center; font-size: 0.6rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: rgba(255,255,255,0.5); padding: 0.2rem 0;
+    }
+    .match-pitch-row {
+      display: flex; justify-content: center; gap: 0.25rem; margin-bottom: 0.25rem;
+    }
+    .match-pitch-midline {
+      border-top: 1px solid rgba(255,255,255,0.18); margin: 0.35rem 0.5rem;
+    }
+    .mp-player {
+      display: flex; flex-direction: column; align-items: center;
+      width: 48px; gap: 0.1rem;
+    }
+    .mp-shirt {
+      width: 32px; height: 36px; position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mp-kit-img { width: 28px; height: 32px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6)); }
+    .mp-pts {
+      background: rgba(0,0,0,0.65); color: var(--text);
+      font-size: 0.6rem; font-weight: 700;
+      padding: 0.05rem 0.2rem; border-radius: 3px;
+      min-width: 18px; text-align: center;
+    }
+    .mp-name {
+      font-size: 0.52rem; font-weight: 600;
+      color: rgba(255,255,255,0.9); text-align: center;
+      max-width: 48px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .mp-loading { text-align: center; color: var(--muted); font-size: 0.75rem; padding: 1rem 0; }
+
+    /* ── Final pitch view ── */
+    .final-pitch-section { margin-bottom: 2rem; }
+    .final-pitch-main { width: 100%; }
+    .final-pitch-preview-label {
+      text-align: center; font-size: 0.7rem; color: var(--muted);
+      margin-bottom: 0.4rem; letter-spacing: 0.3px;
+    }
+    .final-pitch-bg {
+      background:
+        repeating-linear-gradient(90deg,
+          rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 40px,
+          transparent 40px, transparent 80px),
+        linear-gradient(90deg, #14532d 0%, #166534 50%, #14532d 100%);
+      border-radius: 10px;
+      border: 2px solid rgba(255,255,255,0.15);
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: row; align-items: stretch;
+      min-height: 260px;
+    }
+    .final-pitch-bg::before {
+      content: ''; position: absolute; inset: 0;
+      border: 2px solid rgba(255,255,255,0.12); border-radius: 9px; pointer-events: none;
+    }
+    .pitch-half {
+      display: flex; flex: 1; flex-direction: column;
+    }
+    .final-team-label {
+      text-align: center; font-size: 0.55rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.2px;
+      color: rgba(255,255,255,0.4); padding: 0.25rem 0.25rem 0.1rem;
+      position: relative; z-index: 1; flex-shrink: 0;
+    }
+    .pitch-cols-row {
+      display: flex; flex: 1; align-items: stretch;
+    }
+    .pitch-col {
+      display: flex; flex: 1; flex-direction: column;
+      align-items: center; justify-content: space-evenly;
+      padding: 0.15rem 0.05rem;
+    }
+    .pitch-midline {
+      width: 1px; background: rgba(255,255,255,0.18);
+      flex-shrink: 0; align-self: stretch; margin: 0.5rem 0;
+    }
+    .mini-player-card {
+      display: flex; flex-direction: column; align-items: center;
+      width: 56px; gap: 0.12rem; cursor: default;
+    }
+    .mini-shirt {
+      width: 40px; height: 46px; position: relative;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .mini-kit-img { width: 34px; height: 38px; object-fit: contain; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.7)); }
+    .mini-cap-badge {
+      position: absolute; top: -3px; right: -3px;
+      width: 13px; height: 13px; border-radius: 50%;
+      background: var(--gold); color: #000; font-size: 0.45rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mini-pts {
+      background: rgba(0,0,0,0.65); color: var(--text);
+      font-size: 0.65rem; font-weight: 700;
+      padding: 0.05rem 0.3rem; border-radius: 3px;
+      min-width: 20px; text-align: center;
+    }
+    .mini-pts.live { color: #4ade80; }
+    .mini-name {
+      font-size: 0.57rem; font-weight: 600;
+      color: rgba(255,255,255,0.9); text-align: center;
+      max-width: 56px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .final-bench-panel {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0.6rem 0.75rem; margin: 0.5rem 0;
+    }
+    .final-bench-header {
+      display: flex; align-items: baseline; gap: 0.3rem;
+      margin-bottom: 0.4rem; white-space: nowrap; overflow: hidden;
+    }
+    .final-bench-title {
+      font-size: 0.58rem; font-weight: 700; color: var(--text);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0;
+    }
+    .final-bench-label {
+      font-size: 0.5rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--muted); flex-shrink: 0;
+    }
+    .final-bench-players {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;
+    }
+    .final-bench-player {
+      display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+      padding: 0.3rem 0.2rem; border: 1px solid var(--border);
+      border-radius: 6px; background: var(--surface2);
+    }
+    .final-bench-shirt { width: 28px; height: 30px; flex-shrink: 0; position: relative; display: flex; align-items: center; justify-content: center; }
+    .mini-bench-kit { width: 24px; height: 28px; object-fit: contain; }
+    .final-bench-info { min-width: 0; width: 100%; text-align: center; }
+    .final-bench-name { font-size: 0.58rem; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
+    .final-bench-pts { font-size: 0.55rem; color: var(--muted); text-align: center; }
+    .final-bench-pts.live { color: #4ade80; }
+    .pitch-loading { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+    .pitch-error { text-align: center; padding: 1rem; color: #f87171; font-size: 0.82rem; }
+    @media (max-width: 640px) {
+      .mini-player-card { width: 40px; }
+      .mini-name { max-width: 40px; font-size: 0.48rem; }
+      /* Final pitch: portrait (top-to-bottom) on mobile */
+      .final-pitch-bg { flex-direction: column; min-height: auto; }
+      .pitch-half { flex: unset; width: 100%; }
+      .pitch-cols-row { flex-direction: column; }
+      .pitch-col { flex-direction: row; justify-content: center; gap: 0.1rem; flex: unset; width: 100%; padding: 0.1rem 0; }
+      .pitch-midline { width: auto; height: 1px; margin: 0.25rem 0.5rem; }
+    }
+
+    @media (max-width: 600px) {
+      .debug-banner { padding: 0.6rem 1rem; gap: 0.6rem; }
+      .debug-meta { display: none; }
+      .standings-table .hide-mobile { display: none; }
+    }
+  </style>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+<!-- Debug banner -->
+<div class="debug-banner">
+  <span class="debug-title">Cup Debug</span>
+  <span class="debug-gw-badge" id="debug-gw-badge">Loading…</span>
+  <span class="debug-meta" id="debug-meta"></span>
+  <div class="debug-controls">
+    <button class="debug-btn" id="refresh-btn">Refresh now</button>
+    <button class="debug-btn" id="autopoll-btn">Auto-poll (60s)</button>
+    <button class="debug-btn danger" id="stop-btn" style="display:none">Stop poll</button>
+    <input id="gw-override-input" type="number" min="1" max="38" placeholder="GW#"
+      style="width:52px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);
+             color:#e2e8f0;border-radius:6px;padding:0.3rem 0.4rem;font-size:0.78rem;text-align:center" />
+    <button class="debug-btn" id="gw-override-btn">Override GW</button>
+  </div>
+</div>
+
+<!-- Final hero injected here -->
+<div id="final-hero-anchor"></div>
+
+<main class="container" id="app">
+  <div class="loading">
+    <div class="loading-spinner"></div>
+    Loading cup data…
+  </div>
+</main>
+
+<script>
+const WORKER = 'https://fpl-proxy.josephpwilson3.workers.dev';
+const CUP_DATA_URL = './cup_data.json';
+
+const _fplCache = {};
+let _cupData = null;
+let _debugGW = null;
+let _pollTimer = null;
+
+function el(tag, attrs, ...children) {
+  const node = document.createElement(tag);
+  if (attrs) Object.entries(attrs).forEach(([k, v]) => {
+    if (k === 'onClick') node.addEventListener('click', v);
+    else if (k === 'className') node.className = v;
+    else node.setAttribute(k, v);
+  });
+  children.forEach(c => { if (c == null) return; node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+  return node;
+}
+
+async function fetchFPL(path) {
+  if (_fplCache[path]) return _fplCache[path];
+  const res = await fetch(`${WORKER}/${path}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status} — ${path}`);
+  const data = await res.json();
+  _fplCache[path] = data;
+  return data;
+}
+
+async function getLive(gw) {
+  const url = `${WORKER}/event/${gw}/live/?t=${Math.floor(Date.now()/60000)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Live fetch failed: ${res.status}`);
+  return res.json();
+}
+
+async function getPicks(entryId, gw) {
+  const key = `entry/${entryId}/event/${gw}/picks/`;
+  if (_fplCache[key] && _fplCache[key]._ts > Date.now() - 120000) return _fplCache[key];
+  const url = `${WORKER}/${key}?t=${Math.floor(Date.now()/120000)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Picks fetch failed: ${res.status}`);
+  const data = await res.json();
+  data._ts = Date.now();
+  _fplCache[key] = data;
+  return data;
+}
+
+async function calcCupScore(entryId, gw, liveMap) {
+  const picks = await getPicks(entryId, gw);
+  return picks.picks
+    .filter(p => p.position <= 11)
+    .reduce((s, p) => s + (liveMap[p.element] || 0), 0);
+}
+
+
+async function refreshScores() {
+  if (!_debugGW) return;
+  const liveGW = _debugGW; // GW to fetch live data from (may differ from cup fixture GW)
+
+  // Collect all rendered cup-entry elements regardless of their tagged GW.
+  // When overriding (e.g. GW35 to test GW38 final), data-cup-gw won't match
+  // but we still want to update the score elements using the override GW's live data.
+  const allCupEls = document.querySelectorAll('[data-cup-entry]');
+  const entryIds = new Set();
+  allCupEls.forEach(e => entryIds.add(Number(e.dataset.cupEntry)));
+
+  if (!entryIds.size) return;
+
+  try {
+    const live = await getLive(liveGW);
+    const liveMap = {};
+    live.elements.forEach(e => { liveMap[e.id] = e.stats.total_points; });
+
+    const scores = {};
+    await Promise.all([...entryIds].map(async id => {
+      scores[id] = await calcCupScore(id, liveGW, liveMap);
+    }));
+
+    // Update all cup score elements (regardless of their tagged GW)
+    allCupEls.forEach(el => {
+      const id = Number(el.dataset.cupEntry);
+      if (scores[id] != null) {
+        el.textContent = String(scores[id]);
+        el.classList.add('score-live');
+      }
+    });
+
+    // Update individual player score elements in the final pitch view
+    document.querySelectorAll('[data-live-player]').forEach(el => {
+      const pid = Number(el.dataset.livePlayer);
+      if (liveMap[pid] != null) {
+        el.textContent = String(liveMap[pid]);
+        el.classList.add('live');
+      }
+    });
+
+    // Remove any leftover test panel from previous logic
+    const panel = document.getElementById('gw-test-panel');
+    if (panel) panel.remove();
+
+    document.getElementById('debug-meta').textContent =
+      `Last refreshed ${new Date().toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' })} (live data: GW${liveGW})`;
+  } catch(e) {
+    document.getElementById('debug-meta').textContent = `Error: ${e.message}`;
+  }
+}
+
+function scoreClass(score, opp) {
+  if (score === null) return 'upcoming';
+  if (score > opp) return 'win';
+  if (score < opp) return 'lose';
+  return 'draw';
+}
+
+// ── Cup rendering (mirrors main site) ─────────────────────────────────────────
+
+function buildCupStandingsTable(standings) {
+  const rows = standings.map(s => {
+    const posCell = el('div', { className: 'pos-cell' },
+      el('span', { className: 'pos-num' }, String(s.position)),
+      el('div', {},
+        el('div', { className: 'team-name' },
+          s.name,
+          s.qualified ? el('span', { className: 'qualified-pill', style: 'margin-left:6px' }, 'Q') : null
+        ),
+        el('div', { className: 'manager-name' }, s.manager)
+      )
+    );
+    return el('tr', {},
+      el('td', {}, posCell),
+      el('td', {}, String(s.played)),
+      el('td', { className: 'hide-mobile' }, String(s.won)),
+      el('td', { className: 'hide-mobile' }, String(s.drawn)),
+      el('td', { className: 'hide-mobile' }, String(s.lost)),
+      el('td', {}, String(s.points_for)),
+      el('td', { className: 'pts-cell' }, String(s.cup_points))
+    );
+  });
+
+  const tbody = el('tbody');
+  rows.forEach((tr, i) => {
+    tbody.appendChild(tr);
+    if (i === 1) tbody.appendChild(el('tr', { className: 'separator-row' },
+      el('td', { colspan: '7', style: 'height:3px;background:rgba(0,212,170,0.15)' })
+    ));
+  });
+
+  return el('table', { className: 'standings-table' },
+    el('thead', {}, el('tr', {},
+      el('th', { style: 'text-align:left;padding-left:0.75rem' }, 'Team'),
+      el('th', {}, 'P'),
+      el('th', { className: 'hide-mobile' }, 'W'),
+      el('th', { className: 'hide-mobile' }, 'D'),
+      el('th', { className: 'hide-mobile' }, 'L'),
+      el('th', {}, 'PF'), el('th', {}, 'Pts')
+    )),
+    tbody
+  );
+}
+
+async function buildMatchPitch(entryIdA, nameA, entryIdB, nameB, gw, container) {
+  try {
+    const [bs, picksA, picksB, live] = await Promise.all([
+      fetchFPL('bootstrap-static/'),
+      getPicks(entryIdA, gw),
+      getPicks(entryIdB, gw),
+      getLive(gw).catch(() => null),
+    ]);
+
+    const playerMap = {};
+    bs.elements.forEach(p => { playerMap[p.id] = p; });
+    const teamMap = {};
+    bs.teams.forEach(t => { teamMap[t.id] = t; });
+    const liveMap = {};
+    if (live) live.elements.forEach(e => { liveMap[e.id] = e.stats.total_points; });
+
+    function buildPortraitSide(picks, reversed) {
+      const starters = picks.picks.filter(p => p.position <= 11).sort((a, b) => a.position - b.position);
+      const groups = { 1: [], 2: [], 3: [], 4: [] };
+      starters.forEach(p => {
+        const et = playerMap[p.element]?.element_type || 3;
+        groups[et].push(p);
+      });
+      const order = reversed ? [4, 3, 2, 1] : [1, 2, 3, 4];
+      const frag = document.createDocumentFragment();
+      order.forEach(et => {
+        if (!groups[et].length) return;
+        const row = el('div', { className: 'match-pitch-row' });
+        groups[et].forEach(pick => {
+          const pm = playerMap[pick.element];
+          const isGK = pm?.element_type === 1;
+          const posClass = posTypeClass(pm?.element_type || 3);
+          const teamCode = pm && teamMap[pm.team] ? teamMap[pm.team].code : null;
+          const shirt = el('div', { className: 'mp-shirt' });
+          if (teamCode) {
+            const outfieldUrl = `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${teamCode}_1-66.png`;
+            const kitUrl = isGK
+              ? `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${teamCode}_1_gk-66.png`
+              : outfieldUrl;
+            const img = el('img', { className: 'mp-kit-img', alt: '', src: kitUrl });
+            img.onerror = () => {
+              if (isGK && img.src !== outfieldUrl) { img.src = outfieldUrl; return; }
+              img.style.display = 'none';
+              shirt.appendChild(el('div', { className: `kit-img-fallback ${posClass}`, style: 'width:16px;height:18px' }));
+            };
+            shirt.appendChild(img);
+          } else {
+            shirt.appendChild(el('div', { className: `kit-img-fallback ${posClass}`, style: 'width:16px;height:18px' }));
+          }
+          const pts = liveMap[pick.element] != null ? String(liveMap[pick.element]) : '—';
+          row.appendChild(el('div', { className: 'mp-player' },
+            shirt,
+            el('div', { className: 'mp-pts' }, pts),
+            el('div', { className: 'mp-name' }, pm?.web_name || String(pick.element))
+          ));
+        });
+        frag.appendChild(row);
+      });
+      return frag;
+    }
+
+    const pitchBg = el('div', { className: 'match-pitch-bg' });
+    pitchBg.appendChild(el('div', { className: 'match-pitch-team-label' }, nameA));
+    pitchBg.appendChild(buildPortraitSide(picksA, false));
+    pitchBg.appendChild(el('div', { className: 'match-pitch-midline' }));
+    pitchBg.appendChild(buildPortraitSide(picksB, true));
+    pitchBg.appendChild(el('div', { className: 'match-pitch-team-label' }, nameB));
+
+    container.innerHTML = '';
+    container.appendChild(pitchBg);
+  } catch (err) {
+    container.innerHTML = `<div class="pitch-error">Could not load squads: ${err.message}</div>`;
+  }
+}
+
+function makeSquadsToggle(entryIdA, nameA, entryIdB, nameB, gw) {
+  const wrap = el('div', { className: 'match-pitch-wrap' });
+  wrap.style.display = 'none';
+  const btn = el('button', { className: 'squads-btn' }, '⚽ Squads');
+  let loaded = false;
+  btn.addEventListener('click', async () => {
+    const opening = wrap.style.display === 'none';
+    wrap.style.display = opening ? '' : 'none';
+    btn.textContent = opening ? '▲ Hide squads' : '⚽ Squads';
+    if (opening && !loaded) {
+      loaded = true;
+      wrap.innerHTML = '<div class="mp-loading">Loading squads…</div>';
+      await buildMatchPitch(entryIdA, nameA, entryIdB, nameB, gw, wrap);
+    }
+  });
+  return { btn, wrap };
+}
+
+function buildFixtures(fixtures, liveGW) {
+  const accordion = el('div', { className: 'fixtures-accordion' });
+  fixtures.forEach((round, ri) => {
+    const isLast = ri === fixtures.length - 1;
+    const isLiveRound = liveGW && round.gw === liveGW;
+    const matchesDiv = el('div', { className: 'round-matches' + (isLast || isLiveRound ? ' open' : '') });
+    const chevron = el('span', { className: 'chevron' + (isLast || isLiveRound ? ' open' : '') }, '▾');
+    const toggle = el('button', { className: 'round-toggle',
+      onClick: () => { const o = matchesDiv.classList.toggle('open'); chevron.classList.toggle('open', o); }
+    },
+      el('span', { className: 'round-info' },
+        round.label,
+        el('span', { className: 'round-gw' }, `GW${round.gw}`),
+        isLiveRound ? el('span', { className: 'live-dot', style: 'margin-left:4px' }) : null
+      ),
+      chevron
+    );
+    accordion.appendChild(toggle);
+
+    round.matches.forEach(m => {
+      const h = m.home, a = m.away;
+      const upcoming = m.status === 'upcoming';
+      const hClass = (upcoming || isLiveRound) ? 'upcoming' : scoreClass(h.score, a.score);
+      const aClass = (upcoming || isLiveRound) ? 'upcoming' : scoreClass(a.score, h.score);
+      const hWon = hClass === 'win', aWon = aClass === 'win';
+
+      const hScoreEl = el('span', { className: `score-box ${hClass}` });
+      const aScoreEl = el('span', { className: `score-box ${aClass}` });
+
+      if (isLiveRound) {
+        hScoreEl.setAttribute('data-cup-entry', String(h.entry_id));
+        hScoreEl.setAttribute('data-cup-gw', String(liveGW));
+        aScoreEl.setAttribute('data-cup-entry', String(a.entry_id));
+        aScoreEl.setAttribute('data-cup-gw', String(liveGW));
+        hScoreEl.textContent = '…'; aScoreEl.textContent = '…';
+      } else {
+        hScoreEl.textContent = upcoming ? '—' : String(h.score);
+        aScoreEl.textContent = upcoming ? '—' : String(a.score);
+      }
+
+      const { btn: squadsBtn, wrap: pitchWrap } = makeSquadsToggle(
+        h.entry_id, h.name, a.entry_id, a.name, round.gw
+      );
+      matchesDiv.appendChild(el('div', { className: 'match-row' },
+        el('div', { className: 'match-team home' },
+          el('div', { style: `font-weight:${hWon?'700':'500'};color:${hWon?'var(--text)':'var(--muted)'}` }, h.name)
+        ),
+        el('div', { className: 'match-score' },
+          hScoreEl,
+          el('span', { className: 'vs-sep' }, isLiveRound ? el('span', { className: 'live-dot' }) : (upcoming ? 'vs' : '-')),
+          aScoreEl
+        ),
+        el('div', { className: 'match-team away' },
+          el('div', { style: `font-weight:${aWon?'700':'500'};color:${aWon?'var(--text)':'var(--muted)'}` }, a.name)
+        )
+      ));
+      matchesDiv.appendChild(squadsBtn);
+      matchesDiv.appendChild(pitchWrap);
+    });
+    accordion.appendChild(matchesDiv);
+  });
+  return accordion;
+}
+
+function buildGroupCard(label, group, liveGW) {
+  return el('div', { className: 'group-card' },
+    el('div', { className: 'group-header' },
+      el('div', { className: 'group-badge' }, label),
+      el('h2', {}, `Group ${label}`)
+    ),
+    buildCupStandingsTable(group.standings),
+    buildFixtures(group.fixtures, liveGW)
+  );
+}
+
+function buildSFCard(sf, liveGW) {
+  const ta = sf.team_a, tb = sf.team_b;
+  const winner = sf.winner;
+  const aWon = winner && winner.entry_id === ta.entry_id;
+  const bWon = winner && winner.entry_id === tb.entry_id;
+  const allPlayed = sf.legs.every(l => l.status === 'complete');
+
+  const legsDiv = el('div', { className: 'sf-legs' });
+  sf.legs.forEach((leg, i) => {
+    const isLiveLeg = liveGW && leg.gw === liveGW;
+    const upcoming = leg.status !== 'complete' && !isLiveLeg;
+    const aC = (upcoming || isLiveLeg) ? '' : (leg.score_a > leg.score_b ? 'win' : leg.score_a < leg.score_b ? 'lose' : '');
+    const bC = (upcoming || isLiveLeg) ? '' : (leg.score_b > leg.score_a ? 'win' : leg.score_b < leg.score_a ? 'lose' : '');
+    const scoreAEl = el('span', { className: `leg-score ${aC}` });
+    const scoreBEl = el('span', { className: `leg-score ${bC}` });
+    if (isLiveLeg) {
+      scoreAEl.setAttribute('data-cup-entry', String(ta.entry_id));
+      scoreAEl.setAttribute('data-cup-gw', String(liveGW));
+      scoreBEl.setAttribute('data-cup-entry', String(tb.entry_id));
+      scoreBEl.setAttribute('data-cup-gw', String(liveGW));
+      scoreAEl.textContent = '…'; scoreBEl.textContent = '…';
+    } else {
+      scoreAEl.textContent = upcoming ? '—' : String(leg.score_a);
+      scoreBEl.textContent = upcoming ? '—' : String(leg.score_b);
+    }
+    legsDiv.appendChild(el('div', { className: 'sf-leg' },
+      el('span', { className: 'sf-leg-label' },
+        `Leg ${i+1} · GW${leg.gw}`,
+        isLiveLeg ? el('span', { className: 'live-dot', style: 'margin-left:6px' }) : null
+      ),
+      el('div', { className: 'sf-leg-scores' },
+        scoreAEl,
+        el('span', { style: 'color:var(--muted)' }, ' – '),
+        scoreBEl
+      )
+    ));
+    const { btn: sfSquadsBtn, wrap: sfPitchWrap } = makeSquadsToggle(
+      ta.entry_id, ta.name, tb.entry_id, tb.name, leg.gw
+    );
+    legsDiv.appendChild(sfSquadsBtn);
+    legsDiv.appendChild(sfPitchWrap);
+  });
+
+  return el('div', { className: 'sf-card' },
+    el('div', { className: 'sf-header' }, sf.label),
+    el('div', { className: 'sf-matchup' },
+      el('div', { className: 'sf-team', style: 'text-align:right' },
+        el('div', { className: `sf-team-name${aWon ? ' winner' : ''}` }, ta.name),
+        el('div', { className: 'sf-manager' }, ta.manager)
+      ),
+      el('span', { className: 'sf-vs' }, 'vs'),
+      el('div', { className: 'sf-team' },
+        el('div', { className: `sf-team-name${bWon ? ' winner' : ''}` }, tb.name),
+        el('div', { className: 'sf-manager' }, tb.manager)
+      )
+    ),
+    allPlayed ? el('div', { className: 'sf-agg' },
+      el('span', { className: `agg-score ${aWon ? 'winner' : 'loser'}` }, String(sf.aggregate_a)),
+      el('span', { className: 'agg-dash' }, '–'),
+      el('span', { className: `agg-score ${bWon ? 'winner' : 'loser'}` }, String(sf.aggregate_b))
+    ) : null,
+    legsDiv,
+    winner ? el('div', { className: 'sf-winner-banner' }, `${winner.name} advance to the Final`) : null
+  );
+}
+
+function buildFinalHero(final, liveGW) {
+  const ta = final.team_a, tb = final.team_b;
+  const winner = final.winner;
+  const aWon = winner && winner.entry_id === ta.entry_id;
+  const bWon = winner && winner.entry_id === tb.entry_id;
+  const isLive = liveGW && final.gw === liveGW;
+  const upcoming = final.status !== 'complete' && !isLive;
+
+  let vsArea;
+  if (isLive || upcoming) {
+    const scoreAEl = el('span', { className: 'final-hero-score' + (isLive ? ' live' : '') });
+    const scoreBEl = el('span', { className: 'final-hero-score' + (isLive ? ' live' : '') });
+    // Always tag with data-cup-entry so the debug GW override can update these
+    scoreAEl.setAttribute('data-cup-entry', String(ta.entry_id));
+    scoreAEl.setAttribute('data-cup-gw', String(final.gw));
+    scoreBEl.setAttribute('data-cup-entry', String(tb.entry_id));
+    scoreBEl.setAttribute('data-cup-gw', String(final.gw));
+    scoreAEl.textContent = isLive ? '…' : '—';
+    scoreBEl.textContent = isLive ? '…' : '—';
+    vsArea = el('div', { className: 'final-hero-scores' },
+      scoreAEl, el('span', { className: 'final-hero-dash' }, '–'), scoreBEl
+    );
+  } else {
+    vsArea = el('div', { className: 'final-hero-scores' },
+      el('span', { className: `final-hero-score${aWon ? ' winner' : ''}` }, String(final.score_a)),
+      el('span', { className: 'final-hero-dash' }, '–'),
+      el('span', { className: `final-hero-score${bWon ? ' winner' : ''}` }, String(final.score_b))
+    );
+  }
+
+  const bannerEl = isLive
+    ? el('div', { className: 'final-hero-banner' }, el('span', { className: 'live-dot' }), ' Live — scores updating every 60s')
+    : upcoming
+      ? el('div', { className: 'final-hero-banner' }, `Final kicks off Gameweek ${final.gw} — who lifts the trophy?`)
+      : winner
+        ? el('div', { className: 'final-hero-banner champion' }, `${winner.name} are champions!`)
+        : null;
+
+  return el('div', { className: 'final-hero' },
+    el('div', { className: 'final-hero-label' }, 'Grand Final'),
+    el('div', { className: 'final-hero-gw' }, `Gameweek ${final.gw}`),
+    el('div', { className: 'final-hero-matchup' },
+      el('div', { className: 'final-hero-team', style: 'text-align:right' },
+        el('div', { className: `final-hero-team-name${aWon ? ' winner' : ''}` }, ta.name || 'TBD'),
+        el('div', { className: 'final-hero-manager' }, ta.manager || '')
+      ),
+      el('div', { className: 'final-hero-vs' }, vsArea),
+      el('div', { className: 'final-hero-team', style: 'text-align:left' },
+        el('div', { className: `final-hero-team-name${bWon ? ' winner' : ''}` }, tb.name || 'TBD'),
+        el('div', { className: 'final-hero-manager' }, tb.manager || '')
+      )
+    ),
+    bannerEl
+  );
+}
+
+function posTypeClass(elementType) {
+  return ['', 'gkp', 'def', 'mid', 'fwd'][elementType] || 'mid';
+}
+
+function buildMiniShirt(teamCode, isGK, posClass) {
+  const shirt = el('div', { className: 'mini-shirt' });
+  if (teamCode) {
+    const outfieldUrl = `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${teamCode}_1-66.png`;
+    const kitUrl = isGK
+      ? `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${teamCode}_1_gk-66.png`
+      : outfieldUrl;
+    const img = el('img', { className: 'mini-kit-img', alt: '', src: kitUrl });
+    img.onerror = () => {
+      if (isGK && img.src !== outfieldUrl) { img.src = outfieldUrl; return; }
+      img.style.display = 'none';
+      shirt.appendChild(el('div', { className: `kit-img-fallback ${posClass}`, style: 'width:20px;height:22px' }));
+    };
+    shirt.appendChild(img);
+  } else {
+    shirt.appendChild(el('div', { className: `kit-img-fallback ${posClass}`, style: 'width:20px;height:22px' }));
+  }
+  return shirt;
+}
+
+function buildMiniPlayerCard(pick, playerMeta, teamCode, isLiveFinal, gw) {
+  const isGK = playerMeta && playerMeta.element_type === 1;
+  const posClass = posTypeClass(playerMeta ? playerMeta.element_type : 3);
+  const shirt = buildMiniShirt(teamCode, isGK, posClass);
+  // captain/VC badges omitted — cup scoring ignores captaincy
+
+  const ptsEl = el('div', { className: 'mini-pts' }, '—');
+  if (isLiveFinal) {
+    ptsEl.setAttribute('data-live-player', String(pick.element));
+    ptsEl.setAttribute('data-live-gw', String(gw));
+    ptsEl.textContent = '…';
+  }
+
+  return el('div', { className: 'mini-player-card' },
+    shirt,
+    ptsEl,
+    el('div', { className: 'mini-name' }, playerMeta ? playerMeta.web_name : String(pick.element))
+  );
+}
+
+function buildBenchPanel(teamName, bench, playerMap, teamMap, isLiveFinal, gw) {
+  const panel = el('div', { className: 'final-bench-panel' });
+  panel.appendChild(el('div', { className: 'final-bench-header' },
+    el('span', { className: 'final-bench-title' }, teamName),
+    el('span', { className: 'final-bench-label' }, 'Bench')
+  ));
+  const playersContainer = el('div', { className: 'final-bench-players' });
+  panel.appendChild(playersContainer);
+
+  bench.forEach(pick => {
+    const pm = playerMap[pick.element];
+    const isGK = pm && pm.element_type === 1;
+    const posClass = posTypeClass(pm ? pm.element_type : 3);
+    const teamCode = pm && teamMap[pm.team] ? teamMap[pm.team].code : null;
+
+    const shirtEl = el('div', { className: 'final-bench-shirt' });
+    if (teamCode) {
+      const outfieldUrl = `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${teamCode}_1-66.png`;
+      const kitUrl = isGK
+        ? `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${teamCode}_1_gk-66.png`
+        : outfieldUrl;
+      const img = el('img', { className: 'mini-bench-kit', alt: '', src: kitUrl });
+      img.onerror = () => {
+        if (isGK && img.src !== outfieldUrl) { img.src = outfieldUrl; return; }
+        img.style.display = 'none';
+        shirtEl.appendChild(el('div', { className: `kit-img-fallback ${posClass}`, style: 'width:18px;height:20px' }));
+      };
+      shirtEl.appendChild(img);
+    } else {
+      shirtEl.appendChild(el('div', { className: `kit-img-fallback ${posClass}`, style: 'width:18px;height:20px' }));
+    }
+
+    const ptsEl = el('div', { className: 'final-bench-pts' }, '—');
+    if (isLiveFinal) {
+      ptsEl.setAttribute('data-live-player', String(pick.element));
+      ptsEl.setAttribute('data-live-gw', String(gw));
+      ptsEl.textContent = '…';
+    }
+
+    playersContainer.appendChild(el('div', { className: 'final-bench-player' },
+      shirtEl,
+      el('div', { className: 'final-bench-info' },
+        el('div', { className: 'final-bench-name' }, pm ? pm.web_name : String(pick.element)),
+        ptsEl
+      )
+    ));
+  });
+  return panel;
+}
+
+async function buildFinalPitchView(final, liveGW, container) {
+  // When the debug GW override is active, treat it as the live GW so player
+  // cards get data-live-player attributes and refreshScores() can update them
+  const effectiveLiveGW = _debugGW || liveGW;
+  const isLiveFinal = !!effectiveLiveGW;
+  const isComplete = final.status === 'complete';
+
+  let pickGW = effectiveLiveGW || final.gw;
+  let previewLabel = null;
+  if (!effectiveLiveGW && !isComplete) {
+    try {
+      const bs = await fetchFPL('bootstrap-static/');
+      // Use latest GW with a locked squad: finished OR is_current (deadline passed)
+      const latestPlayed = [...bs.events].reverse().find(e => e.finished || e.is_current);
+      if (latestPlayed && latestPlayed.id !== final.gw) {
+        pickGW = latestPlayed.id;
+        previewLabel = `Preview — squads from GW${pickGW}`;
+      }
+    } catch (_) {}
+  } else if (_debugGW) {
+    previewLabel = `Debug — GW${_debugGW} picks & live scores`;
+  }
+
+  try {
+    const [bs, picksA, picksB] = await Promise.all([
+      fetchFPL('bootstrap-static/'),
+      getPicks(final.team_a.entry_id, pickGW),
+      getPicks(final.team_b.entry_id, pickGW),
+    ]);
+
+    const playerMap = {};
+    bs.elements.forEach(p => { playerMap[p.id] = p; });
+    const teamMap = {};
+    bs.teams.forEach(t => { teamMap[t.id] = t; });
+
+    function buildPitchHalf(picks, side, teamName) {
+      const starters = picks.picks.filter(p => p.position <= 11).sort((a, b) => a.position - b.position);
+      const groups = { 1: [], 2: [], 3: [], 4: [] };
+      starters.forEach(p => {
+        const et = playerMap[p.element] ? playerMap[p.element].element_type : 3;
+        groups[et].push(p);
+      });
+
+      const half = el('div', { className: 'pitch-half' });
+      half.appendChild(el('div', { className: 'final-team-label' }, teamName));
+      const colsRow = el('div', { className: 'pitch-cols-row' });
+
+      const colOrder = side === 'home' ? [1, 2, 3, 4] : [4, 3, 2, 1];
+      colOrder.forEach(et => {
+        if (!groups[et].length) return;
+        const col = el('div', { className: 'pitch-col' });
+        groups[et].forEach(pick => {
+          const pm = playerMap[pick.element];
+          const teamCode = pm && teamMap[pm.team] ? teamMap[pm.team].code : null;
+          col.appendChild(buildMiniPlayerCard(pick, pm, teamCode, isLiveFinal, effectiveLiveGW || final.gw));
+        });
+        colsRow.appendChild(col);
+      });
+
+      half.appendChild(colsRow);
+      return half;
+    }
+
+    const benchA = picksA.picks.filter(p => p.position > 11).sort((a, b) => a.position - b.position);
+    const benchB = picksB.picks.filter(p => p.position > 11).sort((a, b) => a.position - b.position);
+
+    const pitchBg = el('div', { className: 'final-pitch-bg' });
+    pitchBg.appendChild(buildPitchHalf(picksA, 'home', final.team_a.name));
+    pitchBg.appendChild(el('div', { className: 'pitch-midline' }));
+    pitchBg.appendChild(buildPitchHalf(picksB, 'away', final.team_b.name));
+
+    const pitchMain = el('div', { className: 'final-pitch-main' });
+    if (previewLabel) pitchMain.appendChild(el('div', { className: 'final-pitch-preview-label' }, previewLabel));
+    pitchMain.appendChild(pitchBg);
+
+    container.innerHTML = '';
+    container.appendChild(buildBenchPanel(final.team_a.name, benchA, playerMap, teamMap, isLiveFinal, effectiveLiveGW || final.gw));
+    container.appendChild(pitchMain);
+    container.appendChild(buildBenchPanel(final.team_b.name, benchB, playerMap, teamMap, isLiveFinal, effectiveLiveGW || final.gw));
+
+    if (isLiveFinal) {
+      try {
+        const live = await getLive(liveGW);
+        if (live) {
+          const liveMap = {};
+          live.elements.forEach(e => { liveMap[e.id] = e.stats.total_points; });
+          container.querySelectorAll('[data-live-player]').forEach(pEl => {
+            const id = Number(pEl.dataset.livePlayer);
+            if (liveMap[id] != null) {
+              pEl.textContent = String(liveMap[id]);
+              pEl.classList.add('live');
+            }
+          });
+        }
+      } catch (_) {}
+    }
+
+  } catch (err) {
+    container.innerHTML = '';
+    container.appendChild(el('div', { className: 'pitch-error' }, `Could not load squads: ${err.message}`));
+  }
+}
+
+function renderCupDebug(data, liveGW) {
+  const heroAnchor = document.getElementById('final-hero-anchor');
+  heroAnchor.innerHTML = '';
+  heroAnchor.appendChild(buildFinalHero(data.knockout.final, liveGW));
+
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+
+  // Final pitch view
+  const final = data.knockout.final;
+  if (final.team_a && final.team_b && final.team_a.entry_id && final.team_b.entry_id) {
+    const pitchSection = el('div', { className: 'final-pitch-section' });
+    pitchSection.appendChild(el('div', { className: 'section-title' }, 'The Final — Squads'));
+    const pitchContainer = el('div', { className: 'pitch-loading' }, 'Loading squads…');
+    pitchSection.appendChild(pitchContainer);
+    app.appendChild(pitchSection);
+    buildFinalPitchView(final, liveGW, pitchContainer);
+  }
+
+  if (data.knockout.semi_finals && data.knockout.semi_finals.length) {
+    app.appendChild(el('div', { className: 'section-title' }, 'Semi-Finals'));
+    const semis = el('div', { className: 'semis-grid' });
+    data.knockout.semi_finals.forEach(sf => semis.appendChild(buildSFCard(sf, liveGW)));
+    app.appendChild(semis);
+  }
+
+  app.appendChild(el('div', { className: 'section-title', style: 'margin-top:1rem' }, 'Group Stage'));
+  app.appendChild(el('div', { className: 'groups-grid' },
+    buildGroupCard('A', data.groups.A, liveGW),
+    buildGroupCard('B', data.groups.B, liveGW)
+  ));
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+
+async function boot() {
+  try {
+    const [cupData, bs] = await Promise.all([
+      fetch(CUP_DATA_URL).then(r => { if (!r.ok) throw new Error('cup_data.json not found'); return r.json(); }),
+      fetchFPL('bootstrap-static/'),
+    ]);
+    _cupData = cupData;
+
+    // Determine next upcoming (or current live) GW
+    const events = bs.events;
+    const liveEvent  = events.find(e => e.is_current && !e.finished);
+    const nextEvent  = events.find(e => !e.finished && !e.is_current);
+    const lastFin    = [...events].reverse().find(e => e.finished);
+    _debugGW = liveEvent ? liveEvent.id : (nextEvent ? nextEvent.id : (lastFin ? lastFin.id : null));
+
+    const isLive = !!liveEvent;
+    const badge = document.getElementById('debug-gw-badge');
+    badge.innerHTML = '';
+    if (isLive) {
+      const dot = document.createElement('span');
+      dot.className = 'live-indicator';
+      badge.appendChild(dot);
+    }
+    badge.appendChild(document.createTextNode(
+      _debugGW ? `GW${_debugGW} — ${isLive ? 'LIVE' : 'Next upcoming'}` : 'No upcoming GW'
+    ));
+
+    renderCupDebug(cupData, _debugGW);
+
+    if (_debugGW) {
+      await refreshScores();
+    }
+  } catch(e) {
+    document.getElementById('app').innerHTML = `<div class="error-box">Error: ${e.message}</div>`;
+    document.getElementById('debug-gw-badge').textContent = 'Error';
+  }
+}
+
+document.getElementById('refresh-btn').addEventListener('click', () => {
+  // Clear picks cache so we get fresh data
+  Object.keys(_fplCache).forEach(k => { if (k.includes('/picks/')) delete _fplCache[k]; });
+  refreshScores();
+});
+
+document.getElementById('autopoll-btn').addEventListener('click', () => {
+  document.getElementById('autopoll-btn').style.display = 'none';
+  document.getElementById('stop-btn').style.display = '';
+  _pollTimer = setInterval(() => {
+    Object.keys(_fplCache).forEach(k => { if (k.includes('/picks/')) delete _fplCache[k]; });
+    refreshScores();
+  }, 60000);
+});
+
+document.getElementById('stop-btn').addEventListener('click', () => {
+  clearInterval(_pollTimer); _pollTimer = null;
+  document.getElementById('stop-btn').style.display = 'none';
+  document.getElementById('autopoll-btn').style.display = '';
+});
+
+document.getElementById('gw-override-btn').addEventListener('click', () => {
+  const v = Number(document.getElementById('gw-override-input').value);
+  if (!v || v < 1 || v > 38) return;
+  _debugGW = v;
+  const badge = document.getElementById('debug-gw-badge');
+  badge.innerHTML = '';
+  badge.appendChild(document.createTextNode(`GW${v} — Override`));
+  document.getElementById('debug-meta').textContent = `Overriding to GW${v}…`;
+  Object.keys(_fplCache).forEach(k => { if (k.includes('/picks/')) delete _fplCache[k]; });
+  refreshScores();
+});
+
+boot();
+</script>
+</body>
+</html>
