@@ -1715,13 +1715,6 @@
       cursor: pointer; transition: opacity 0.15s;
     }
     .draft-start-btn:hover { opacity: 0.85; }
-    .draft-settings-btn {
-      padding: 0.5rem 0.85rem; background: none; border: 1px solid var(--border);
-      border-radius: 8px; color: var(--muted); font-size: 0.78rem; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 0.35rem;
-    }
-    .draft-settings-btn:hover { color: var(--text); border-color: var(--accent2); }
-    .draft-settings-btn svg { width: 13px; height: 13px; }
     .draft-progress-bar-wrap {
       height: 4px; background: var(--surface2); border-radius: 999px; overflow: hidden; margin-top: 0.5rem;
     }
@@ -1835,35 +1828,11 @@
     .picker-more { padding: 0.5rem; text-align: center; color: var(--muted); font-size: 0.72rem; }
     .picker-panel-idle { padding: 1.5rem; text-align: center; color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
 
-    /* Draft settings modal */
-    .draft-modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000;
-      display: flex; align-items: center; justify-content: center; padding: 1rem;
-    }
-    .draft-modal {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-      padding: 1.5rem; max-width: 440px; width: 100%; max-height: 90vh; overflow-y: auto;
-    }
-    .draft-modal h2 { font-size: 1rem; margin-bottom: 1rem; }
-    .draft-modal-field { margin-bottom: 1rem; }
-    .draft-modal-field label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.4rem; }
-    .draft-modal-input {
-      width: 100%; padding: 0.5rem 0.75rem; background: var(--bg);
-      border: 1px solid var(--border); border-radius: 8px;
-      color: var(--text); font-size: 0.85rem; outline: none;
-    }
-    .draft-modal-input:focus { border-color: var(--accent2); }
-    .draft-modal-note { font-size: 0.73rem; color: var(--muted); margin-top: 0.35rem; line-height: 1.4; }
-    .draft-modal-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.25rem; }
-    .draft-modal-save {
-      padding: 0.5rem 1.2rem; background: var(--accent); color: #000;
-      border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer;
-    }
+    /* Shared danger button (used in Settings tab reset) */
     .draft-modal-cancel {
       padding: 0.5rem 1rem; background: none; border: 1px solid var(--border);
       border-radius: 8px; color: var(--muted); font-size: 0.85rem; cursor: pointer;
     }
-    .draft-modal-saved { color: var(--accent); font-size: 0.78rem; margin-top: 0.5rem; display: none; }
 
     /* ── Draft tab ── */
     .draft-header { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
@@ -4987,13 +4956,6 @@ function buildDraftRoomTab() {
       }
     }
 
-    // Settings cog always visible
-    const settingsBtn = el('button', { className: 'draft-settings-btn', title: 'Draft settings' },
-      icon('settings'), ' Settings'
-    );
-    settingsBtn.addEventListener('click', openDraftSettings);
-    right.appendChild(settingsBtn);
-
     banner.appendChild(left);
     banner.appendChild(right);
     if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -5205,75 +5167,6 @@ function buildDraftRoomTab() {
     } catch(e) { alert('Could not save pick: ' + e.message); }
   }
 
-  // ── Settings modal ──
-  function openDraftSettings() {
-    const overlay = el('div', { className: 'draft-modal-overlay' });
-    const modal   = el('div', { className: 'draft-modal' });
-    modal.appendChild(el('h2', {}, icon('settings'), ' Draft Settings'));
-
-    // League ID field
-    const leagueField = el('div', { className: 'draft-modal-field' });
-    leagueField.appendChild(el('label', {}, 'FPL League ID (for auto-loading manager names)'));
-    const leagueInput = el('input', { className: 'draft-modal-input', type: 'number', placeholder: 'e.g. 286779' });
-    leagueField.appendChild(leagueInput);
-    leagueField.appendChild(el('div', { className: 'draft-modal-note' },
-      'Once the new season league is set up, enter the ID here. Manager names will be pulled automatically from the FPL API.'
-    ));
-    modal.appendChild(leagueField);
-
-    // Reset picks
-    const resetField = el('div', { className: 'draft-modal-field' });
-    resetField.appendChild(el('label', {}, 'Reset Draft'));
-    const resetBtn = el('button', { className: 'draft-modal-cancel', style: 'color:var(--red);border-color:var(--red)' }, '⚠ Clear all picks & restart');
-    resetBtn.addEventListener('click', async () => {
-      if (!confirm('This will delete ALL picks and reset the draft to pending. Are you sure?')) return;
-      resetBtn.disabled = true; resetBtn.textContent = 'Clearing…';
-      try {
-        const snapshot = await db.collection('picks').get();
-        const batch = db.batch();
-        snapshot.forEach(doc => batch.delete(doc.ref));
-        await batch.commit();
-        await db.collection('settings').doc('draft').set({ status: 'pending' }, { merge: true });
-        overlay.remove();
-      } catch(e) { alert('Error: ' + e.message); resetBtn.disabled = false; resetBtn.textContent = '⚠ Clear all picks & restart'; }
-    });
-    resetField.appendChild(resetBtn);
-    modal.appendChild(resetField);
-
-    // Prefill league ID if already set
-    db.collection('settings').doc('draft').get().then(doc => {
-      if (doc.exists && doc.data().leagueId) leagueInput.value = doc.data().leagueId;
-    }).catch(() => {});
-
-    const savedMsg = el('div', { className: 'draft-modal-saved' }, '✓ Saved');
-    const actions  = el('div', { className: 'draft-modal-actions' });
-    const cancelBtn = el('button', { className: 'draft-modal-cancel' }, 'Cancel');
-    cancelBtn.addEventListener('click', () => overlay.remove());
-    const saveBtn = el('button', { className: 'draft-modal-save' }, 'Save');
-    saveBtn.addEventListener('click', async () => {
-      const lid = leagueInput.value.trim();
-      saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
-      try {
-        await db.collection('settings').doc('draft').set(
-          { leagueId: lid || null },
-          { merge: true }
-        );
-        // Try to reload manager names immediately
-        if (lid) await loadManagersFromLeague(lid);
-        savedMsg.style.display = 'block';
-        setTimeout(() => { savedMsg.style.display = 'none'; saveBtn.disabled = false; saveBtn.textContent = 'Save'; }, 2000);
-      } catch(e) { alert('Error: ' + e.message); saveBtn.disabled = false; saveBtn.textContent = 'Save'; }
-    });
-    actions.appendChild(cancelBtn);
-    actions.appendChild(saveBtn);
-    modal.appendChild(actions);
-    modal.appendChild(savedMsg);
-    overlay.appendChild(modal);
-    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
-    document.body.appendChild(overlay);
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-  }
-
   async function loadManagersFromLeague(leagueId) {
     try {
       const data    = await fetchFPL(`leagues-classic/${leagueId}/standings/`);
@@ -5304,14 +5197,14 @@ function buildDraftRoomTab() {
   // ── Firestore subscriptions ──
   (async () => {
     try {
-      // Load settings once to get leagueId + status
-      const settingsDoc = await db.collection('settings').doc('draft').get();
+      // Load draft status from settings/draft
+      const draftDoc = await db.collection('settings').doc('draft').get();
+      if (draftDoc.exists) draftStatus = draftDoc.data().status || 'pending';
+
+      // Load leagueId from settings/site (managed by the Settings tab)
+      const siteDoc = await db.collection('settings').doc('site').get();
       let leagueId = null;
-      if (settingsDoc.exists) {
-        const s = settingsDoc.data();
-        draftStatus = s.status || 'pending';
-        leagueId    = s.leagueId || null;
-      }
+      if (siteDoc.exists) leagueId = siteDoc.data().leagueId || null;
 
       // Load manager names from FPL if leagueId is set
       if (leagueId) await loadManagersFromLeague(leagueId);
@@ -5326,24 +5219,25 @@ function buildDraftRoomTab() {
         fullRender();
       });
 
-      // Subscribe to settings in real time (draft started/reset/league ID updated)
-      unsubSettings = db.collection('settings').doc('draft').onSnapshot(async snap => {
+      // Subscribe to draft settings (status changes: pending/active/complete/reset)
+      const unsubDraft = db.collection('settings').doc('draft').onSnapshot(async snap => {
         if (!snap.exists) return;
-        const data       = snap.data();
-        const newStatus  = data.status    || 'pending';
-        const newLeague  = data.leagueId  || null;
-        let needsRender  = false;
+        const newStatus = snap.data().status || 'pending';
+        if (newStatus !== draftStatus) { draftStatus = newStatus; fullRender(); }
+      });
 
-        if (newStatus !== draftStatus) { draftStatus = newStatus; needsRender = true; }
-
-        // Reload manager names if league ID changed (syncs to all open browsers)
+      // Subscribe to site settings (league ID — syncs manager names across all browsers)
+      const unsubSite = db.collection('settings').doc('site').onSnapshot(async snap => {
+        if (!snap.exists) return;
+        const newLeague = snap.data().leagueId || null;
         if (newLeague && newLeague !== currentLeagueId) {
           currentLeagueId = newLeague;
           await loadManagersFromLeague(newLeague);
-          needsRender = true;
+          fullRender();
         }
-        if (needsRender) fullRender();
       });
+
+      unsubSettings = () => { unsubDraft(); unsubSite(); };
 
     } catch(e) {
       wrapper.innerHTML = '';
@@ -5469,6 +5363,35 @@ function buildSettingsTab() {
     openCupBtn.addEventListener('click', openCupSettings);
     cupGwSection.appendChild(openCupBtn);
     form.appendChild(cupGwSection);
+
+    // Draft Room reset
+    const draftSection = el('div', { className: 'settings-field', style: 'margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)' });
+    draftSection.appendChild(el('label', { className: 'settings-field-label' }, 'Draft Room'));
+    draftSection.appendChild(el('div', { className: 'settings-field-hint', style: 'margin-bottom:0.75rem' },
+      'Reset the draft to clear all picks and start over. This cannot be undone.'));
+    const resetDraftBtn = el('button', {
+      className: 'draft-modal-cancel',
+      style: 'color:var(--red,#ef4444);border-color:var(--red,#ef4444)'
+    }, '⚠ Clear all picks & restart draft');
+    resetDraftBtn.addEventListener('click', async () => {
+      if (!confirm('This will delete ALL draft picks and reset the draft to pending. Are you sure?')) return;
+      resetDraftBtn.disabled = true; resetDraftBtn.textContent = 'Resetting…';
+      try {
+        const snapshot = await db.collection('picks').get();
+        const batch = db.batch();
+        snapshot.forEach(doc => batch.delete(doc.ref));
+        batch.set(db.collection('settings').doc('draft'), { status: 'pending' }, { merge: true });
+        await batch.commit();
+        resetDraftBtn.textContent = '✓ Draft reset';
+        setTimeout(() => { resetDraftBtn.disabled = false; resetDraftBtn.textContent = '⚠ Clear all picks & restart draft'; }, 3000);
+      } catch(e) {
+        errorMsg.textContent = `Reset failed: ${e.message}`;
+        errorMsg.style.display = 'block';
+        resetDraftBtn.disabled = false; resetDraftBtn.textContent = '⚠ Clear all picks & restart draft';
+      }
+    });
+    draftSection.appendChild(resetDraftBtn);
+    form.appendChild(draftSection);
 
     // Load & real-time sync
     let _unsub = null;
