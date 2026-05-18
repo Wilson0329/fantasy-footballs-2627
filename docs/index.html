@@ -715,6 +715,21 @@
     .settings-status-loading   { background: rgba(148,163,184,0.1); color: var(--muted); border: 1px solid var(--border); }
     .settings-status-error     { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
 
+    /* ── Admin lock screen ── */
+    .admin-lock-card { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem 2rem; text-align: center; max-width: 320px; margin: 2rem auto; }
+    .admin-lock-icon { font-size: 2rem; color: var(--muted); }
+    .admin-lock-icon svg { width: 2rem; height: 2rem; color: var(--muted); }
+    .admin-lock-title { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+    .admin-lock-hint { font-size: 0.78rem; color: var(--muted); line-height: 1.45; }
+    .admin-code-input { width: 100%; background: #0d1829; border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 0.85rem; color: var(--text); font-size: 1.1rem; letter-spacing: 0.2em; text-align: center; box-sizing: border-box; }
+    .admin-code-input:focus { outline: none; border-color: var(--accent); }
+    .admin-lock-error { font-size: 0.75rem; color: #f87171; min-height: 1rem; }
+    .admin-lock-btn { background: transparent; border: 1px solid var(--border); border-radius: 7px; color: var(--muted); font-size: 0.75rem; padding: 0.3rem 0.7rem; cursor: pointer; display: flex; align-items: center; gap: 0.3rem; }
+    .admin-lock-btn svg { width: 12px; height: 12px; }
+    .admin-lock-btn:hover { border-color: var(--accent); color: var(--accent); }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+    .admin-lock-shake { animation: shake 0.4s ease; }
+
     /* ── Champions tab ── */
     .champions-intro {
       text-align: center;
@@ -5353,139 +5368,170 @@ function buildSettingsTab() {
   const frag = document.createDocumentFragment();
   const wrap = el('div', { className: 'settings-tab-wrap' });
 
-  // ── Header ──
-  wrap.appendChild(el('div', { className: 'section-title' }, icon('settings'), ' Season Settings'));
-  wrap.appendChild(el('p', { className: 'settings-tab-desc' },
-    'Manage the league ID and season configuration. Changes are saved to the shared database and take effect on the next data refresh.'));
+  if (!_settingsUnlocked) {
+    // ── Lock screen ──────────────────────────────────────────────────────────
+    const lockCard = el('div', { className: 'admin-lock-card' });
+    lockCard.appendChild(el('div', { className: 'admin-lock-icon' }, icon('lock')));
+    lockCard.appendChild(el('div', { className: 'admin-lock-title' }, 'Admin Access'));
+    lockCard.appendChild(el('div', { className: 'admin-lock-hint' }, 'Enter the admin code to manage league and cup settings.'));
 
-  const form = el('div', { className: 'settings-tab-form' });
+    const codeInput = el('input', {
+      type: 'password', className: 'admin-code-input',
+      placeholder: '••••', maxLength: '20', autocomplete: 'off',
+    });
+    const unlockBtn = el('button', { className: 'settings-save-btn' }, 'Unlock');
+    const errMsg    = el('div', { className: 'admin-lock-error' }, '');
 
-  // Status badge
-  const statusBadge = el('div', { className: 'settings-status-badge settings-status-loading' }, 'Loading…');
-  wrap.appendChild(statusBadge);
-  wrap.appendChild(form);
+    async function attemptUnlock() {
+      const code = codeInput.value.trim();
+      if (!code) return;
+      unlockBtn.disabled = true; unlockBtn.textContent = 'Checking…';
+      const ok = await checkAdminCode(code);
+      if (ok) {
+        _settingsUnlocked = true;
+        window.amplitude?.track('Admin Unlocked');
+        // Re-render the tab now that it's unlocked
+        switchTab('settings');
+      } else {
+        lockCard.classList.add('admin-lock-shake');
+        setTimeout(() => lockCard.classList.remove('admin-lock-shake'), 500);
+        errMsg.textContent = 'Incorrect code.';
+        codeInput.value = '';
+        codeInput.focus();
+        unlockBtn.disabled = false; unlockBtn.textContent = 'Unlock';
+      }
+    }
 
-  const savedMsg = el('div', { className: 'settings-saved-msg', style: 'display:none;margin-top:0.75rem' },
-    '✓ Saved to database — build scripts will use the new settings on next run');
-  const errorMsg = el('div', { className: 'settings-error-msg', style: 'display:none;margin-top:0.75rem' }, '');
-  wrap.appendChild(savedMsg);
-  wrap.appendChild(errorMsg);
+    unlockBtn.addEventListener('click', attemptUnlock);
+    codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') attemptUnlock(); });
 
-  // ── Form fields ──
-  function makeField(labelText, inputEl, hint) {
-    const row = el('div', { className: 'settings-field' });
-    row.appendChild(el('label', { className: 'settings-field-label' }, labelText));
-    row.appendChild(inputEl);
-    if (hint) row.appendChild(el('div', { className: 'settings-field-hint' }, hint));
-    return row;
+    lockCard.appendChild(codeInput);
+    lockCard.appendChild(unlockBtn);
+    lockCard.appendChild(errMsg);
+    wrap.appendChild(lockCard);
+
+  } else {
+    // ── Unlocked: full settings UI ───────────────────────────────────────────
+    const header = el('div', { className: 'section-title' }, icon('settings'), ' Season Settings');
+    const lockBtn = el('button', { className: 'admin-lock-btn', title: 'Lock settings' }, icon('lock'), ' Lock');
+    lockBtn.addEventListener('click', () => { _settingsUnlocked = false; switchTab('settings'); });
+    const headerRow = el('div', { style: 'display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem' },
+      header, lockBtn);
+    wrap.appendChild(headerRow);
+    wrap.appendChild(el('p', { className: 'settings-tab-desc' },
+      'Manage the league ID and season configuration. Changes are saved to the shared database and take effect on the next data refresh.'));
+
+    const form = el('div', { className: 'settings-tab-form' });
+
+    const statusBadge = el('div', { className: 'settings-status-badge settings-status-loading' }, 'Loading…');
+    wrap.appendChild(statusBadge);
+    wrap.appendChild(form);
+
+    const savedMsg = el('div', { className: 'settings-saved-msg', style: 'display:none;margin-top:0.75rem' },
+      '✓ Saved to database — build scripts will use the new settings on next run');
+    const errorMsg = el('div', { className: 'settings-error-msg', style: 'display:none;margin-top:0.75rem' }, '');
+    wrap.appendChild(savedMsg);
+    wrap.appendChild(errorMsg);
+
+    function makeField(labelText, inputEl, hint) {
+      const row = el('div', { className: 'settings-field' });
+      row.appendChild(el('label', { className: 'settings-field-label' }, labelText));
+      row.appendChild(inputEl);
+      if (hint) row.appendChild(el('div', { className: 'settings-field-hint' }, hint));
+      return row;
+    }
+
+    const leagueInput = el('input', { type: 'text', className: 'settings-input', placeholder: 'e.g. 286779' });
+    const seasonInput = el('input', { type: 'text', className: 'settings-input', placeholder: 'e.g. 2026/27' });
+    const statusSelect = el('select', { className: 'settings-input' });
+    [['pre-season', 'Pre-season (tabs show placeholder)'], ['active', 'Active (full data mode)']].forEach(([val, lbl]) => {
+      const opt = document.createElement('option');
+      opt.value = val; opt.textContent = lbl;
+      statusSelect.appendChild(opt);
+    });
+
+    form.appendChild(makeField('FPL League ID', leagueInput,
+      'The ID from the FPL website URL (e.g. fantasy.premierleague.com/leagues/286779/standings/classic). All build scripts read this from the database — no code changes needed.'));
+    form.appendChild(makeField('Season Label', seasonInput,
+      'Displayed in the site header. Example: 2026/27'));
+    form.appendChild(makeField('Season Status', statusSelect,
+      'Pre-season: League/Stats/Cup tabs show a coming-soon placeholder. Active: normal data mode.'));
+
+    const saveBtn = el('button', { className: 'settings-save-btn', style: 'margin-top:1rem' }, 'Save Settings');
+    form.appendChild(saveBtn);
+
+    // Cup GW Schedule
+    const cupGwSection = el('div', { className: 'settings-field', style: 'margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)' });
+    cupGwSection.appendChild(el('label', { className: 'settings-field-label' }, 'Cup Gameweek Schedule'));
+    cupGwSection.appendChild(el('div', { className: 'settings-field-hint', style: 'margin-bottom:0.5rem' },
+      'Set which gameweeks are used for group rounds, semi-finals, and the final.'));
+    const openCupBtn = el('button', { className: 'gw-add-btn' }, icon('trophy'), ' Open Cup GW Settings');
+    openCupBtn.addEventListener('click', openCupSettings);
+    cupGwSection.appendChild(openCupBtn);
+    form.appendChild(cupGwSection);
+
+    // Load & real-time sync
+    let _unsub = null;
+
+    async function loadSettings() {
+      try {
+        const snap = await db.collection('settings').doc('site').get();
+        const data = snap.exists ? snap.data() : {};
+        leagueInput.value  = data.leagueId || '';
+        seasonInput.value  = data.season   || '2026/27';
+        statusSelect.value = data.status   || 'pre-season';
+        statusBadge.textContent = `Status: ${statusSelect.value === 'active' ? '🟢 Active' : '🟡 Pre-season'}`;
+        statusBadge.className   = `settings-status-badge settings-status-${statusSelect.value}`;
+      } catch(e) {
+        statusBadge.textContent = 'Could not load settings';
+        statusBadge.className   = 'settings-status-badge settings-status-error';
+      }
+    }
+
+    _unsub = db.collection('settings').doc('site').onSnapshot(snap => {
+      if (!snap.exists) return;
+      const data = snap.data();
+      if (document.activeElement !== leagueInput)  leagueInput.value  = data.leagueId || '';
+      if (document.activeElement !== seasonInput)  seasonInput.value  = data.season   || '2026/27';
+      if (document.activeElement !== statusSelect) statusSelect.value = data.status   || 'pre-season';
+      statusBadge.textContent = `Status: ${data.status === 'active' ? '🟢 Active' : '🟡 Pre-season'}`;
+      statusBadge.className   = `settings-status-badge settings-status-${data.status || 'pre-season'}`;
+    }, () => {});
+
+    loadSettings();
+
+    saveBtn.addEventListener('click', async () => {
+      const leagueId = leagueInput.value.trim();
+      const season   = seasonInput.value.trim() || '2026/27';
+      const status   = statusSelect.value;
+
+      if (leagueId && !/^\d+$/.test(leagueId)) {
+        errorMsg.textContent = 'League ID must be a number.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+      errorMsg.style.display = 'none';
+
+      saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
+      try {
+        await db.collection('settings').doc('site').set({
+          leagueId:  leagueId ? Number(leagueId) : null,
+          season,
+          status,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        savedMsg.style.display = 'block';
+        setTimeout(() => { savedMsg.style.display = 'none'; }, 4000);
+        window.amplitude?.track('Site Settings Saved', { leagueId: leagueId || null, season, status });
+      } catch(e) {
+        errorMsg.textContent = `Save failed: ${e.message}`;
+        errorMsg.style.display = 'block';
+      }
+      saveBtn.disabled = false; saveBtn.textContent = 'Save Settings';
+    });
+
+    wrap._cleanup = () => { if (_unsub) _unsub(); };
   }
-
-  const leagueInput = el('input', {
-    type: 'text', className: 'settings-input',
-    placeholder: 'e.g. 286779',
-  });
-  const seasonInput = el('input', {
-    type: 'text', className: 'settings-input',
-    placeholder: 'e.g. 2026/27',
-  });
-  const statusSelect = el('select', { className: 'settings-input' });
-  [['pre-season', 'Pre-season (tabs show placeholder)'], ['active', 'Active (full data mode)']].forEach(([val, lbl]) => {
-    const opt = document.createElement('option');
-    opt.value = val; opt.textContent = lbl;
-    statusSelect.appendChild(opt);
-  });
-
-  form.appendChild(makeField('FPL League ID',
-    leagueInput,
-    'The ID from the FPL website URL for your league (e.g. fantasy.premierleague.com/leagues/286779/standings/classic). All build scripts read this from the database — no code changes needed.'
-  ));
-  form.appendChild(makeField('Season Label',
-    seasonInput,
-    'Displayed in the site header. Example: 2026/27'
-  ));
-  form.appendChild(makeField('Season Status',
-    statusSelect,
-    'Pre-season: League/Stats/Cup tabs show a coming-soon placeholder. Active: normal data mode.'
-  ));
-
-  const saveBtn = el('button', { className: 'settings-save-btn', style: 'margin-top:1rem' }, 'Save Settings');
-  form.appendChild(saveBtn);
-
-  // ── Cup GWs link ──
-  const cupGwSection = el('div', { className: 'settings-field', style: 'margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)' });
-  cupGwSection.appendChild(el('label', { className: 'settings-field-label' }, 'Cup Gameweek Schedule'));
-  cupGwSection.appendChild(el('div', { className: 'settings-field-hint', style: 'margin-bottom:0.5rem' },
-    'The cup GW schedule (group rounds, semi-finals, final) is managed separately.'));
-  const openCupBtn = el('button', { className: 'gw-add-btn' }, icon('trophy'), ' Open Cup Settings');
-  openCupBtn.addEventListener('click', openCupSettings);
-  cupGwSection.appendChild(openCupBtn);
-  form.appendChild(cupGwSection);
-
-  // ── Load current settings from Firestore ──
-  let _unsub = null;
-
-  async function loadSettings() {
-    try {
-      const snap = await db.collection('settings').doc('site').get();
-      const data = snap.exists ? snap.data() : {};
-      leagueInput.value  = data.leagueId || '';
-      seasonInput.value  = data.season   || '2026/27';
-      statusSelect.value = data.status   || 'pre-season';
-      statusBadge.textContent = `Status: ${statusSelect.value === 'active' ? '🟢 Active' : '🟡 Pre-season'}`;
-      statusBadge.className   = `settings-status-badge settings-status-${statusSelect.value}`;
-    } catch(e) {
-      statusBadge.textContent = 'Could not load settings';
-      statusBadge.className   = 'settings-status-badge settings-status-error';
-    }
-  }
-
-  // Real-time sync — update form if another admin saves
-  _unsub = db.collection('settings').doc('site').onSnapshot(snap => {
-    if (!snap.exists) return;
-    const data = snap.data();
-    // Only update fields that aren't being actively edited
-    if (document.activeElement !== leagueInput)  leagueInput.value  = data.leagueId || '';
-    if (document.activeElement !== seasonInput)  seasonInput.value  = data.season   || '2026/27';
-    if (document.activeElement !== statusSelect) statusSelect.value = data.status   || 'pre-season';
-    statusBadge.textContent = `Status: ${data.status === 'active' ? '🟢 Active' : '🟡 Pre-season'}`;
-    statusBadge.className   = `settings-status-badge settings-status-${data.status || 'pre-season'}`;
-  }, () => {});  // silently ignore errors on snapshot
-
-  loadSettings();
-
-  // ── Save ──
-  saveBtn.addEventListener('click', async () => {
-    const leagueId = leagueInput.value.trim();
-    const season   = seasonInput.value.trim() || '2026/27';
-    const status   = statusSelect.value;
-
-    if (leagueId && !/^\d+$/.test(leagueId)) {
-      errorMsg.textContent = 'League ID must be a number.';
-      errorMsg.style.display = 'block';
-      return;
-    }
-    errorMsg.style.display = 'none';
-
-    saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
-    try {
-      await db.collection('settings').doc('site').set({
-        leagueId:  leagueId ? Number(leagueId) : null,
-        season,
-        status,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      });
-      savedMsg.style.display = 'block';
-      setTimeout(() => { savedMsg.style.display = 'none'; }, 4000);
-      window.amplitude?.track('Site Settings Saved', { leagueId: leagueId || null, season, status });
-    } catch(e) {
-      errorMsg.textContent = `Save failed: ${e.message}`;
-      errorMsg.style.display = 'block';
-    }
-    saveBtn.disabled = false; saveBtn.textContent = 'Save Settings';
-  });
-
-  // ── Cleanup ──
-  wrap._cleanup = () => { if (_unsub) _unsub(); };
 
   frag.appendChild(wrap);
   return frag;
@@ -5500,6 +5546,19 @@ let _activeTab = 'league';
 
 let _draftRoomCleanup  = null; // cleanup fn for Draft Room Firestore listeners
 let _settingsCleanup   = null; // cleanup fn for Settings tab Firestore listener
+
+// ── Admin lock ───────────────────────────────────────────────────────────────
+// SHA-256 of the admin code — the code itself is never stored in source.
+const ADMIN_CODE_HASH = 'bce35ce6291ba5b8fb5fea32ec1aaed5556f355746882a9dd183857cb0e25967';
+let _settingsUnlocked = false;  // resets on page refresh
+
+async function checkAdminCode(code) {
+  const data = new TextEncoder().encode(code);
+  const buf  = await crypto.subtle.digest('SHA-256', data);
+  const hex  = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  return hex === ADMIN_CODE_HASH;
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 function switchTab(tabName) {
   // Cleanup Firestore listeners when leaving tabs
@@ -5597,6 +5656,11 @@ async function saveCupGWs(gws) {
 }
 
 function openCupSettings() {
+  if (!_settingsUnlocked) {
+    // Redirect to the settings tab to unlock first
+    switchTab('settings');
+    return;
+  }
   window.amplitude?.track('Cup Settings Opened');
   const overlay = el('div', { className: 'settings-overlay' });
   const panel = el('div', { className: 'settings-panel' });
