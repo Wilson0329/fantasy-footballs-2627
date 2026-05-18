@@ -697,6 +697,23 @@
     .settings-save-btn { background: #4f46e5; color: #fff; border: none; border-radius: 8px; padding: 0.65rem 1.4rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 0.5rem; }
     .settings-save-btn:hover { background: #6366f1; }
     .settings-saved-msg { text-align: center; font-size: 0.78rem; color: #4ade80; margin-top: 0.6rem; display: none; }
+    .settings-error-msg { font-size: 0.78rem; color: #f87171; margin-top: 0.4rem; }
+
+    /* ── Settings tab (full page) ── */
+    .settings-tab-wrap { max-width: 520px; margin: 0 auto; padding: 0.5rem 0 2rem; }
+    .settings-tab-desc { font-size: 0.82rem; color: var(--muted); margin-bottom: 1.25rem; line-height: 1.5; }
+    .settings-tab-form { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+    .settings-field { margin-bottom: 1.2rem; }
+    .settings-field:last-child { margin-bottom: 0; }
+    .settings-field-label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 0.35rem; }
+    .settings-field-hint { font-size: 0.74rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.45; }
+    .settings-input { width: 100%; background: #0d1829; border: 1px solid var(--border); border-radius: 7px; padding: 0.55rem 0.75rem; color: var(--text); font-size: 0.88rem; box-sizing: border-box; }
+    .settings-input:focus { outline: none; border-color: var(--accent); }
+    .settings-status-badge { display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.75rem; border-radius: 20px; margin-bottom: 1rem; }
+    .settings-status-active    { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+    .settings-status-pre-season { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+    .settings-status-loading   { background: rgba(148,163,184,0.1); color: var(--muted); border: 1px solid var(--border); }
+    .settings-status-error     { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
 
     /* ── Champions tab ── */
     .champions-intro {
@@ -1975,6 +1992,7 @@
     <button class="tab-btn" data-tab="history"><i data-lucide="book-open"></i>History</button>
     <button class="tab-btn" data-tab="draft"><i data-lucide="users"></i>Draft</button>
     <button class="tab-btn" data-tab="draft-room"><i data-lucide="zap"></i>Draft Room</button>
+    <button class="tab-btn" data-tab="settings"><i data-lucide="settings"></i>Settings</button>
   </nav>
 </header>
 
@@ -5328,17 +5346,165 @@ function buildDraftRoomTab() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Settings tab
+// ─────────────────────────────────────────────────────────────────────────────
+
+function buildSettingsTab() {
+  const frag = document.createDocumentFragment();
+  const wrap = el('div', { className: 'settings-tab-wrap' });
+
+  // ── Header ──
+  wrap.appendChild(el('div', { className: 'section-title' }, icon('settings'), ' Season Settings'));
+  wrap.appendChild(el('p', { className: 'settings-tab-desc' },
+    'Manage the league ID and season configuration. Changes are saved to the shared database and take effect on the next data refresh.'));
+
+  const form = el('div', { className: 'settings-tab-form' });
+
+  // Status badge
+  const statusBadge = el('div', { className: 'settings-status-badge settings-status-loading' }, 'Loading…');
+  wrap.appendChild(statusBadge);
+  wrap.appendChild(form);
+
+  const savedMsg = el('div', { className: 'settings-saved-msg', style: 'display:none;margin-top:0.75rem' },
+    '✓ Saved to database — build scripts will use the new settings on next run');
+  const errorMsg = el('div', { className: 'settings-error-msg', style: 'display:none;margin-top:0.75rem' }, '');
+  wrap.appendChild(savedMsg);
+  wrap.appendChild(errorMsg);
+
+  // ── Form fields ──
+  function makeField(labelText, inputEl, hint) {
+    const row = el('div', { className: 'settings-field' });
+    row.appendChild(el('label', { className: 'settings-field-label' }, labelText));
+    row.appendChild(inputEl);
+    if (hint) row.appendChild(el('div', { className: 'settings-field-hint' }, hint));
+    return row;
+  }
+
+  const leagueInput = el('input', {
+    type: 'text', className: 'settings-input',
+    placeholder: 'e.g. 286779',
+  });
+  const seasonInput = el('input', {
+    type: 'text', className: 'settings-input',
+    placeholder: 'e.g. 2026/27',
+  });
+  const statusSelect = el('select', { className: 'settings-input' });
+  [['pre-season', 'Pre-season (tabs show placeholder)'], ['active', 'Active (full data mode)']].forEach(([val, lbl]) => {
+    const opt = document.createElement('option');
+    opt.value = val; opt.textContent = lbl;
+    statusSelect.appendChild(opt);
+  });
+
+  form.appendChild(makeField('FPL League ID',
+    leagueInput,
+    'The ID from the FPL website URL for your league (e.g. fantasy.premierleague.com/leagues/286779/standings/classic). All build scripts read this from the database — no code changes needed.'
+  ));
+  form.appendChild(makeField('Season Label',
+    seasonInput,
+    'Displayed in the site header. Example: 2026/27'
+  ));
+  form.appendChild(makeField('Season Status',
+    statusSelect,
+    'Pre-season: League/Stats/Cup tabs show a coming-soon placeholder. Active: normal data mode.'
+  ));
+
+  const saveBtn = el('button', { className: 'settings-save-btn', style: 'margin-top:1rem' }, 'Save Settings');
+  form.appendChild(saveBtn);
+
+  // ── Cup GWs link ──
+  const cupGwSection = el('div', { className: 'settings-field', style: 'margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)' });
+  cupGwSection.appendChild(el('label', { className: 'settings-field-label' }, 'Cup Gameweek Schedule'));
+  cupGwSection.appendChild(el('div', { className: 'settings-field-hint', style: 'margin-bottom:0.5rem' },
+    'The cup GW schedule (group rounds, semi-finals, final) is managed separately.'));
+  const openCupBtn = el('button', { className: 'gw-add-btn' }, icon('trophy'), ' Open Cup Settings');
+  openCupBtn.addEventListener('click', openCupSettings);
+  cupGwSection.appendChild(openCupBtn);
+  form.appendChild(cupGwSection);
+
+  // ── Load current settings from Firestore ──
+  let _unsub = null;
+
+  async function loadSettings() {
+    try {
+      const snap = await db.collection('settings').doc('site').get();
+      const data = snap.exists ? snap.data() : {};
+      leagueInput.value  = data.leagueId || '';
+      seasonInput.value  = data.season   || '2026/27';
+      statusSelect.value = data.status   || 'pre-season';
+      statusBadge.textContent = `Status: ${statusSelect.value === 'active' ? '🟢 Active' : '🟡 Pre-season'}`;
+      statusBadge.className   = `settings-status-badge settings-status-${statusSelect.value}`;
+    } catch(e) {
+      statusBadge.textContent = 'Could not load settings';
+      statusBadge.className   = 'settings-status-badge settings-status-error';
+    }
+  }
+
+  // Real-time sync — update form if another admin saves
+  _unsub = db.collection('settings').doc('site').onSnapshot(snap => {
+    if (!snap.exists) return;
+    const data = snap.data();
+    // Only update fields that aren't being actively edited
+    if (document.activeElement !== leagueInput)  leagueInput.value  = data.leagueId || '';
+    if (document.activeElement !== seasonInput)  seasonInput.value  = data.season   || '2026/27';
+    if (document.activeElement !== statusSelect) statusSelect.value = data.status   || 'pre-season';
+    statusBadge.textContent = `Status: ${data.status === 'active' ? '🟢 Active' : '🟡 Pre-season'}`;
+    statusBadge.className   = `settings-status-badge settings-status-${data.status || 'pre-season'}`;
+  }, () => {});  // silently ignore errors on snapshot
+
+  loadSettings();
+
+  // ── Save ──
+  saveBtn.addEventListener('click', async () => {
+    const leagueId = leagueInput.value.trim();
+    const season   = seasonInput.value.trim() || '2026/27';
+    const status   = statusSelect.value;
+
+    if (leagueId && !/^\d+$/.test(leagueId)) {
+      errorMsg.textContent = 'League ID must be a number.';
+      errorMsg.style.display = 'block';
+      return;
+    }
+    errorMsg.style.display = 'none';
+
+    saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
+    try {
+      await db.collection('settings').doc('site').set({
+        leagueId:  leagueId ? Number(leagueId) : null,
+        season,
+        status,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      savedMsg.style.display = 'block';
+      setTimeout(() => { savedMsg.style.display = 'none'; }, 4000);
+      window.amplitude?.track('Site Settings Saved', { leagueId: leagueId || null, season, status });
+    } catch(e) {
+      errorMsg.textContent = `Save failed: ${e.message}`;
+      errorMsg.style.display = 'block';
+    }
+    saveBtn.disabled = false; saveBtn.textContent = 'Save Settings';
+  });
+
+  // ── Cleanup ──
+  wrap._cleanup = () => { if (_unsub) _unsub(); };
+
+  frag.appendChild(wrap);
+  return frag;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Tab switching
 // ─────────────────────────────────────────────────────────────────────────────
 
 let _cupData = null, _leagueData = null, _newsData = null;
 let _activeTab = 'league';
 
-let _draftRoomCleanup = null; // cleanup fn for active Firestore listeners
+let _draftRoomCleanup  = null; // cleanup fn for Draft Room Firestore listeners
+let _settingsCleanup   = null; // cleanup fn for Settings tab Firestore listener
 
 function switchTab(tabName) {
-  // Cleanup Draft Room Firestore listeners when leaving
+  // Cleanup Firestore listeners when leaving tabs
   if (_draftRoomCleanup) { _draftRoomCleanup(); _draftRoomCleanup = null; }
+  if (_settingsCleanup)  { _settingsCleanup();  _settingsCleanup  = null; }
 
   _activeTab = tabName;
   window.amplitude?.track('Tab Viewed', { tab_name: tabName });
@@ -5394,6 +5560,11 @@ function switchTab(tabName) {
     app.appendChild(draftFrag);
     const wrapper = app.querySelector('.draft-room');
     if (wrapper?._cleanup) _draftRoomCleanup = wrapper._cleanup;
+  } else if (tabName === 'settings') {
+    const settingsFrag = buildSettingsTab();
+    app.appendChild(settingsFrag);
+    const settingsWrap = app.querySelector('.settings-tab-wrap');
+    if (settingsWrap?._cleanup) _settingsCleanup = settingsWrap._cleanup;
   }
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
