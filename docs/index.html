@@ -1492,7 +1492,6 @@
     .timeline-manager { color:var(--muted); font-size:0.65rem; min-width:80px; flex-shrink:0; }
     .timeline-out { color:rgba(255,255,255,0.7); }
     .timeline-in  { color:var(--accent); }
-    .timeline-diff { margin-left:auto; font-weight:700; font-size:0.7rem; flex-shrink:0; }
 
     /* ── Auto-sub badges (Feature 13) ── */
     .autosub-badge { position:absolute; bottom:-4px; right:-4px; font-size:0.45rem; font-weight:800; padding:1px 3px; border-radius:3px; pointer-events:none; z-index:3; letter-spacing:0.03em; }
@@ -1902,7 +1901,7 @@
       color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
       border-bottom: 1px solid var(--border); margin-bottom: 2px;
     }
-    .draft-list-header.with-owner { grid-template-columns: 44px 1fr auto auto 110px; }
+    .draft-list-header.with-owner { grid-template-columns: 44px 1fr auto 110px; }
     .draft-player-row {
       display: grid; grid-template-columns: 44px 1fr auto auto;
       gap: 0.5rem; align-items: center;
@@ -1910,7 +1909,7 @@
       background: var(--surface); border: 1px solid transparent;
       transition: background 0.12s, border-color 0.12s;
     }
-    .draft-player-row.with-owner { grid-template-columns: 44px 1fr auto auto 110px; }
+    .draft-player-row.with-owner { grid-template-columns: 44px 1fr auto 110px; }
     .draft-player-row:hover { background: var(--surface2); border-color: var(--border); }
     .draft-player-row.draft-row-available { border-left: 2px solid rgba(0,212,170,0.3); }
 
@@ -3776,15 +3775,11 @@ function buildTransferTimeline(tradeDiff) {
     const headerDiv = el('div', { className: 'timeline-gw-header' }, `GW${gw}`);
     body.appendChild(headerDiv);
     groups[gw].forEach(t => {
-      const diff = t.differential;
-      const diffStr = fmtDiff(diff);
-      const diffCls = diff > 0 ? '#4ade80' : diff < 0 ? '#f87171' : 'var(--muted)';
       body.appendChild(el('div', { className: 'timeline-row' },
         el('span', { className: 'timeline-manager' }, t.manager),
         el('span', { className: 'timeline-out' }, t.player_out.name),
         el('span', { style: 'color:var(--muted);font-size:0.65rem' }, '→'),
-        el('span', { className: 'timeline-in' }, t.player_in.name),
-        el('span', { className: 'timeline-diff', style: `color:${diffCls}` }, diffStr)
+        el('span', { className: 'timeline-in' }, t.player_in.name)
       ));
     });
   });
@@ -4854,7 +4849,6 @@ function buildDraftTab(leagueData) {
               el('span', {}, 'Pos'),
               el('span', {}, 'Player'),
               el('span', {}, 'Pts / Form / Price'),
-              el('span', {}, ''),
               el('span', {}, 'Owner')
             );
             list.appendChild(hdr);
