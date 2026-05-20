@@ -1920,7 +1920,7 @@
       width: 36px; height: 40px; position: relative;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
-    .draft-pitch-shirt img { width: 32px; height: 36px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); }
+    .draft-pitch-kit-img { width: 32px; height: 36px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); display: block; }
     .draft-pitch-pos {
       position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
       font-size: 0.48rem; font-weight: 800; padding: 0.05rem 0.2rem;
@@ -5008,7 +5008,8 @@ function buildDraftRoomTab() {
   let posFilter     = 'all';
   let searchQuery   = '';
   let allPlayers    = null;
-  let teamMap       = {};
+  let teamMap       = {};   // teamId → shortName
+  let clubCodeMap   = {};   // shortName → teamCode (for kit images)
   let unsubPicks    = null;
   let unsubSettings = null;
   let currentLeagueId = null;      // tracked so we only reload names when it actually changes
@@ -5112,7 +5113,7 @@ function buildDraftRoomTab() {
         className: `draft-grid-cell draft-mgr-label-col clickable${isCurrMgr ? ' picking-now' : ''}`,
         title: `${m.name} — view squad`
       }, m.name.split(' ')[0]);
-      mgrCell.addEventListener('click', () => openTeamPitchView(mIdx, managers, picks, TOTAL_ROUNDS, pickNumForCell));
+      mgrCell.addEventListener('click', () => openTeamPitchView(mIdx, managers, picks, TOTAL_ROUNDS, pickNumForCell, clubCodeMap));
       row.appendChild(mgrCell);
 
       // One cell per round
@@ -5262,8 +5263,12 @@ function buildDraftRoomTab() {
   async function loadPlayers() {
     try {
       const bs = await getBootstrap();
-      teamMap = {};
-      bs.teams.forEach(t => { teamMap[t.id] = t.short_name; });
+      teamMap     = {};
+      clubCodeMap = {};
+      bs.teams.forEach(t => {
+        teamMap[t.id]        = t.short_name;
+        clubCodeMap[t.short_name] = t.code;
+      });
       allPlayers = bs.elements;
     } catch(e) { console.error('Failed to load FPL players:', e); }
   }
@@ -5281,10 +5286,11 @@ function buildDraftRoomTab() {
   }
 
   async function confirmPick(pickNum, player) {
-    const pos   = POS_MAP[player.element_type] || '?';
-    const club  = teamMap[player.team] || '?';
-    const round = Math.floor(pickNum / TOTAL_MANAGERS) + 1;
-    const mIdx  = managerForPick(pickNum);
+    const pos      = POS_MAP[player.element_type] || '?';
+    const club     = teamMap[player.team] || '?';
+    const teamCode = clubCodeMap[club] || null;
+    const round    = Math.floor(pickNum / TOTAL_MANAGERS) + 1;
+    const mIdx     = managerForPick(pickNum);
     try {
       await db.collection('picks').doc(String(pickNum)).set({
         pickNumber:   pickNum,
@@ -5294,6 +5300,7 @@ function buildDraftRoomTab() {
         fplPlayerId:  player.id,
         playerName:   player.web_name,
         playerClub:   club,
+        teamCode:     teamCode,
         position:     pos,
         totalPoints:  player.total_points,
         price:        player.now_cost,
@@ -5396,7 +5403,7 @@ function buildDraftRoomTab() {
 // Opens a modal showing all picked players for a manager on a football pitch.
 // ─────────────────────────────────────────────────────────────────────────────
 
-function openTeamPitchView(mIdx, managers, picks, TOTAL_ROUNDS, pickNumForCell) {
+function openTeamPitchView(mIdx, managers, picks, TOTAL_ROUNDS, pickNumForCell, clubCodeMap) {
   const mgr = managers[mIdx];
   if (!mgr) return;
 
@@ -5444,10 +5451,27 @@ function openTeamPitchView(mIdx, managers, picks, TOTAL_ROUNDS, pickNumForCell) 
   // Build a single pitch card for a picked player
   function buildPitchCard(pick) {
     const posClass = (pick.position || 'mid').toLowerCase();
+    const isGK     = posClass === 'gk';
+    // teamCode is saved on new picks; fall back to clubCodeMap lookup for older picks
+    const tc       = pick.teamCode || clubCodeMap[pick.playerClub] || null;
+    const kitUrl   = tc
+      ? (isGK
+          ? `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${tc}_gk-66.png`
+          : `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${tc}-66.png`)
+      : null;
+
     const card  = el('div', { className: 'draft-pitch-card' });
     const shirt = el('div', { className: 'draft-pitch-shirt' });
     shirt.appendChild(el('span', { className: `draft-pitch-pos pos-${posClass}` }, pick.position || '?'));
-    shirt.appendChild(makeKitFallback(posClass));
+
+    if (kitUrl) {
+      const img = el('img', { src: kitUrl, alt: '', className: 'draft-pitch-kit-img' });
+      img.onerror = () => { img.replaceWith(makeKitFallback(posClass)); };
+      shirt.appendChild(img);
+    } else {
+      shirt.appendChild(makeKitFallback(posClass));
+    }
+
     card.appendChild(shirt);
     card.appendChild(el('div', { className: 'draft-pitch-name' }, pick.playerName || '—'));
     card.appendChild(el('div', { className: 'draft-pitch-club' }, pick.playerClub || ''));
