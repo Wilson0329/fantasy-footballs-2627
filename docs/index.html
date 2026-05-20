@@ -5434,6 +5434,13 @@ function openTeamPitchView(mIdx, managers, picks, TOTAL_ROUNDS, pickNumForCell) 
     return fb;
   }
 
+  // Build an empty slot placeholder
+  function buildEmptySlot(pos) {
+    const card = el('div', { className: 'draft-pitch-empty' });
+    card.appendChild(el('div', { style: 'font-size:0.6rem;opacity:0.4' }, pos));
+    return card;
+  }
+
   // Build a single pitch card for a picked player
   function buildPitchCard(pick) {
     const posClass = (pick.position || 'mid').toLowerCase();
@@ -5473,32 +5480,31 @@ function openTeamPitchView(mIdx, managers, picks, TOTAL_ROUNDS, pickNumForCell) 
   header.appendChild(closeBtn);
   modal.appendChild(header);
 
-  if (mgrPicks.length === 0) {
-    modal.appendChild(el('div', { style: 'text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem' },
-      'No picks made yet for this manager.'));
-  } else {
-    // Pitch background
-    const pitchBg = el('div', { className: 'draft-pitch-bg' });
+  // Pitch background — always full size (empty slots shown for unpicked positions)
+  const pitchBg = el('div', { className: 'draft-pitch-bg' });
 
-    pitchLayout.forEach(({ pos, picks: posPicks }) => {
-      if (posPicks.length === 0) return; // skip empty rows
-      const row = el('div', { className: 'draft-pitch-row' });
-      posPicks.forEach(pick => row.appendChild(buildPitchCard(pick)));
-      pitchBg.appendChild(row);
-    });
-
-    // Bench strip — any picks with unrecognised position
-    const remainingPicks = [...benchSlots];
-
-    if (remainingPicks.length) {
-      const benchStrip = el('div', { className: 'draft-pitch-bench-strip' });
-      benchStrip.appendChild(el('div', { className: 'draft-pitch-bench-label' }, 'Other picks'));
-      remainingPicks.forEach(pick => benchStrip.appendChild(buildPitchCard(pick)));
-      pitchBg.appendChild(benchStrip);
+  pitchLayout.forEach(({ pos, expected, picks: posPicks }) => {
+    const row = el('div', { className: 'draft-pitch-row' });
+    const totalSlots = Math.max(expected, posPicks.length);
+    for (let i = 0; i < totalSlots; i++) {
+      if (i < posPicks.length) {
+        row.appendChild(buildPitchCard(posPicks[i]));
+      } else {
+        row.appendChild(buildEmptySlot(pos));
+      }
     }
+    pitchBg.appendChild(row);
+  });
 
-    modal.appendChild(pitchBg);
+  // Bench strip — any picks with unrecognised position
+  if (benchSlots.length) {
+    const benchStrip = el('div', { className: 'draft-pitch-bench-strip' });
+    benchStrip.appendChild(el('div', { className: 'draft-pitch-bench-label' }, 'Other picks'));
+    benchSlots.forEach(pick => benchStrip.appendChild(buildPitchCard(pick)));
+    pitchBg.appendChild(benchStrip);
   }
+
+  modal.appendChild(pitchBg);
 
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
