@@ -1913,18 +1913,18 @@
     .draft-pitch-row:last-child { margin-bottom: 0; }
     .draft-pitch-card {
       display: flex; flex-direction: column;
-      align-items: center; gap: 0.12rem;
+      align-items: center; gap: 0.1rem;
       width: 62px; padding: 0.2rem 0;
     }
     .draft-pitch-shirt {
-      width: 36px; height: 40px; position: relative;
+      width: 36px; height: 38px;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
     .draft-pitch-kit-img { width: 32px; height: 36px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); display: block; }
     .draft-pitch-pos {
-      position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
-      font-size: 0.48rem; font-weight: 800; padding: 0.05rem 0.2rem;
+      font-size: 0.48rem; font-weight: 800; padding: 0.05rem 0.22rem;
       border-radius: 3px; white-space: nowrap; letter-spacing: 0.03em;
+      display: inline-block;
     }
     .draft-pitch-pos.pos-gk  { background: #92400e; color: #fef3c7; }
     .draft-pitch-pos.pos-def { background: #1e3a5f; color: #bae6fd; }
@@ -5462,7 +5462,6 @@ function openTeamPitchView(mIdx, managers, picks, TOTAL_ROUNDS, pickNumForCell, 
 
     const card  = el('div', { className: 'draft-pitch-card' });
     const shirt = el('div', { className: 'draft-pitch-shirt' });
-    shirt.appendChild(el('span', { className: `draft-pitch-pos pos-${posClass}` }, pick.position || '?'));
 
     if (kitUrl) {
       const img = el('img', { src: kitUrl, alt: '', className: 'draft-pitch-kit-img' });
@@ -5473,6 +5472,7 @@ function openTeamPitchView(mIdx, managers, picks, TOTAL_ROUNDS, pickNumForCell, 
     }
 
     card.appendChild(shirt);
+    card.appendChild(el('span', { className: `draft-pitch-pos pos-${posClass}` }, pick.position || '?'));
     card.appendChild(el('div', { className: 'draft-pitch-name' }, pick.playerName || '—'));
     card.appendChild(el('div', { className: 'draft-pitch-club' }, pick.playerClub || ''));
     return card;
