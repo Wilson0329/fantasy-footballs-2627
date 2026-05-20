@@ -1856,6 +1856,110 @@
       border-radius: 8px; color: var(--muted); font-size: 0.85rem; cursor: pointer;
     }
 
+    /* ── Draft team pitch view modal ── */
+    .draft-pitch-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.8); z-index: 1100;
+      align-items: flex-start; justify-content: center;
+      padding: 1rem; overflow-y: auto;
+    }
+    .draft-pitch-overlay.open { display: flex; }
+    .draft-pitch-modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; width: 100%; max-width: 520px;
+      padding: 1.25rem 1rem 1rem; position: relative;
+      margin: auto;
+    }
+    .draft-pitch-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.9rem;
+    }
+    .draft-pitch-modal-title {
+      font-size: 1rem; font-weight: 700; color: var(--text);
+    }
+    .draft-pitch-modal-subtitle {
+      font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem;
+    }
+    .draft-pitch-modal-close {
+      background: none; border: none; color: var(--muted);
+      font-size: 1.3rem; line-height: 1; cursor: pointer; padding: 0.2rem 0.4rem;
+      border-radius: 6px;
+    }
+    .draft-pitch-modal-close:hover { color: var(--text); background: var(--surface2); }
+    /* Manager label — clickable */
+    .draft-mgr-label-col.clickable { cursor: pointer; }
+    .draft-mgr-label-col.clickable:hover { color: var(--accent); background: rgba(0,212,170,0.08); }
+    /* Pitch card inside draft modal */
+    .draft-pitch-bg {
+      background:
+        repeating-linear-gradient(180deg,
+          rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 36px,
+          transparent 36px, transparent 72px),
+        linear-gradient(180deg, #14532d 0%, #166534 50%, #14532d 100%);
+      border-radius: 10px;
+      padding: 0.6rem 0.4rem 0.5rem;
+      border: 2px solid rgba(255,255,255,0.15);
+      position: relative; overflow: hidden;
+    }
+    .draft-pitch-bg::before {
+      content: ''; position: absolute; inset: 0;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 9px; pointer-events: none;
+    }
+    .draft-pitch-row {
+      display: flex; justify-content: center;
+      gap: 0.2rem; margin-bottom: 0.4rem; flex-wrap: wrap;
+    }
+    .draft-pitch-row:last-child { margin-bottom: 0; }
+    .draft-pitch-card {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 0.12rem;
+      width: 62px; padding: 0.2rem 0;
+    }
+    .draft-pitch-shirt {
+      width: 36px; height: 40px; position: relative;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .draft-pitch-shirt img { width: 32px; height: 36px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); }
+    .draft-pitch-pos {
+      position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+      font-size: 0.48rem; font-weight: 800; padding: 0.05rem 0.2rem;
+      border-radius: 3px; white-space: nowrap; letter-spacing: 0.03em;
+    }
+    .draft-pitch-pos.pos-gk  { background: #92400e; color: #fef3c7; }
+    .draft-pitch-pos.pos-def { background: #1e3a5f; color: #bae6fd; }
+    .draft-pitch-pos.pos-mid { background: #1e4d2b; color: #bbf7d0; }
+    .draft-pitch-pos.pos-fwd { background: #7c1d1d; color: #fecaca; }
+    .draft-pitch-name {
+      font-size: 0.58rem; font-weight: 600; color: var(--text);
+      text-align: center; line-height: 1.2;
+      max-width: 62px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .draft-pitch-club {
+      font-size: 0.52rem; color: var(--muted); text-align: center; line-height: 1;
+    }
+    .draft-pitch-empty {
+      width: 62px; height: 68px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.15rem;
+      border: 1px dashed rgba(255,255,255,0.12); border-radius: 6px;
+      color: rgba(255,255,255,0.18); font-size: 0.58rem;
+    }
+    .draft-pitch-section-label {
+      text-align: center; font-size: 0.62rem; font-weight: 700;
+      color: rgba(255,255,255,0.35); letter-spacing: 0.07em;
+      text-transform: uppercase; margin-bottom: 0.2rem; margin-top: 0.15rem;
+    }
+    .draft-pitch-bench-strip {
+      display: flex; justify-content: center; gap: 0.2rem;
+      margin-top: 0.55rem; padding-top: 0.55rem;
+      border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap;
+    }
+    .draft-pitch-bench-label {
+      font-size: 0.62rem; font-weight: 700; color: rgba(255,255,255,0.35);
+      letter-spacing: 0.07em; text-transform: uppercase;
+      width: 100%; text-align: center; margin-bottom: 0.25rem;
+    }
+
     /* ── Draft tab ── */
     .draft-header { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
     .draft-views { display: flex; gap: 0.4rem; flex-wrap: wrap; }
@@ -5003,10 +5107,13 @@ function buildDraftRoomTab() {
       const isCurrMgr = draftStatus === 'active' && curr < TOTAL_PICKS && managerForPick(curr) === mIdx;
       const row = el('div', { className: 'draft-grid-row' });
 
-      // Manager name cell (left, sticky)
-      row.appendChild(el('div', {
-        className: `draft-grid-cell draft-mgr-label-col${isCurrMgr ? ' picking-now' : ''}`
-      }, m.name.split(' ')[0]));
+      // Manager name cell (left, sticky) — click to open pitch view
+      const mgrCell = el('div', {
+        className: `draft-grid-cell draft-mgr-label-col clickable${isCurrMgr ? ' picking-now' : ''}`,
+        title: `${m.name} — view squad`
+      }, m.name.split(' ')[0]);
+      mgrCell.addEventListener('click', () => openTeamPitchView(mIdx, managers, picks, TOTAL_ROUNDS, pickNumForCell));
+      row.appendChild(mgrCell);
 
       // One cell per round
       for (let r = 0; r < TOTAL_ROUNDS; r++) {
@@ -5283,6 +5390,129 @@ function buildDraftRoomTab() {
 
   return frag;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Draft Room — Team Pitch View
+// Opens a modal showing all picked players for a manager on a football pitch.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function openTeamPitchView(mIdx, managers, picks, TOTAL_ROUNDS, pickNumForCell) {
+  const mgr = managers[mIdx];
+  if (!mgr) return;
+
+  // Collect this manager's picks
+  const mgrPicks = [];
+  for (let r = 0; r < TOTAL_ROUNDS; r++) {
+    const pNum = pickNumForCell(mIdx, r);
+    const pick = picks.get(pNum);
+    if (pick) mgrPicks.push(pick);
+  }
+
+  // Group by position
+  const byPos = { GK: [], DEF: [], MID: [], FWD: [] };
+  const posMap = { GK: 'GK', GKP: 'GK', DEF: 'DEF', MID: 'MID', FWD: 'FWD', ATT: 'FWD' };
+  const benchSlots = []; // anything beyond first 11, or if not enough for pitch we show them as bench
+  mgrPicks.forEach(pick => {
+    const rawPos = (pick.position || '').toUpperCase().trim();
+    const normPos = posMap[rawPos] || null;
+    if (normPos && byPos[normPos]) {
+      byPos[normPos].push(pick);
+    } else {
+      benchSlots.push(pick);
+    }
+  });
+
+  // FPL squad: 2 GK, 5 DEF, 5 MID, 3 FWD — total 15 (+ extra bench from unknown pos)
+  // Starting XI: 1 GK, best 4 DEF/4 MID/2 FWD or similar — just show ALL picks grouped by pos
+
+  // Build a position-coloured shirt fallback element
+  // kit-img-fallback CSS uses 'gkp' for GK colour
+  function makeKitFallback(posClass) {
+    const kitPosClass = posClass === 'gk' ? 'gkp' : posClass;
+    const fb = el('div', { className: `kit-img-fallback ${kitPosClass}` });
+    fb.style.cssText = 'width:32px;height:32px;border-radius:5px;';
+    return fb;
+  }
+
+  // Build a single pitch card for a picked player
+  function buildPitchCard(pick) {
+    const posClass = (pick.position || 'mid').toLowerCase();
+    const card  = el('div', { className: 'draft-pitch-card' });
+    const shirt = el('div', { className: 'draft-pitch-shirt' });
+    shirt.appendChild(el('span', { className: `draft-pitch-pos pos-${posClass}` }, pick.position || '?'));
+    shirt.appendChild(makeKitFallback(posClass));
+    card.appendChild(shirt);
+    card.appendChild(el('div', { className: 'draft-pitch-name' }, pick.playerName || '—'));
+    card.appendChild(el('div', { className: 'draft-pitch-club' }, pick.playerClub || ''));
+    return card;
+  }
+
+  // Build pitch rows: GK | DEF | MID | FWD
+  // Expected counts for a full FPL squad: 2 GK, 5 DEF, 5 MID, 3 FWD = 15
+  const pitchLayout = [
+    { pos: 'GK',  expected: 2, picks: byPos.GK  },
+    { pos: 'DEF', expected: 5, picks: byPos.DEF },
+    { pos: 'MID', expected: 5, picks: byPos.MID },
+    { pos: 'FWD', expected: 3, picks: byPos.FWD },
+  ];
+
+  // Modal scaffold
+  const overlay = el('div', { className: 'draft-pitch-overlay' });
+  const modal   = el('div', { className: 'draft-pitch-modal' });
+
+  // Header
+  const header = el('div', { className: 'draft-pitch-modal-header' });
+  const titleBlock = el('div');
+  titleBlock.appendChild(el('div', { className: 'draft-pitch-modal-title' }, mgr.name));
+  const pickedCount = mgrPicks.length;
+  titleBlock.appendChild(el('div', { className: 'draft-pitch-modal-subtitle' },
+    `${pickedCount} of ${TOTAL_ROUNDS} picks made`));
+  const closeBtn = el('button', { className: 'draft-pitch-modal-close' }, '×');
+  closeBtn.addEventListener('click', () => overlay.remove());
+  header.appendChild(titleBlock);
+  header.appendChild(closeBtn);
+  modal.appendChild(header);
+
+  if (mgrPicks.length === 0) {
+    modal.appendChild(el('div', { style: 'text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem' },
+      'No picks made yet for this manager.'));
+  } else {
+    // Pitch background
+    const pitchBg = el('div', { className: 'draft-pitch-bg' });
+
+    pitchLayout.forEach(({ pos, picks: posPicks }) => {
+      if (posPicks.length === 0) return; // skip empty rows
+      const row = el('div', { className: 'draft-pitch-row' });
+      posPicks.forEach(pick => row.appendChild(buildPitchCard(pick)));
+      pitchBg.appendChild(row);
+    });
+
+    // Bench strip — any picks with unrecognised position
+    const remainingPicks = [...benchSlots];
+
+    if (remainingPicks.length) {
+      const benchStrip = el('div', { className: 'draft-pitch-bench-strip' });
+      benchStrip.appendChild(el('div', { className: 'draft-pitch-bench-label' }, 'Other picks'));
+      remainingPicks.forEach(pick => benchStrip.appendChild(buildPitchCard(pick)));
+      pitchBg.appendChild(benchStrip);
+    }
+
+    modal.appendChild(pitchBg);
+  }
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('open'));
+
+  // Close on backdrop click
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+  // Close on Escape
+  const escHandler = e => { if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', escHandler); } };
+  document.addEventListener('keydown', escHandler);
+
+  window.amplitude?.track('Draft Pitch View Opened', { manager: mgr.name, picks_count: mgrPicks.length });
+}
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Settings tab
