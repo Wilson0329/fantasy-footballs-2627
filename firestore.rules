@@ -1,0 +1,44 @@
+rules_version = '2';
+
+// Fantasy Footballs — Firestore security rules.
+//
+// This is a public, static league site (GitHub Pages) with NO user authentication:
+// the app loads only firebase-app + firebase-firestore, never firebase-auth. The
+// "admin code" in the Settings tab is a client-side convenience only and is NOT
+// enforced here — Firestore has no signed-in user to check against.
+//
+// Consequently, reads AND writes on the collections the app uses are open. For a
+// private mini-league this is the pragmatic setup the app was built around, but be
+// aware anyone who finds the site could tamper with the draft or settings. See the
+// hardening note below if you want real protection.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // settings/site  — league id, season, cup gameweeks (read by every tab)
+    // settings/draft — draft status: pending | active | complete
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // picks/{pickNumber} — the live draft board, streamed via onSnapshot
+    match /picks/{pickId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Deny everything else by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+// ── Hardening (optional, recommended if the URL is shared widely) ──
+// The only way to stop anonymous tampering is to give requests an identity:
+//   1. Add firebase-auth-compat + call firebase.auth().signInAnonymously() on boot.
+//   2. Change the rules above to `allow write: if request.auth != null;`
+//      (keep `allow read: if true;` so the public standings still load).
+//   3. For stronger protection, enable Firebase App Check (reCAPTCHA) and require
+//      `request.app != null` on writes.
