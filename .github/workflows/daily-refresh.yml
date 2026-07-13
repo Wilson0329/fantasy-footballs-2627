@@ -2,8 +2,9 @@ name: Daily data refresh
 
 on:
   schedule:
-    # 07:30 UTC daily — after FPL's overnight bonus/BPS processing
-    - cron: '30 7 * * *'
+    # 18:00 UTC daily — evening check. The podcast step self-gates so it only
+    # actually builds a brief the evening before a gameweek deadline.
+    - cron: '0 18 * * *'
   workflow_dispatch: # manual trigger from GitHub Actions UI
 
 jobs:
@@ -11,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      models: read
+      issues: write
 
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +22,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests firebase-admin openai elevenlabs
+        run: pip install requests firebase-admin google-genai
 
       - name: Rebuild league data
         run: python3 build_league_data.py --output docs/league_data.json
@@ -34,20 +35,34 @@ jobs:
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
-      - name: Generate news commentary
-        run: python3 build_news_data.py
+      - name: Prepare podcast brief (evening before a gameweek only)
+        run: python3 build_podcast_data.py
         continue-on-error: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Open reminder issue if a new brief was created
+        run: |
+          NEW=$(git status --porcelain briefs/ 2>/dev/null | grep -E '\.md$' || true)
+          if [ -n "$NEW" ]; then
+            GW=$(ls briefs/gw*.md | sed -E 's/.*gw([0-9]+)\.md/\1/' | sort -n | tail -1)
+            gh issue create \
+              --title "🎙️ GW$GW podcast brief ready" \
+              --body "The brief for GW$GW is at \`briefs/gw$GW.md\`. Generate the NotebookLM Audio Overview from it, download the audio, then run \`python3 publish_episode.py --gw $GW --audio /path/to/audio.mp3\` and push to publish the episode." \
+              || echo "issue create failed (continuing)"
+          else
+            echo "No new brief this run."
+          fi
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/league_data.json docs/cup_data.json docs/news_data.json
-          git add docs/podcast.mp3 2>/dev/null || true
+          git add docs/league_data.json docs/cup_data.json
+          git add briefs 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No changes — skipping commit"
           else
