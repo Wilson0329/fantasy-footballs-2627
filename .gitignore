@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Claude Code local session config
+.claude/
+
+# Python
+__pycache__/
+*.pyc
