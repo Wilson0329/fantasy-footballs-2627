@@ -1721,7 +1721,7 @@
     .podcast-gw-badge {
       font-size: 0.68rem; font-weight: 800; letter-spacing: 0.04em;
       color: var(--purple); background: var(--green); border-radius: 999px;
-      padding: 0.12rem 0.5rem; flex-shrink: 0;
+      padding: 0.12rem 0.5rem; flex-shrink: 0; white-space: nowrap;
     }
     .podcast-latest {
       font-size: 0.6rem; font-weight: 800; letter-spacing: 0.08em;
@@ -4728,8 +4728,9 @@ function buildPodcastTab(podcastData) {
     const info = el('div', { className: 'podcast-info' });
 
     const titleRow = el('div', { className: 'podcast-title-row' });
-    if (ep.gw != null) titleRow.appendChild(el('span', { className: 'podcast-gw-badge' }, `GW${ep.gw}`));
-    titleRow.appendChild(el('span', { className: 'podcast-title' }, ep.title || `Gameweek ${ep.gw} Preview`));
+    const badgeText = ep.badge || (ep.gw != null ? `GW${ep.gw}` : null);
+    if (badgeText) titleRow.appendChild(el('span', { className: 'podcast-gw-badge' }, badgeText));
+    titleRow.appendChild(el('span', { className: 'podcast-title' }, ep.title || (ep.gw != null ? `Gameweek ${ep.gw} Preview` : 'Episode')));
     if (idx === 0) titleRow.appendChild(el('span', { className: 'podcast-latest' }, 'LATEST'));
     info.appendChild(titleRow);
 
