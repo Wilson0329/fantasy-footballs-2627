@@ -3672,6 +3672,17 @@ async function buildPitchView(entryId, gw, container, isLive) {
     container.querySelectorAll('.player-card').forEach(card => {
       card.addEventListener('click', () => {
         const pid = Number(card.dataset.playerId);
+
+        // Mobile: the side panel stacks off-screen below the pitch, so show the stats
+        // as a modal overlay instead — it appears in place over the squad, keeps context,
+        // and is dismissible (the same pattern used on the Cup final). Best practice for
+        // master–detail on small screens.
+        if (window.innerWidth <= 640) {
+          openPlayerModal(pid, gw, _liveData, playerMap, teamMap, _gwFixtures);
+          return;
+        }
+
+        // Desktop: master–detail side panel (both squad and stats visible at once).
         container.querySelectorAll('.player-card').forEach(c => c.classList.remove('selected'));
         if (activePid === pid) {
           activePid = null;
@@ -3681,16 +3692,6 @@ async function buildPitchView(entryId, gw, container, isLive) {
         activePid = pid;
         card.classList.add('selected');
         showPlayerStats(pid);
-        // On mobile the stats panel sits BELOW the pitch, so tapping a player fills a
-        // panel that's off-screen. Scroll it into view so the points are visible.
-        // (Instant window scroll: an overflow:hidden ancestor breaks scrollIntoView and
-        //  native smooth-scroll is a no-op in some browsers.)
-        if (window.innerWidth <= 600) {
-          setTimeout(() => {
-            const y = window.scrollY + rightCol.getBoundingClientRect().top - 56;
-            window.scrollTo(0, Math.max(0, y));
-          }, 60);
-        }
       });
     });
 
