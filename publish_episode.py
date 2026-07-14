@@ -62,6 +62,8 @@ def main():
     parser.add_argument("--audio", required=True, help="Path to the downloaded audio file.")
     parser.add_argument("--title", default=None)
     parser.add_argument("--desc", default=None)
+    parser.add_argument("--badge", default=None,
+                        help="Override the pill label (e.g. 'Season Opener'). Defaults to GW{n}.")
     parser.add_argument("--date", default=None, help="Publish date YYYY-MM-DD (default: today).")
     args = parser.parse_args()
 
@@ -72,6 +74,7 @@ def main():
     meta = load_meta(args.gw)
     title = args.title or meta.get("title") or f"Gameweek {args.gw} Preview"
     desc = args.desc if args.desc is not None else meta.get("description", "")
+    badge = args.badge if args.badge is not None else meta.get("badge")
     published = args.date or date.today().isoformat()
 
     # 1. Place audio in docs/ as mp3. NotebookLM downloads .wav (~10x larger), so
@@ -106,6 +109,8 @@ def main():
         "audio_file": audio_name,
         "published_at": published,
     }
+    if badge:
+        episode["badge"] = badge
     data["episodes"] = [e for e in data["episodes"] if e.get("gw") != args.gw]
     data["episodes"].append(episode)
     data["episodes"].sort(key=lambda e: e.get("gw", 0), reverse=True)
