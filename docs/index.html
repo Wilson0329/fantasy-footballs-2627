@@ -3672,6 +3672,17 @@ async function buildPitchView(entryId, gw, container, isLive) {
     container.querySelectorAll('.player-card').forEach(card => {
       card.addEventListener('click', () => {
         const pid = Number(card.dataset.playerId);
+
+        // Mobile: the side panel stacks off-screen below the pitch, so show the stats
+        // as a modal overlay instead — it appears in place over the squad, keeps context,
+        // and is dismissible (the same pattern used on the Cup final). Best practice for
+        // master–detail on small screens.
+        if (window.innerWidth <= 640) {
+          openPlayerModal(pid, gw, _liveData, playerMap, teamMap, _gwFixtures);
+          return;
+        }
+
+        // Desktop: master–detail side panel (both squad and stats visible at once).
         container.querySelectorAll('.player-card').forEach(c => c.classList.remove('selected'));
         if (activePid === pid) {
           activePid = null;
