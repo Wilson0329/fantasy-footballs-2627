@@ -5709,7 +5709,24 @@ function buildSettingsTab() {
     }
 
     const leagueInput = el('input', { type: 'text', className: 'settings-input', placeholder: 'e.g. 286779' });
-    const seasonInput = el('input', { type: 'text', className: 'settings-input', placeholder: 'e.g. 2026/27' });
+    const seasonSelect = el('select', { className: 'settings-input' });
+    (function fillSeasonOptions() {
+      const yr = new Date().getFullYear();
+      for (let y = yr - 3; y <= yr + 2; y++) {
+        const label = `${y}/${String(y + 1).slice(2)}`;
+        const o = document.createElement('option');
+        o.value = label; o.textContent = label;
+        seasonSelect.appendChild(o);
+      }
+    })();
+    function setSeasonValue(val) {
+      if (val && ![...seasonSelect.options].some(o => o.value === val)) {
+        const o = document.createElement('option');
+        o.value = val; o.textContent = val;
+        seasonSelect.insertBefore(o, seasonSelect.firstChild);
+      }
+      if (val) seasonSelect.value = val;
+    }
     const statusSelect = el('select', { className: 'settings-input' });
     [['pre-season', 'Pre-season (tabs show placeholder)'], ['active', 'Active (full data mode)']].forEach(([val, lbl]) => {
       const opt = document.createElement('option');
@@ -5719,8 +5736,10 @@ function buildSettingsTab() {
 
     form.appendChild(makeField('FPL League ID', leagueInput,
       'The ID from the FPL website URL (e.g. fantasy.premierleague.com/leagues/286779/standings/classic). All build scripts read this from the database — no code changes needed.'));
-    form.appendChild(makeField('Season Label', seasonInput,
-      'Displayed in the site header. Example: 2026/27'));
+    form.appendChild(makeField('FPL Season', seasonSelect,
+      'Sets the header pill immediately and is stamped on the data by the daily build. '
+      + 'The FPL API always serves the current live season, so at rollover just pick the '
+      + 'new season here and confirm the League ID below — the build then pulls the new season automatically.'));
     form.appendChild(makeField('Season Status', statusSelect,
       'Pre-season: League/Stats/Cup tabs show a coming-soon placeholder. Active: normal data mode.'));
 
@@ -5774,7 +5793,7 @@ function buildSettingsTab() {
         const snap = await db.collection('settings').doc('site').get();
         const data = snap.exists ? snap.data() : {};
         leagueInput.value  = data.leagueId || '';
-        seasonInput.value  = data.season   || '2026/27';
+        setSeasonValue(data.season || '2026/27');
         statusSelect.value = data.status   || 'pre-season';
         statusBadge.textContent = `Status: ${statusSelect.value === 'active' ? '🟢 Active' : '🟡 Pre-season'}`;
         statusBadge.className   = `settings-status-badge settings-status-${statusSelect.value}`;
@@ -5788,7 +5807,7 @@ function buildSettingsTab() {
       if (!snap.exists) return;
       const data = snap.data();
       if (document.activeElement !== leagueInput)  leagueInput.value  = data.leagueId || '';
-      if (document.activeElement !== seasonInput)  seasonInput.value  = data.season   || '2026/27';
+      if (document.activeElement !== seasonSelect) setSeasonValue(data.season || '2026/27');
       if (document.activeElement !== statusSelect) statusSelect.value = data.status   || 'pre-season';
       statusBadge.textContent = `Status: ${data.status === 'active' ? '🟢 Active' : '🟡 Pre-season'}`;
       statusBadge.className   = `settings-status-badge settings-status-${data.status || 'pre-season'}`;
@@ -5798,7 +5817,7 @@ function buildSettingsTab() {
 
     saveBtn.addEventListener('click', async () => {
       const leagueId = leagueInput.value.trim();
-      const season   = seasonInput.value.trim() || '2026/27';
+      const season   = seasonSelect.value || '2026/27';
       const status   = statusSelect.value;
 
       if (leagueId && !/^\d+$/.test(leagueId)) {
@@ -6116,10 +6135,19 @@ document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
   window.addEventListener('scroll', close, true);
 })();
 
-// Load Firestore cup settings early (non-blocking — falls back to defaults if slow/offline)
-db.collection('settings').doc('site').get()
-  .then(doc => { if (doc.exists && Array.isArray(doc.data().cupGWs)) _firestoreCupGWs = doc.data().cupGWs; })
-  .catch(() => {});
+// Live site settings — keeps the cup schedule fresh and drives the season pill,
+// so changing the FPL Season in Settings updates the header immediately (no rebuild).
+let _seasonConfigured = false;
+db.collection('settings').doc('site').onSnapshot(doc => {
+  if (!doc.exists) return;
+  const d = doc.data();
+  if (Array.isArray(d.cupGWs)) _firestoreCupGWs = d.cupGWs;
+  if (d.season) {
+    _seasonConfigured = true;
+    const badge = document.getElementById('season-badge');
+    if (badge) badge.textContent = d.season;
+  }
+}, () => {});
 
 Promise.all([
   fetch('./cup_data.json').then(r => r.json()).catch(() => null),
@@ -6132,7 +6160,7 @@ Promise.all([
 
   // Update header meta from whichever data is available
   const meta = (cupData || leagueData || {}).metadata || {};
-  if (meta.season)    document.getElementById('season-badge').textContent = meta.season;
+  if (meta.season && !_seasonConfigured) document.getElementById('season-badge').textContent = meta.season;
   if (meta.last_updated) document.getElementById('last-updated').textContent = `Updated: ${meta.last_updated} · GW${meta.current_gw}`;
 
   window.amplitude?.track('Data Loaded', {
