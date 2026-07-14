@@ -1,3 +1,12 @@
 {
-  "episodes": []
+  "episodes": [
+    {
+      "gw": 1,
+      "title": "Welcome to 2026/27",
+      "description": "The lads are back for a new season. We look back at Charlie's title romp and Dom's cup glory, and dig into the big roster news: a former champion returns, and the most decorated manager in league history cheats the drop.",
+      "audio_file": "podcast-gw1.m4a",
+      "published_at": "2026-07-14",
+      "badge": "Season Opener"
+    }
+  ]
 }
