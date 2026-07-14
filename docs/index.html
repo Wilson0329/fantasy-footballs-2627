@@ -6150,9 +6150,11 @@ db.collection('settings').doc('site').onSnapshot(doc => {
 }, () => {});
 
 Promise.all([
-  fetch('./cup_data.json').then(r => r.json()).catch(() => null),
-  fetch('./league_data.json').then(r => r.json()).catch(() => null),
-  fetch('./podcast_data.json').then(r => r.json()).catch(() => null),
+  // cache: 'no-cache' → always revalidate with the server (via ETag) so a fresh
+  // build/episode shows up without a hard refresh, instead of serving a stale copy.
+  fetch('./cup_data.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => null),
+  fetch('./league_data.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => null),
+  fetch('./podcast_data.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => null),
 ]).then(([cupData, leagueData, podcastData]) => {
   _cupData = cupData;
   _leagueData = leagueData;
