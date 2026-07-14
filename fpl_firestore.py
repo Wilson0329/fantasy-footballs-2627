@@ -9,8 +9,6 @@ import json
 import os
 import sys
 
-import firebase_admin
-from firebase_admin import credentials, firestore as fs_client
 import requests
 
 FPL_BASE = "https://fantasy.premierleague.com/api"
@@ -22,7 +20,13 @@ DEFAULT_FINAL_GW  = 38
 
 
 def init_firebase():
-    """Initialise Firebase Admin SDK from FIREBASE_SERVICE_ACCOUNT env var."""
+    """Initialise Firebase Admin SDK from FIREBASE_SERVICE_ACCOUNT env var.
+
+    firebase_admin is imported lazily so the build scripts can run without the
+    package installed when a league id is supplied directly (see --league-id).
+    """
+    import firebase_admin
+    from firebase_admin import credentials, firestore as fs_client
     svc = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
     if not svc:
         print("ERROR: FIREBASE_SERVICE_ACCOUNT env var not set.", file=sys.stderr)
