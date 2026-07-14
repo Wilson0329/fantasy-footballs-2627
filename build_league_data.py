@@ -23,13 +23,26 @@ BASE = "https://fantasy.premierleague.com/api"
 SESSION = requests.Session()
 SESSION.headers.update({"User-Agent": "Mozilla/5.0", "Accept": "application/json"})
 
-# ── Load settings from Firestore ─────────────────────────────────────────────
-print("Loading site settings from Firestore...")
-_db       = init_firebase()
-_settings = load_site_settings(_db)
-LEAGUE_ID = require_league_id(_settings)
-SEASON    = _settings.get("season", "2026/27")
-TEAMS     = fetch_teams_from_fpl(LEAGUE_ID, SESSION)
+# ── Config: Firestore, or CLI overrides for local / off-season rebuilds ───────
+_cli = argparse.ArgumentParser(add_help=False)
+_cli.add_argument("--output", default="docs/league_data.json")
+_cli.add_argument("--league-id", type=int, default=None,
+                  help="Use this league id directly and skip Firestore (for local/off-season rebuilds).")
+_cli.add_argument("--season", default=None, help="Season label to stamp (used with --league-id).")
+ARGS, _ = _cli.parse_known_args()
+
+if ARGS.league_id:
+    print(f"Using --league-id {ARGS.league_id} (skipping Firestore).")
+    LEAGUE_ID = ARGS.league_id
+    SEASON    = ARGS.season or "2025/26"
+    TEAMS     = fetch_teams_from_fpl(LEAGUE_ID, SESSION)
+else:
+    print("Loading site settings from Firestore...")
+    _db       = init_firebase()
+    _settings = load_site_settings(_db)
+    LEAGUE_ID = require_league_id(_settings)
+    SEASON    = _settings.get("season", "2026/27")
+    TEAMS     = fetch_teams_from_fpl(LEAGUE_ID, SESSION)
 # ─────────────────────────────────────────────────────────────────────────────
 
 
@@ -308,9 +321,7 @@ def build_captain_hit_rate(bootstrap, current_gw):
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--output", default="docs/league_data.json")
-    args = parser.parse_args()
+    args = ARGS
 
     print("Fetching bootstrap data...")
     bootstrap  = fetch("/bootstrap-static/")

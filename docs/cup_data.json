@@ -2,8 +2,8 @@
   "metadata": {
     "cup_name": "Fantasy Footballs Cup",
     "league_id": 286779,
-    "last_updated": "2026-05-18",
-    "current_gw": 37,
+    "last_updated": "2026-07-14",
+    "current_gw": 38,
     "season": "2025/26"
   },
   "groups": {
@@ -13,37 +13,37 @@
           "entry_id": 8794696,
           "name": "Return of the Fox",
           "manager": "Charles Smith",
-          "gw17_points": 938
+          "seeding_points": 938
         },
         {
           "entry_id": 5155229,
           "name": "Vik the Impaler",
           "manager": "David Pontin",
-          "gw17_points": 854
+          "seeding_points": 854
         },
         {
           "entry_id": 1623042,
-          "name": "GVG XI",
+          "name": "GVG XI *",
           "manager": "George Georgiou",
-          "gw17_points": 851
+          "seeding_points": 851
         },
         {
           "entry_id": 5751594,
           "name": "I love big Gy\u0151k",
           "manager": "Adam Georghiou",
-          "gw17_points": 818
+          "seeding_points": 818
         },
         {
           "entry_id": 7552664,
           "name": "Beef Cherki",
           "manager": "Alexander Bodek",
-          "gw17_points": 814
+          "seeding_points": 814
         },
         {
           "entry_id": 6366909,
           "name": "HC XI II",
           "manager": "Dominic Byrne",
-          "gw17_points": 776
+          "seeding_points": 776
         }
       ],
       "fixtures": [
@@ -73,7 +73,7 @@
             {
               "home": {
                 "entry_id": 1623042,
-                "name": "GVG XI",
+                "name": "GVG XI *",
                 "score": 37,
                 "captain_pts": 5,
                 "vice_pts": 7
@@ -123,7 +123,7 @@
               },
               "away": {
                 "entry_id": 1623042,
-                "name": "GVG XI",
+                "name": "GVG XI *",
                 "score": 43,
                 "captain_pts": 0,
                 "vice_pts": 4
@@ -213,7 +213,7 @@
             {
               "home": {
                 "entry_id": 1623042,
-                "name": "GVG XI",
+                "name": "GVG XI *",
                 "score": 35,
                 "captain_pts": 2,
                 "vice_pts": 1
@@ -274,7 +274,7 @@
             {
               "home": {
                 "entry_id": 1623042,
-                "name": "GVG XI",
+                "name": "GVG XI *",
                 "score": 27,
                 "captain_pts": 13,
                 "vice_pts": 2
@@ -324,7 +324,7 @@
               },
               "away": {
                 "entry_id": 1623042,
-                "name": "GVG XI",
+                "name": "GVG XI *",
                 "score": 25,
                 "captain_pts": 1,
                 "vice_pts": 2
@@ -412,7 +412,7 @@
         },
         {
           "entry_id": 1623042,
-          "name": "GVG XI",
+          "name": "GVG XI *",
           "manager": "George Georgiou",
           "played": 5,
           "won": 1,
@@ -444,39 +444,39 @@
       "teams": [
         {
           "entry_id": 4160647,
-          "name": "Forever20",
+          "name": "Forever20****",
           "manager": "Joe Wilson",
-          "gw17_points": 764
+          "seeding_points": 764
         },
         {
           "entry_id": 5124113,
-          "name": "Soucek Madness",
+          "name": "Soucek Madness \u00b2 \u00b2",
           "manager": "Sam Haseltine",
-          "gw17_points": 763
+          "seeding_points": 763
         },
         {
           "entry_id": 5150105,
           "name": "Gy\u00f6k, Stock & Barrel",
           "manager": "Aron Rouse",
-          "gw17_points": 737
+          "seeding_points": 737
         },
         {
           "entry_id": 5145283,
           "name": "Habibi Jeebies",
           "manager": "Arun Quayum",
-          "gw17_points": 710
+          "seeding_points": 710
         },
         {
           "entry_id": 4789233,
-          "name": "Inevitable",
+          "name": "Inevitable***",
           "manager": "Jason Knightly",
-          "gw17_points": 709
+          "seeding_points": 709
         },
         {
           "entry_id": 5191754,
           "name": "Stay Classy SanDiogo",
           "manager": "Ed Pragnell",
-          "gw17_points": 705
+          "seeding_points": 705
         }
       ],
       "fixtures": [
@@ -488,14 +488,14 @@
             {
               "home": {
                 "entry_id": 4160647,
-                "name": "Forever20",
+                "name": "Forever20****",
                 "score": 40,
                 "captain_pts": 2,
                 "vice_pts": 2
               },
               "away": {
                 "entry_id": 5124113,
-                "name": "Soucek Madness",
+                "name": "Soucek Madness \u00b2 \u00b2",
                 "score": 49,
                 "captain_pts": 2,
                 "vice_pts": 8
@@ -524,7 +524,7 @@
             {
               "home": {
                 "entry_id": 4789233,
-                "name": "Inevitable",
+                "name": "Inevitable***",
                 "score": 50,
                 "captain_pts": 2,
                 "vice_pts": 12
@@ -549,7 +549,7 @@
             {
               "home": {
                 "entry_id": 4160647,
-                "name": "Forever20",
+                "name": "Forever20****",
                 "score": 34,
                 "captain_pts": 6,
                 "vice_pts": 2
@@ -567,14 +567,14 @@
             {
               "home": {
                 "entry_id": 5124113,
-                "name": "Soucek Madness",
+                "name": "Soucek Madness \u00b2 \u00b2",
                 "score": 35,
                 "captain_pts": 4,
                 "vice_pts": 0
               },
               "away": {
                 "entry_id": 4789233,
-                "name": "Inevitable",
+                "name": "Inevitable***",
                 "score": 40,
                 "captain_pts": 7,
                 "vice_pts": 4
@@ -610,7 +610,7 @@
             {
               "home": {
                 "entry_id": 4160647,
-                "name": "Forever20",
+                "name": "Forever20****",
                 "score": 28,
                 "captain_pts": 2,
                 "vice_pts": 2
@@ -628,7 +628,7 @@
             {
               "home": {
                 "entry_id": 5124113,
-                "name": "Soucek Madness",
+                "name": "Soucek Madness \u00b2 \u00b2",
                 "score": 39,
                 "captain_pts": 3,
                 "vice_pts": 2
@@ -653,7 +653,7 @@
               },
               "away": {
                 "entry_id": 4789233,
-                "name": "Inevitable",
+                "name": "Inevitable***",
                 "score": 26,
                 "captain_pts": 2,
                 "vice_pts": 2
@@ -671,14 +671,14 @@
             {
               "home": {
                 "entry_id": 4160647,
-                "name": "Forever20",
+                "name": "Forever20****",
                 "score": 26,
                 "captain_pts": 3,
                 "vice_pts": -2
               },
               "away": {
                 "entry_id": 4789233,
-                "name": "Inevitable",
+                "name": "Inevitable***",
                 "score": 47,
                 "captain_pts": 0,
                 "vice_pts": 7
@@ -689,7 +689,7 @@
             {
               "home": {
                 "entry_id": 5124113,
-                "name": "Soucek Madness",
+                "name": "Soucek Madness \u00b2 \u00b2",
                 "score": 36,
                 "captain_pts": 8,
                 "vice_pts": 2
@@ -732,7 +732,7 @@
             {
               "home": {
                 "entry_id": 4160647,
-                "name": "Forever20",
+                "name": "Forever20****",
                 "score": 34,
                 "captain_pts": 0,
                 "vice_pts": 2
@@ -750,7 +750,7 @@
             {
               "home": {
                 "entry_id": 5124113,
-                "name": "Soucek Madness",
+                "name": "Soucek Madness \u00b2 \u00b2",
                 "score": 34,
                 "captain_pts": 5,
                 "vice_pts": 2
@@ -775,7 +775,7 @@
               },
               "away": {
                 "entry_id": 4789233,
-                "name": "Inevitable",
+                "name": "Inevitable***",
                 "score": 49,
                 "captain_pts": 13,
                 "vice_pts": 2
@@ -789,7 +789,7 @@
       "standings": [
         {
           "entry_id": 4789233,
-          "name": "Inevitable",
+          "name": "Inevitable***",
           "manager": "Jason Knightly",
           "played": 5,
           "won": 4,
@@ -803,7 +803,7 @@
         },
         {
           "entry_id": 5124113,
-          "name": "Soucek Madness",
+          "name": "Soucek Madness \u00b2 \u00b2",
           "manager": "Sam Haseltine",
           "played": 5,
           "won": 3,
@@ -845,7 +845,7 @@
         },
         {
           "entry_id": 4160647,
-          "name": "Forever20",
+          "name": "Forever20****",
           "manager": "Joe Wilson",
           "played": 5,
           "won": 1,
@@ -885,7 +885,7 @@
         },
         "team_b": {
           "entry_id": 5124113,
-          "name": "Soucek Madness",
+          "name": "Soucek Madness \u00b2 \u00b2",
           "manager": "Sam Haseltine"
         },
         "legs": [
@@ -906,7 +906,8 @@
         "aggregate_b": 65,
         "winner": {
           "entry_id": 6366909,
-          "name": "HC XI II"
+          "name": "HC XI II",
+          "manager": "Dominic Byrne"
         }
       },
       {
@@ -918,7 +919,7 @@
         },
         "team_b": {
           "entry_id": 4789233,
-          "name": "Inevitable",
+          "name": "Inevitable***",
           "manager": "Jason Knightly"
         },
         "legs": [
@@ -939,7 +940,8 @@
         "aggregate_b": 104,
         "winner": {
           "entry_id": 4789233,
-          "name": "Inevitable"
+          "name": "Inevitable***",
+          "manager": "Jason Knightly"
         }
       }
     ],
@@ -947,16 +949,22 @@
       "gw": 38,
       "team_a": {
         "entry_id": 6366909,
-        "name": "HC XI II"
+        "name": "HC XI II",
+        "manager": "Dominic Byrne"
       },
       "team_b": {
         "entry_id": 4789233,
-        "name": "Inevitable"
+        "name": "Inevitable***",
+        "manager": "Jason Knightly"
       },
-      "score_a": null,
-      "score_b": null,
-      "winner": null,
-      "status": "upcoming"
+      "score_a": 47,
+      "score_b": 43,
+      "winner": {
+        "entry_id": 6366909,
+        "name": "HC XI II",
+        "manager": "Dominic Byrne"
+      },
+      "status": "complete"
     }
   }
 }
