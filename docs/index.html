@@ -123,7 +123,7 @@
     /* ── Tab bar ── */
     .tab-bar {
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       gap: 0;
       margin-top: 0;
       background: var(--surface);
@@ -134,6 +134,8 @@
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
+    /* Centre the tabs only when they fit; on mobile they scroll from the start */
+    @media (min-width: 760px) { .tab-bar { justify-content: center; } }
     .tab-bar::-webkit-scrollbar { display: none; }
     .tab-btn {
       padding: 0.75rem 1.25rem;
@@ -152,6 +154,28 @@
     }
     .tab-btn:hover { color: var(--text); }
     .tab-btn.active { color: var(--purple); border-bottom-color: var(--green); border-bottom-width: 3px; }
+
+    /* ── Draft dropdown ── */
+    .tab-dropdown-wrap { position: relative; flex-shrink: 0; display: flex; }
+    .tab-dropdown-btn { display: inline-flex; align-items: center; }
+    .tab-chevron { width: 12px !important; height: 12px !important; margin-left: 3px !important; margin-right: 0 !important; transition: transform 0.15s; }
+    .tab-dropdown-wrap.open .tab-chevron { transform: rotate(180deg); }
+    .tab-dropdown-menu {
+      position: fixed; display: none;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; box-shadow: 0 8px 24px rgba(55,0,60,0.18);
+      padding: 0.35rem; z-index: 50; min-width: 168px;
+    }
+    .tab-dropdown-wrap.open .tab-dropdown-menu { display: block; }
+    .tab-dropdown-item {
+      display: flex; align-items: center; gap: 0.5rem; width: 100%; text-align: left;
+      background: none; border: none; cursor: pointer;
+      font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600;
+      color: var(--text); padding: 0.6rem 0.8rem; border-radius: 7px; white-space: nowrap;
+    }
+    .tab-dropdown-item:hover { background: var(--surface2); }
+    .tab-dropdown-item.active { color: var(--purple); background: rgba(0,255,135,0.14); }
+    .tab-dropdown-item svg { width: 14px; height: 14px; flex-shrink: 0; }
 
     /* ── Layout ── */
     .container { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem; }
@@ -191,7 +215,7 @@
         repeating-linear-gradient(180deg,
           rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 36px,
           transparent 36px, transparent 72px),
-        linear-gradient(180deg, #14532d 0%, #166534 50%, #14532d 100%);
+        linear-gradient(180deg, #1aa35c 0%, #0f8a49 100%);
       border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.12);
       padding: 0.35rem 0.5rem;
@@ -218,14 +242,14 @@
     }
     .mp-kit-img { width: 28px; height: 32px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6)); }
     .mp-pts {
-      background: rgba(0,0,0,0.65); color: var(--text);
+      background: #ffffff; color: var(--purple); box-shadow: 0 1px 2px rgba(0,0,0,0.25);
       font-size: 0.6rem; font-weight: 700;
       padding: 0.05rem 0.2rem; border-radius: 3px;
       min-width: 18px; text-align: center;
     }
     .mp-name {
       font-size: 0.52rem; font-weight: 600;
-      color: rgba(255,255,255,0.9); text-align: center;
+      color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.45); text-align: center;
       max-width: 48px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .mp-loading { text-align: center; color: var(--muted); font-size: 0.75rem; padding: 1rem 0; }
@@ -1042,7 +1066,7 @@
         repeating-linear-gradient(180deg,
           rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 40px,
           transparent 40px, transparent 80px),
-        linear-gradient(180deg, #14532d 0%, #166534 50%, #14532d 100%);
+        linear-gradient(180deg, #1aa35c 0%, #0f8a49 100%);
       border-radius: 10px;
       padding: 0.75rem 0.5rem 0.5rem;
       border: 2px solid rgba(255,255,255,0.15);
@@ -1144,8 +1168,9 @@
       display: flex; align-items: center; justify-content: center;
     }
     .player-pts-badge {
-      background: rgba(0,0,0,0.6);
-      color: var(--text);
+      background: #ffffff;
+      color: var(--purple);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.25);
       font-size: 0.72rem;
       font-weight: 700;
       padding: 0.1rem 0.3rem;
@@ -1153,7 +1178,7 @@
       min-width: 22px;
       text-align: center;
     }
-    .player-pts-badge.live { color: #4ade80; }
+    .player-pts-badge.live { color: #0a8754; }
     .player-name-txt {
       font-size: 0.6rem;
       font-weight: 600;
@@ -1359,7 +1384,7 @@
         repeating-linear-gradient(90deg,
           rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 40px,
           transparent 40px, transparent 80px),
-        linear-gradient(90deg, #14532d 0%, #166534 50%, #14532d 100%);
+        linear-gradient(90deg, #1aa35c 0%, #0f8a49 100%);
       border-radius: 10px;
       border: 2px solid rgba(255,255,255,0.15);
       position: relative; overflow: hidden;
@@ -1407,15 +1432,15 @@
       display: flex; align-items: center; justify-content: center;
     }
     .mini-pts {
-      background: rgba(0,0,0,0.65); color: var(--text);
+      background: #ffffff; color: var(--purple); box-shadow: 0 1px 2px rgba(0,0,0,0.25);
       font-size: 0.65rem; font-weight: 700;
       padding: 0.05rem 0.3rem; border-radius: 3px;
       min-width: 20px; text-align: center;
     }
-    .mini-pts.live { color: #4ade80; }
+    .mini-pts.live { color: #0a8754; }
     .mini-name {
       font-size: 0.57rem; font-weight: 600;
-      color: rgba(255,255,255,0.9); text-align: center;
+      color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.45); text-align: center;
       max-width: 56px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .final-bench-panel {
@@ -1511,8 +1536,9 @@
     /* ── Mobile responsive ── */
     @media (max-width: 600px) {
       .container { padding: 1rem 0.75rem; }
-      .site-header { padding: 0.75rem 0.75rem 0; }
-      .tab-btn { padding: 0.6rem 0.85rem; font-size: 0.8rem; }
+      .site-header { padding: 0; }
+      .masthead { padding: 1rem 1rem 0.85rem; }
+      .tab-btn { padding: 0.6rem 0.9rem; font-size: 0.8rem; }
 
       /* Group standings: hide W/D/L on small screens */
       .standings-table .hide-mobile { display: none; }
@@ -1916,7 +1942,7 @@
         repeating-linear-gradient(180deg,
           rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 36px,
           transparent 36px, transparent 72px),
-        linear-gradient(180deg, #14532d 0%, #166534 50%, #14532d 100%);
+        linear-gradient(180deg, #1aa35c 0%, #0f8a49 100%);
       border-radius: 10px;
       padding: 0.6rem 0.4rem 0.5rem;
       border: 2px solid rgba(255,255,255,0.15);
@@ -2118,13 +2144,17 @@
   <div class="masthead-grad"></div>
   <nav class="tab-bar">
     <button class="tab-btn active" data-tab="league"><i data-lucide="bar-chart-2"></i>League</button>
-    <button class="tab-btn" data-tab="podcast"><i data-lucide="mic"></i>Podcast</button>
-    <button class="tab-btn" data-tab="stats"><i data-lucide="trending-up"></i>Stats</button>
     <button class="tab-btn" data-tab="cup"><i data-lucide="trophy"></i>Cup</button>
-    <button class="tab-btn" data-tab="champions"><i data-lucide="award"></i>Champions</button>
+    <button class="tab-btn" data-tab="podcast"><i data-lucide="mic"></i>Podcast</button>
+    <div class="tab-dropdown-wrap">
+      <button class="tab-btn tab-dropdown-btn" id="draftDropdownBtn"><i data-lucide="users"></i>Draft<i data-lucide="chevron-down" class="tab-chevron"></i></button>
+      <div class="tab-dropdown-menu" id="draftDropdownMenu">
+        <button class="tab-dropdown-item" data-tab="draft-room"><i data-lucide="zap"></i>Draft Room</button>
+        <button class="tab-dropdown-item" data-tab="draft"><i data-lucide="list"></i>Player List</button>
+      </div>
+    </div>
+    <button class="tab-btn" data-tab="stats"><i data-lucide="trending-up"></i>Stats</button>
     <button class="tab-btn" data-tab="history"><i data-lucide="book-open"></i>History</button>
-    <button class="tab-btn" data-tab="draft"><i data-lucide="users"></i>Draft</button>
-    <button class="tab-btn" data-tab="draft-room"><i data-lucide="zap"></i>Draft Room</button>
     <button class="tab-btn" data-tab="settings"><i data-lucide="settings"></i>Settings</button>
   </nav>
 </header>
@@ -4527,6 +4557,8 @@ const CHAMPIONS_DATA = [
   { manager: 'Alex Kalli',    team: 'Alumni',               alumni: true,  leagues: 1, cups: 1 },
   { manager: 'Ant Savides',   team: 'Alumni',               alumni: true,  leagues: 1, cups: 0 },
   { manager: 'Arun Quayum',   team: 'Habibi Jeebies',       alumni: false, leagues: 0, cups: 1 },
+  { manager: 'Charles Smith', team: 'Return of the Fox',    alumni: false, leagues: 1, cups: 0 },
+  { manager: 'Dominic Byrne', team: '',                     alumni: false, leagues: 0, cups: 1 },
 ];
 
 function buildChampionsTab() {
@@ -4655,6 +4687,9 @@ function buildHistoryTab() {
     )
   );
   frag.appendChild(founderCard);
+
+  // Hall of Champions, below George's intro
+  frag.appendChild(buildChampionsTab());
   return frag;
 }
 
@@ -4734,7 +4769,7 @@ function buildPodcastTab(podcastData) {
 
 function buildDraftTab(leagueData) {
   const frag = document.createDocumentFragment();
-  frag.appendChild(el('div', { className: 'section-title' }, icon('users'), ' Draft'));
+  frag.appendChild(el('div', { className: 'section-title' }, icon('list'), ' Player List'));
 
   // ── Mutable state ──
   let currentView = 'available'; // 'available' | 'squads' | 'all'
@@ -5803,6 +5838,9 @@ function switchTab(tabName) {
   window.amplitude?.track('Tab Viewed', { tab_name: tabName });
   if (tabName !== 'cup') stopCupLivePoll();
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+  document.querySelectorAll('.tab-dropdown-item').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+  const _draftDropBtn = document.getElementById('draftDropdownBtn');
+  if (_draftDropBtn) _draftDropBtn.classList.toggle('active', tabName === 'draft' || tabName === 'draft-room');
   document.getElementById('final-hero-anchor').style.display = tabName === 'cup' ? '' : 'none';
 
   const app = document.getElementById('app');
@@ -5838,8 +5876,6 @@ function switchTab(tabName) {
   } else if (tabName === 'stats') {
     if (_leagueData) app.appendChild(buildStatsTab(_leagueData));
     else app.appendChild(el('div', { className: 'not-available' }, 'Stats data not yet generated — run build_league_data.py'));
-  } else if (tabName === 'champions') {
-    app.appendChild(buildChampionsTab());
   } else if (tabName === 'history') {
     app.appendChild(buildHistoryTab());
   } else if (tabName === 'podcast') {
@@ -6020,9 +6056,33 @@ function renderCup(data, liveGW) {
 // Boot
 // ─────────────────────────────────────────────────────────────────────────────
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
+document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
   btn.addEventListener('click', () => switchTab(btn.dataset.tab));
 });
+
+// Draft dropdown (Draft Room + Player List)
+(function initDraftDropdown() {
+  const wrap = document.querySelector('.tab-dropdown-wrap');
+  const btn  = document.getElementById('draftDropdownBtn');
+  const menu = document.getElementById('draftDropdownMenu');
+  if (!wrap || !btn || !menu) return;
+  const place = () => {
+    const r = btn.getBoundingClientRect();
+    menu.style.top  = (r.bottom + 4) + 'px';
+    menu.style.left = Math.max(8, r.left) + 'px';
+  };
+  const close = () => wrap.classList.remove('open');
+  btn.addEventListener('click', () => {
+    if (wrap.classList.contains('open')) { close(); return; }
+    place(); wrap.classList.add('open');
+  });
+  menu.querySelectorAll('.tab-dropdown-item').forEach(item => {
+    item.addEventListener('click', () => { switchTab(item.dataset.tab); close(); });
+  });
+  document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) close(); });
+  window.addEventListener('resize', close);
+  window.addEventListener('scroll', close, true);
+})();
 
 // Load Firestore cup settings early (non-blocking — falls back to defaults if slow/offline)
 db.collection('settings').doc('site').get()
