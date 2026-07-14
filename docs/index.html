@@ -166,7 +166,7 @@
       border-radius: 10px; box-shadow: 0 8px 24px rgba(55,0,60,0.18);
       padding: 0.35rem; z-index: 50; min-width: 168px;
     }
-    .tab-dropdown-wrap.open .tab-dropdown-menu { display: block; }
+    .tab-dropdown-menu.open { display: block; }
     .tab-dropdown-item {
       display: flex; align-items: center; gap: 0.5rem; width: 100%; text-align: left;
       background: none; border: none; cursor: pointer;
@@ -6068,20 +6068,24 @@ document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
   const btn  = document.getElementById('draftDropdownBtn');
   const menu = document.getElementById('draftDropdownMenu');
   if (!wrap || !btn || !menu) return;
+  // Move the menu to <body> so it's not trapped inside the horizontally-scrolling
+  // nav bar — a fixed element there gets clipped on iOS Safari and never shows.
+  document.body.appendChild(menu);
   const place = () => {
     const r = btn.getBoundingClientRect();
     menu.style.top  = (r.bottom + 4) + 'px';
-    menu.style.left = Math.max(8, r.left) + 'px';
+    menu.style.left = Math.min(Math.max(8, r.left), window.innerWidth - menu.offsetWidth - 8) + 'px';
   };
-  const close = () => wrap.classList.remove('open');
-  btn.addEventListener('click', () => {
-    if (wrap.classList.contains('open')) { close(); return; }
-    place(); wrap.classList.add('open');
-  });
+  const isOpen = () => menu.classList.contains('open');
+  const close = () => { wrap.classList.remove('open'); menu.classList.remove('open'); };
+  const open  = () => { wrap.classList.add('open'); menu.classList.add('open'); place(); };
+  btn.addEventListener('click', () => { isOpen() ? close() : open(); });
   menu.querySelectorAll('.tab-dropdown-item').forEach(item => {
     item.addEventListener('click', () => { switchTab(item.dataset.tab); close(); });
   });
-  document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) close(); });
+  document.addEventListener('click', (e) => {
+    if (!wrap.contains(e.target) && !menu.contains(e.target)) close();
+  });
   window.addEventListener('resize', close);
   window.addEventListener('scroll', close, true);
 })();
