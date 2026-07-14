@@ -155,6 +155,28 @@
     .tab-btn:hover { color: var(--text); }
     .tab-btn.active { color: var(--purple); border-bottom-color: var(--green); border-bottom-width: 3px; }
 
+    /* ── Draft dropdown ── */
+    .tab-dropdown-wrap { position: relative; flex-shrink: 0; display: flex; }
+    .tab-dropdown-btn { display: inline-flex; align-items: center; }
+    .tab-chevron { width: 12px !important; height: 12px !important; margin-left: 3px !important; margin-right: 0 !important; transition: transform 0.15s; }
+    .tab-dropdown-wrap.open .tab-chevron { transform: rotate(180deg); }
+    .tab-dropdown-menu {
+      position: fixed; display: none;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; box-shadow: 0 8px 24px rgba(55,0,60,0.18);
+      padding: 0.35rem; z-index: 50; min-width: 168px;
+    }
+    .tab-dropdown-wrap.open .tab-dropdown-menu { display: block; }
+    .tab-dropdown-item {
+      display: flex; align-items: center; gap: 0.5rem; width: 100%; text-align: left;
+      background: none; border: none; cursor: pointer;
+      font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600;
+      color: var(--text); padding: 0.6rem 0.8rem; border-radius: 7px; white-space: nowrap;
+    }
+    .tab-dropdown-item:hover { background: var(--surface2); }
+    .tab-dropdown-item.active { color: var(--purple); background: rgba(0,255,135,0.14); }
+    .tab-dropdown-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+
     /* ── Layout ── */
     .container { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem; }
     .section-title {
@@ -2122,13 +2144,17 @@
   <div class="masthead-grad"></div>
   <nav class="tab-bar">
     <button class="tab-btn active" data-tab="league"><i data-lucide="bar-chart-2"></i>League</button>
-    <button class="tab-btn" data-tab="podcast"><i data-lucide="mic"></i>Podcast</button>
-    <button class="tab-btn" data-tab="stats"><i data-lucide="trending-up"></i>Stats</button>
     <button class="tab-btn" data-tab="cup"><i data-lucide="trophy"></i>Cup</button>
-    <button class="tab-btn" data-tab="champions"><i data-lucide="award"></i>Champions</button>
+    <button class="tab-btn" data-tab="podcast"><i data-lucide="mic"></i>Podcast</button>
+    <div class="tab-dropdown-wrap">
+      <button class="tab-btn tab-dropdown-btn" id="draftDropdownBtn"><i data-lucide="users"></i>Draft<i data-lucide="chevron-down" class="tab-chevron"></i></button>
+      <div class="tab-dropdown-menu" id="draftDropdownMenu">
+        <button class="tab-dropdown-item" data-tab="draft-room"><i data-lucide="zap"></i>Draft Room</button>
+        <button class="tab-dropdown-item" data-tab="draft"><i data-lucide="list"></i>Player List</button>
+      </div>
+    </div>
+    <button class="tab-btn" data-tab="stats"><i data-lucide="trending-up"></i>Stats</button>
     <button class="tab-btn" data-tab="history"><i data-lucide="book-open"></i>History</button>
-    <button class="tab-btn" data-tab="draft"><i data-lucide="users"></i>Draft</button>
-    <button class="tab-btn" data-tab="draft-room"><i data-lucide="zap"></i>Draft Room</button>
     <button class="tab-btn" data-tab="settings"><i data-lucide="settings"></i>Settings</button>
   </nav>
 </header>
@@ -4531,6 +4557,8 @@ const CHAMPIONS_DATA = [
   { manager: 'Alex Kalli',    team: 'Alumni',               alumni: true,  leagues: 1, cups: 1 },
   { manager: 'Ant Savides',   team: 'Alumni',               alumni: true,  leagues: 1, cups: 0 },
   { manager: 'Arun Quayum',   team: 'Habibi Jeebies',       alumni: false, leagues: 0, cups: 1 },
+  { manager: 'Charles Smith', team: 'Return of the Fox',    alumni: false, leagues: 1, cups: 0 },
+  { manager: 'Dominic Byrne', team: '',                     alumni: false, leagues: 0, cups: 1 },
 ];
 
 function buildChampionsTab() {
@@ -4659,6 +4687,9 @@ function buildHistoryTab() {
     )
   );
   frag.appendChild(founderCard);
+
+  // Hall of Champions, below George's intro
+  frag.appendChild(buildChampionsTab());
   return frag;
 }
 
@@ -4738,7 +4769,7 @@ function buildPodcastTab(podcastData) {
 
 function buildDraftTab(leagueData) {
   const frag = document.createDocumentFragment();
-  frag.appendChild(el('div', { className: 'section-title' }, icon('users'), ' Draft'));
+  frag.appendChild(el('div', { className: 'section-title' }, icon('list'), ' Player List'));
 
   // ── Mutable state ──
   let currentView = 'available'; // 'available' | 'squads' | 'all'
@@ -5807,6 +5838,9 @@ function switchTab(tabName) {
   window.amplitude?.track('Tab Viewed', { tab_name: tabName });
   if (tabName !== 'cup') stopCupLivePoll();
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+  document.querySelectorAll('.tab-dropdown-item').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+  const _draftDropBtn = document.getElementById('draftDropdownBtn');
+  if (_draftDropBtn) _draftDropBtn.classList.toggle('active', tabName === 'draft' || tabName === 'draft-room');
   document.getElementById('final-hero-anchor').style.display = tabName === 'cup' ? '' : 'none';
 
   const app = document.getElementById('app');
@@ -5842,8 +5876,6 @@ function switchTab(tabName) {
   } else if (tabName === 'stats') {
     if (_leagueData) app.appendChild(buildStatsTab(_leagueData));
     else app.appendChild(el('div', { className: 'not-available' }, 'Stats data not yet generated — run build_league_data.py'));
-  } else if (tabName === 'champions') {
-    app.appendChild(buildChampionsTab());
   } else if (tabName === 'history') {
     app.appendChild(buildHistoryTab());
   } else if (tabName === 'podcast') {
@@ -6024,9 +6056,33 @@ function renderCup(data, liveGW) {
 // Boot
 // ─────────────────────────────────────────────────────────────────────────────
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
+document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
   btn.addEventListener('click', () => switchTab(btn.dataset.tab));
 });
+
+// Draft dropdown (Draft Room + Player List)
+(function initDraftDropdown() {
+  const wrap = document.querySelector('.tab-dropdown-wrap');
+  const btn  = document.getElementById('draftDropdownBtn');
+  const menu = document.getElementById('draftDropdownMenu');
+  if (!wrap || !btn || !menu) return;
+  const place = () => {
+    const r = btn.getBoundingClientRect();
+    menu.style.top  = (r.bottom + 4) + 'px';
+    menu.style.left = Math.max(8, r.left) + 'px';
+  };
+  const close = () => wrap.classList.remove('open');
+  btn.addEventListener('click', () => {
+    if (wrap.classList.contains('open')) { close(); return; }
+    place(); wrap.classList.add('open');
+  });
+  menu.querySelectorAll('.tab-dropdown-item').forEach(item => {
+    item.addEventListener('click', () => { switchTab(item.dataset.tab); close(); });
+  });
+  document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) close(); });
+  window.addEventListener('resize', close);
+  window.addEventListener('scroll', close, true);
+})();
 
 // Load Firestore cup settings early (non-blocking — falls back to defaults if slow/offline)
 db.collection('settings').doc('site').get()
