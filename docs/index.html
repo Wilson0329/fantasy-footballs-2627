@@ -4747,7 +4747,8 @@ function buildPodcastTab(podcastData) {
       const audio = el('audio', { className: 'podcast-player', controls: '', preload: 'none' });
       const src = document.createElement('source');
       src.src = `./${ep.audio_file}`;
-      src.type = 'audio/mpeg';
+      const _ext = (ep.audio_file.split('.').pop() || '').toLowerCase();
+      src.type = { mp3: 'audio/mpeg', m4a: 'audio/mp4', aac: 'audio/aac', ogg: 'audio/ogg', opus: 'audio/ogg', wav: 'audio/wav' }[_ext] || 'audio/mpeg';
       audio.appendChild(src);
       audio.addEventListener('play',
         () => window.amplitude?.track('Podcast Played', { gameweek: ep.gw }),

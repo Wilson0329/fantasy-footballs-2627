@@ -5,13 +5,13 @@ publish_episode.py — publish a NotebookLM episode to the site.
 This is the one manual step. After you generate the Audio Overview in NotebookLM from
 briefs/gw{n}.md and download it, run:
 
-    python3 publish_episode.py --gw 3 --audio ~/Downloads/gw3.wav
+    python3 publish_episode.py --gw 3 --audio ~/Downloads/gw3.m4a
 
-The NotebookLM download is a .wav — that's fine, it's converted to mp3 automatically
-(needs ffmpeg installed; `brew install ffmpeg`). A .mp3 input is copied as-is.
+NotebookLM exports .m4a (or .wav). .m4a and .mp3 are web-ready and copied as-is;
+a .wav is converted to .mp3 automatically (needs ffmpeg: `brew install ffmpeg`).
 
 It will:
-  1. Place the audio at docs/podcast-gw{n}.mp3 (converting from .wav if needed)
+  1. Place the audio at docs/podcast-gw{n}.<ext> (converting .wav → .mp3 if needed)
   2. Read the title + description from briefs/gw{n}.meta.json (unless you override them)
   3. Add/replace the episode in docs/podcast_data.json (newest gameweek first)
 
@@ -77,26 +77,30 @@ def main():
     badge = args.badge if args.badge is not None else meta.get("badge")
     published = args.date or date.today().isoformat()
 
-    # 1. Place audio in docs/ as mp3. NotebookLM downloads .wav (~10x larger), so
-    #    convert to keep the repo small and match the site's audio/mpeg player.
+    # 1. Place audio in docs/. NotebookLM exports .m4a (or .wav). .m4a/.mp3 are
+    #    already web-ready and copied as-is; a big uncompressed .wav is converted
+    #    to .mp3 when ffmpeg is available.
     os.makedirs(DOCS, exist_ok=True)
-    audio_name = f"podcast-gw{args.gw}.mp3"
-    dest = os.path.join(DOCS, audio_name)
     ext = os.path.splitext(args.audio)[1].lower()
-    if ext == ".mp3":
+    WEB_READY = {".mp3", ".m4a", ".aac", ".ogg", ".opus"}
+    if ext in WEB_READY:
+        audio_name = f"podcast-gw{args.gw}{ext}"
+        dest = os.path.join(DOCS, audio_name)
         shutil.copyfile(args.audio, dest)
         print(f"Copied audio → {dest}")
     elif shutil.which("ffmpeg"):
-        print(f"Converting {ext or 'audio'} → mp3 (keeps the repo small)...")
+        audio_name = f"podcast-gw{args.gw}.mp3"
+        dest = os.path.join(DOCS, audio_name)
+        print(f"Converting {ext or 'audio'} → mp3 ...")
         subprocess.run(
             ["ffmpeg", "-y", "-i", args.audio, "-codec:a", "libmp3lame", "-b:a", "128k", dest],
             check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         )
         print(f"Converted → {dest}")
     else:
-        print(f"ERROR: input is '{ext or 'unknown'}', not .mp3, and ffmpeg isn't installed.",
+        print(f"ERROR: '{ext or 'unknown'}' isn't a web-ready audio format and ffmpeg isn't installed.",
               file=sys.stderr)
-        print("  Install it (macOS: brew install ffmpeg) then re-run, or convert to .mp3 first.",
+        print("  Install ffmpeg (macOS: brew install ffmpeg), or export the audio as .m4a / .mp3.",
               file=sys.stderr)
         sys.exit(1)
 
