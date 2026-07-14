@@ -1031,7 +1031,10 @@
       background: var(--surface2);
       border-top: 1px solid var(--border);
     }
-    .pitch-panel.open { display: block; }
+    .pitch-panel.open { display: block; box-shadow: inset 3px 0 0 var(--green); }
+    /* Highlight the row whose squad is open so it's clear something expanded */
+    .league-table tr.row-expanded > td { background: rgba(0,255,135,0.10); }
+    .league-table tr.row-expanded .expand-btn { color: var(--purple); }
     .pitch-loading {
       text-align: center;
       padding: 2rem;
@@ -1299,6 +1302,7 @@
       font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
       letter-spacing: 0.8px; color: var(--muted); padding: 0.5rem 0.75rem 0.25rem;
     }
+    .psd-prov-note { margin-left: 0.4rem; font-size: 0.62rem; font-weight: 600; color: var(--muted); text-transform: none; letter-spacing: 0; }
     .psd-breakdown {
       border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
       margin: 0 0 0.25rem;
@@ -1698,6 +1702,10 @@
       flex-shrink: 0;
     }
     .podcast-icon svg { width: 22px; height: 22px; color: #fff; }
+    .podcast-icon.clickable { cursor: pointer; transition: transform 0.12s, background 0.12s; }
+    .podcast-icon.clickable:hover { transform: scale(1.08); background: var(--purple-d); }
+    .podcast-icon.playing { background: var(--green); }
+    .podcast-icon.playing svg { color: var(--purple); }
     .podcast-info { flex: 1; min-width: 0; }
     .podcast-title {
       font-size: 0.88rem;
@@ -3556,10 +3564,12 @@ async function buildPitchView(entryId, gw, container, isLive) {
           // Add bonus only if this player's fixture is finished_provisional but not yet overnight-processed
           const playerTeam = _playerTeamMap[pid];
           const addBonus = playerTeam && buildAddBonusTeams(_gwFixtures).has(playerTeam);
-          const totalLivePts = (liveStats.total_points || 0) + (addBonus ? (liveStats.bonus || 0) : 0);
+          const provBonus = addBonus ? (liveStats.bonus || 0) : 0;
+          const totalLivePts = (liveStats.total_points || 0) + provBonus;
           rightCol.appendChild(el('div', { className: 'psd-section-label' },
             `GW${gw} Points`,
-            totalLivePts ? el('span', { style: 'margin-left:0.5rem;color:var(--accent);font-weight:800' }, String(totalLivePts)) : null
+            totalLivePts ? el('span', { style: 'margin-left:0.5rem;color:var(--accent);font-weight:800' }, String(totalLivePts)) : null,
+            provBonus ? el('span', { className: 'psd-prov-note' }, `incl. +${provBonus} provisional bonus`) : null
           ));
           if (explainFixtures.length) rightCol.appendChild(buildBreakdown(explainFixtures, fixtureMap));
 
@@ -3570,7 +3580,8 @@ async function buildPitchView(entryId, gw, container, isLive) {
             if (liveStats.clean_sheets && et <= 3)   rawRows.push(['Clean sheet', et <= 2 ? 4 : 1]); // GK=4, DEF=4, MID=1; FWD no bonus
             if (liveStats.goals_conceded && et <= 2) rawRows.push([`${liveStats.goals_conceded} goal${liveStats.goals_conceded !== 1 ? 's' : ''} conceded`, -Math.floor(liveStats.goals_conceded / 2)]); // GK+DEF only
             if (liveStats.saves && et === 1)          rawRows.push([`${liveStats.saves} save${liveStats.saves !== 1 ? 's' : ''}`, Math.floor(liveStats.saves / 3)]); // GK only
-            if (liveStats.bonus)          rawRows.push(['Bonus (provisional)', liveStats.bonus]);
+            // Provisional bonus is shown in the GW Points header (as "incl. +N"), not here,
+            // so it doesn't look like it's being counted twice.
             if (rawRows.length) {
               const suppWrap = el('div', { className: 'psd-breakdown', style: 'margin-top:0.25rem;opacity:0.85' });
               suppWrap.appendChild(el('div', { className: 'psd-fixture-label' }, 'Live stats'));
@@ -4089,12 +4100,15 @@ function buildLeagueTab(data) {
       summaryRow.addEventListener('click', () => {
         const open = pitchPanelDiv.classList.toggle('open');
         expandBtn.classList.toggle('open', open);
+        summaryRow.classList.toggle('row-expanded', open);
         if (open) {
           window.amplitude?.track('League Player Expanded', { manager_name: s.manager, team_name: s.name, gameweek: selectedGW, is_live: isLiveGW });
           if (!loaded) {
             loaded = true;
             buildPitchView(s.entry_id, selectedGW, pitchPanelDiv, isLiveGW);
           }
+          // Bring the opened squad into view — on mobile it opens below the fold
+          setTimeout(() => summaryRow.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
         }
         if (!open) delete _openPitchRefresh[s.entry_id];
       });
@@ -4754,6 +4768,17 @@ function buildPodcastTab(podcastData) {
         () => window.amplitude?.track('Podcast Played', { gameweek: ep.gw }),
         { once: true });
       info.appendChild(audio);
+
+      // The play icon toggles playback for this episode
+      iconWrap.classList.add('clickable');
+      iconWrap.setAttribute('role', 'button');
+      iconWrap.setAttribute('aria-label', 'Play episode');
+      iconWrap.addEventListener('click', () => {
+        if (audio.paused) audio.play(); else audio.pause();
+      });
+      const syncIcon = () => iconWrap.classList.toggle('playing', !audio.paused);
+      audio.addEventListener('play', syncIcon);
+      audio.addEventListener('pause', syncIcon);
     }
 
     card.appendChild(iconWrap);
@@ -5837,6 +5862,7 @@ function switchTab(tabName) {
   if (_settingsCleanup)  { _settingsCleanup();  _settingsCleanup  = null; }
 
   _activeTab = tabName;
+  try { localStorage.setItem('ff_active_tab', tabName); } catch (e) {}
   window.amplitude?.track('Tab Viewed', { tab_name: tabName });
   if (tabName !== 'cup') stopCupLivePoll();
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
@@ -6117,7 +6143,11 @@ Promise.all([
     current_gw: meta.current_gw || null,
   });
 
-  switchTab('draft-room'); // default to Draft Room for the new season
+  // Reopen the tab the user was last on (falls back to League)
+  const _validTabs = ['league', 'cup', 'podcast', 'draft', 'draft-room', 'stats', 'history', 'settings'];
+  let _startTab = 'league';
+  try { const t = localStorage.getItem('ff_active_tab'); if (t && _validTabs.includes(t)) _startTab = t; } catch (e) {}
+  switchTab(_startTab);
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }).catch(err => {
   window.amplitude?.track('Error Encountered', { error_category: 'data_load', error_message: err.message, error_context: 'boot' });
