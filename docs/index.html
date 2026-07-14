@@ -2847,6 +2847,9 @@ function buildBenchPanel(teamName, bench, playerMap, teamMap, isLiveFinal, gw, o
 async function buildFinalPitchView(final, liveGW, container) {
   const isLiveFinal = liveGW && liveGW === final.gw;
   const isComplete = final.status === 'complete';
+  // Show per-player points for a live final AND a completed one (final points).
+  const showPts = isLiveFinal || isComplete;
+  const ptsGW = liveGW || final.gw;
 
   // Choose which GW to fetch picks from
   // If live or complete → use final.gw; otherwise use last completed GW for preview
@@ -2894,20 +2897,6 @@ async function buildFinalPitchView(final, liveGW, container) {
       });
     }
 
-    // If live, seed live points into player elements
-    if (isLiveFinal) {
-      try {
-        const [live, fixtures] = await Promise.all([getLive(liveGW), getGWFixtures(liveGW).catch(() => null)]);
-        if (live) {
-          const liveMap = makeLiveMap(live.elements, buildAddBonusTeams(fixtures));
-          container.querySelectorAll('[data-live-player]').forEach(el => {
-            const id = Number(el.dataset.livePlayer);
-            if (liveMap[id] != null) el.textContent = String(liveMap[id]);
-          });
-        }
-      } catch (_) {}
-    }
-
     // Build one half of the pitch as vertical columns (GK→FWD for home, FWD→GK for away)
     // Feature 15: pass onClickPlayer handler
     let liveDataRef = null;
@@ -2935,7 +2924,7 @@ async function buildFinalPitchView(final, liveGW, container) {
           const pm = playerMap[pick.element];
           const teamCode = pm && teamMap[pm.team] ? teamMap[pm.team].code : null;
           const fixture = pm ? (opponentMap[pm.team] || null) : null;
-          col.appendChild(buildMiniPlayerCard(pick, pm, teamCode, isLiveFinal, liveGW || final.gw, fixture, onClickPlayer));
+          col.appendChild(buildMiniPlayerCard(pick, pm, teamCode, showPts, ptsGW, fixture, onClickPlayer));
         });
         colsRow.appendChild(col);
       });
@@ -2957,14 +2946,15 @@ async function buildFinalPitchView(final, liveGW, container) {
     pitchMain.appendChild(pitchBg);
 
     container.innerHTML = '';
-    container.appendChild(buildBenchPanel(final.team_a.name, benchA, playerMap, teamMap, isLiveFinal, liveGW || final.gw, opponentMap, onClickPlayer));
+    container.appendChild(buildBenchPanel(final.team_a.name, benchA, playerMap, teamMap, showPts, ptsGW, opponentMap, onClickPlayer));
     container.appendChild(pitchMain);
-    container.appendChild(buildBenchPanel(final.team_b.name, benchB, playerMap, teamMap, isLiveFinal, liveGW || final.gw, opponentMap, onClickPlayer));
+    container.appendChild(buildBenchPanel(final.team_b.name, benchB, playerMap, teamMap, showPts, ptsGW, opponentMap, onClickPlayer));
 
-    // If live, update player pts from current live data
-    if (isLiveFinal) {
+    // Fill in per-player points — from live data for a live final, or the final
+    // gameweek's (now settled) points for a completed one.
+    if (showPts) {
       try {
-        const [live, fixtures] = await Promise.all([getLive(liveGW), getGWFixtures(liveGW).catch(() => null)]);
+        const [live, fixtures] = await Promise.all([getLive(ptsGW), getGWFixtures(ptsGW).catch(() => null)]);
         if (live) {
           liveDataRef = live;
           const liveMap = makeLiveMap(live.elements, buildAddBonusTeams(fixtures));
@@ -2972,7 +2962,7 @@ async function buildFinalPitchView(final, liveGW, container) {
             const id = Number(pEl.dataset.livePlayer);
             if (liveMap[id] != null) {
               pEl.textContent = String(liveMap[id]);
-              pEl.classList.add('live');
+              if (isLiveFinal) pEl.classList.add('live');
             }
           });
         }
