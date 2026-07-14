@@ -3573,8 +3573,10 @@ async function buildPitchView(entryId, gw, container, isLive) {
           ));
           if (explainFixtures.length) rightCol.appendChild(buildBreakdown(explainFixtures, fixtureMap));
 
-          // Show defensive contributions + bonus from raw stats (more reliable during live matches)
-          if (liveStats.minutes != null) {
+          // Fallback only: if FPL hasn't provided the per-fixture breakdown yet, derive
+          // defensive points from raw stats. When the official breakdown exists it already
+          // includes these, so showing them again would look double-counted.
+          if (liveStats.minutes != null && !explainFixtures.length) {
             const rawRows = [];
             const et = pm?.element_type;
             if (liveStats.clean_sheets && et <= 3)   rawRows.push(['Clean sheet', et <= 2 ? 4 : 1]); // GK=4, DEF=4, MID=1; FWD no bonus
@@ -4107,8 +4109,14 @@ function buildLeagueTab(data) {
             loaded = true;
             buildPitchView(s.entry_id, selectedGW, pitchPanelDiv, isLiveGW);
           }
-          // Bring the opened squad into view — on mobile it opens below the fold
-          setTimeout(() => summaryRow.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+          // Bring the opened squad into view. scrollIntoView is unreliable (an ancestor,
+          // .league-table-wrap, has overflow:hidden) and native smooth scroll is a no-op in
+          // some browsers, so animate the window scroll manually. Puts the row ~70px down,
+          // leaving the squad panel filling the screen below it.
+          setTimeout(() => {
+            const y = window.scrollY + summaryRow.getBoundingClientRect().top - 70;
+            window.scrollTo(0, Math.max(0, y));
+          }, 80);
         }
         if (!open) delete _openPitchRefresh[s.entry_id];
       });
