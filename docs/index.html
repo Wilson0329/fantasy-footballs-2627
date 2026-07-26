@@ -1591,6 +1591,52 @@
       font-size: 0.8rem; font-weight: 600; margin-bottom: 1.25rem; line-height: 1.4;
     }
     .archive-banner svg { width: 16px; height: 16px; flex-shrink: 0; }
+    /* ── Monthly trade order ── */
+    .trade-intro { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 1.25rem; }
+    .trade-loading { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1.5rem 0; }
+    .trade-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 12px; }
+    .trade-table { border-collapse: collapse; width: 100%; font-size: 0.78rem; background: var(--surface); }
+    .trade-table th, .trade-table td { padding: 0.5rem 0.7rem; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border); }
+    .trade-table th { background: var(--surface2); font-weight: 800; color: var(--purple); text-transform: uppercase; letter-spacing: 0.03em; font-size: 0.68rem; position: sticky; top: 0; }
+    .trade-table tr:last-child td { border-bottom: none; }
+    .trade-pick-h, .trade-pick-num { text-align: center; color: var(--muted); font-weight: 800; width: 40px; }
+    .trade-col-now { background: rgba(0,255,135,0.12); }
+    .trade-table th.trade-col-now { color: var(--purple); box-shadow: inset 0 -3px 0 var(--green); }
+    .trade-first { font-weight: 700; }
+    .trade-first.trade-col-now::after { content: ' \2190'; color: var(--purple); }
+    /* Interactive cells */
+    .trade-table td.trade-active { background: rgba(0,255,135,0.18); cursor: pointer; box-shadow: inset 0 0 0 2px var(--green); }
+    .trade-table td.trade-active:hover { background: rgba(0,255,135,0.28); }
+    .trade-table td.trade-done { cursor: pointer; }
+    .trade-table td.trade-locked { color: var(--muted); }
+    .trade-mgr { font-weight: 600; }
+    .trade-cta { font-size: 0.62rem; color: var(--purple); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
+    .trade-in-name { font-weight: 800; color: var(--purple); }
+    .trade-out-note { font-size: 0.66rem; color: var(--muted); }
+    /* Trade picker modal */
+    .trade-picker-overlay { display: none; position: fixed; inset: 0; background: rgba(30,0,33,0.55); z-index: 1100; align-items: center; justify-content: center; padding: 1rem; }
+    .trade-picker-overlay.open { display: flex; }
+    .trade-picker { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; width: 100%; max-width: 640px; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
+    .trade-picker-head { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.1rem; border-bottom: 1px solid var(--border); }
+    .trade-picker-title { font-weight: 800; color: var(--purple); font-size: 0.95rem; }
+    .trade-picker-close { background: none; border: none; font-size: 1.1rem; color: var(--muted); cursor: pointer; }
+    .trade-picker-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; padding: 0.9rem 1.1rem; overflow: hidden; min-height: 0; }
+    @media (max-width: 560px) { .trade-picker-body { grid-template-columns: 1fr; } }
+    .trade-selector { display: flex; flex-direction: column; min-height: 0; }
+    .trade-selector-title { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin-bottom: 0.4rem; }
+    .trade-selector-search { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.45rem 0.6rem; font-size: 0.82rem; color: var(--text); margin-bottom: 0.4rem; box-sizing: border-box; }
+    .trade-selector-list { overflow-y: auto; max-height: 46vh; border: 1px solid var(--border); border-radius: 8px; }
+    .trade-opt { display: flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0.6rem; cursor: pointer; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
+    .trade-opt:last-child { border-bottom: none; }
+    .trade-opt:hover { background: var(--surface2); }
+    .trade-opt.sel { background: rgba(0,255,135,0.16); }
+    .trade-opt-name { flex: 1; font-weight: 600; color: var(--text); }
+    .trade-opt-club { font-size: 0.7rem; color: var(--muted); }
+    .trade-picker-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.8rem 1.1rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
+    .trade-picker-summary { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 700; }
+    .trade-sum.out { color: var(--red); } .trade-sum.in { color: var(--win); } .trade-sum-arrow { color: var(--muted); }
+    .trade-confirm-btn { background: var(--green); color: var(--purple); border: none; border-radius: 999px; padding: 0.55rem 1.3rem; font-weight: 800; font-size: 0.85rem; cursor: pointer; }
+    .trade-confirm-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
     /* ── News tab ── */
     .news-meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
@@ -2166,6 +2212,7 @@
       <div class="tab-dropdown-menu" id="draftDropdownMenu">
         <button class="tab-dropdown-item" data-tab="draft-room"><i data-lucide="zap"></i>Draft Room</button>
         <button class="tab-dropdown-item" data-tab="draft"><i data-lucide="list"></i>Player List</button>
+        <button class="tab-dropdown-item" data-tab="trade-order"><i data-lucide="repeat"></i>Trade Order</button>
       </div>
     </div>
     <button class="tab-btn" data-tab="stats"><i data-lucide="trending-up"></i>Stats</button>
@@ -5121,6 +5168,255 @@ function buildDraftTab(leagueData) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Monthly Trade Order
+// Draft order = league standings at end of GW5 (seed 1 = leader, picks first).
+// Each monthly trade rotates the order; Feb & Mar are fairness resets, then the
+// "top 4 reversed to the bottom" rule resumes.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const TRADE_MONTHS = [
+  { key: 'nov', label: 'Nov', reset: 'reverse' },   // reverse of the original draft
+  { key: 'dec', label: 'Dec' },                     // rotate from previous
+  { key: 'jan', label: 'Jan' },                     // rotate from previous
+  { key: 'feb', label: 'Feb', reset: 'reverse' },   // reset: exact reverse of the original (post-Jan window)
+  { key: 'mar', label: 'Mar', reset: 'original' },  // reset: back to the original draft order
+  { key: 'apr', label: 'Apr' },                     // rotate from previous
+  { key: 'may', label: 'May' },                     // rotate from previous
+];
+// Calendar month (0=Jan) → trade-month key, for highlighting the current month.
+const TRADE_MONTH_BY_CAL = { 10: 'nov', 11: 'dec', 0: 'jan', 1: 'feb', 2: 'mar', 3: 'apr', 4: 'may' };
+
+// Take the top 4 picks, reverse them, and move them to the bottom.
+function rotateTradeOrder(order) {
+  const top4 = order.slice(0, 4).reverse();
+  return order.slice(4).concat(top4);
+}
+
+// Returns [{ key, label, order:[seed,...] }] — Draft plus each monthly trade.
+function buildTradeSchedule() {
+  const original = Array.from({ length: 12 }, (_, i) => i + 1); // seeds 1..12
+  const cols = [{ key: 'draft', label: 'Draft', order: original.slice() }];
+  let prev = original.slice();
+  for (const m of TRADE_MONTHS) {
+    let order;
+    if (m.reset === 'reverse')       order = original.slice().reverse();
+    else if (m.reset === 'original') order = original.slice();
+    else                             order = rotateTradeOrder(prev);
+    cols.push({ key: m.key, label: m.label, order });
+    prev = order;
+  }
+  return cols;
+}
+
+// Rank the league by cumulative points at the end of GW5 → seed order (1 = leader).
+// Returns null until GW5 is complete (so the order can't be shown early).
+async function computeGw5Seeds() {
+  const data = _leagueData;
+  if (!data || !data.standings || !data.standings.length) return null;
+  let bs;
+  try { bs = await getBootstrap(); } catch (e) { return null; }
+  const gw5 = (bs.events || []).find(e => e.id === 5);
+  if (!gw5 || !gw5.finished) return null;
+  const withPts = await Promise.all(data.standings.map(async s => {
+    const hist = await getTeamHistory(s.entry_id).catch(() => []);
+    const g5 = (hist || []).find(h => h.event === 5);
+    return { entry_id: s.entry_id, name: s.name, manager: s.manager, pts: g5 ? g5.total_points : null };
+  }));
+  if (withPts.some(m => m.pts == null)) return null; // history incomplete
+  withPts.sort((a, b) => b.pts - a.pts); // seed 1 = most points (leader)
+  return withPts.map((m, i) => ({ ...m, seed: i + 1 }));
+}
+
+function buildTradeOrderTab() {
+  const frag = document.createDocumentFragment();
+  frag.appendChild(el('div', { className: 'section-title' }, icon('repeat'), ' Monthly Trade Order'));
+  frag.appendChild(el('div', { className: 'trade-intro' },
+    'Draft order is set by the GW5 table (leader picks first). Each month, in schedule order, a manager '
+    + 'trades one player out and picks one from the free pool in. Tap the highlighted cell to make the pick.'));
+
+  const schedule    = buildTradeSchedule();
+  const monthKeys   = TRADE_MONTHS.map(m => m.key);          // ['nov'..'may']
+  const nowMonthKey = TRADE_MONTH_BY_CAL[new Date().getMonth()] || null;
+  const POS = { 1: 'GK', 2: 'DEF', 3: 'MID', 4: 'FWD' };
+
+  const wrap = el('div');
+  frag.appendChild(wrap);
+  wrap.appendChild(el('div', { className: 'trade-loading' }, 'Loading…'));
+
+  // ── State ──
+  let bs = null; const playerMap = {}, teamMap = {};
+  let seeds = null;                 // GW5 seeds (null pre-season)
+  const trades = new Map();         // `${month}_${pickIdx}` -> trade doc
+
+  const nameForSeed  = (seed) => (seeds && seeds[seed - 1]) ? seeds[seed - 1].name : `Seed ${seed}`;
+  const entryForSeed = (seed) => (seeds && seeds[seed - 1]) ? seeds[seed - 1].entry_id : null;
+  const toPlayerObj  = (pl) => ({ id: pl.id, name: pl.web_name, club: teamMap[pl.team] || '', pos: POS[pl.element_type] || '' });
+  const cellGlobal   = (monthKey, pickIdx) => monthKeys.indexOf(monthKey) * 12 + pickIdx;
+
+  // ── Grid render ──
+  function render() {
+    wrap.innerHTML = '';
+    if (!seeds) wrap.appendChild(buildEmptyPlaceholder(
+      'Names lock in from the GW5 standings — you can still preview the picker below (shown by seed).'));
+    const curr = trades.size; // enforced order = number of trades made so far
+
+    const table = el('table', { className: 'trade-table' });
+    const head = el('tr', {}, el('th', { className: 'trade-pick-h' }, 'Pick'));
+    schedule.forEach(col => head.appendChild(
+      el('th', { className: col.key === nowMonthKey ? 'trade-col-now' : '' }, col.label)));
+    table.appendChild(head);
+
+    for (let p = 1; p <= 12; p++) {
+      const tr = el('tr', {}, el('td', { className: 'trade-pick-num' }, String(p)));
+      schedule.forEach(col => {
+        const seed = col.order[p - 1];
+        if (col.key === 'draft') { tr.appendChild(el('td', {}, nameForSeed(seed))); return; }
+
+        const pickIdx = p - 1;
+        const trade = trades.get(`${col.key}_${pickIdx}`);
+        const isActive = !trade && cellGlobal(col.key, pickIdx) === curr;
+        const td = el('td', { className: col.key === nowMonthKey ? 'trade-col-now' : '' });
+
+        if (trade) {
+          td.classList.add('trade-done');
+          td.appendChild(el('div', { className: 'trade-in-name' }, trade.in && trade.in.name || '?'));
+          if (trade.out && trade.out.name) td.appendChild(el('div', { className: 'trade-out-note' }, '⇄ ' + trade.out.name));
+          td.title = `${nameForSeed(seed)} — in: ${trade.in && trade.in.name}, out: ${trade.out && trade.out.name}`;
+          td.addEventListener('click', () => openTradePicker(col, pickIdx, seed, trade));
+        } else if (isActive) {
+          td.classList.add('trade-active');
+          td.appendChild(el('div', { className: 'trade-mgr' }, nameForSeed(seed)));
+          td.appendChild(el('div', { className: 'trade-cta' }, 'Tap to pick'));
+          td.addEventListener('click', () => openTradePicker(col, pickIdx, seed, null));
+        } else {
+          td.classList.add('trade-locked');
+          td.appendChild(el('div', { className: 'trade-mgr' }, nameForSeed(seed)));
+        }
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+    }
+    const scroll = el('div', { className: 'trade-table-scroll' });
+    scroll.appendChild(table);
+    wrap.appendChild(scroll);
+  }
+
+  // ── A searchable player selector column ──
+  function buildSelector(title, players, getSel, onPick) {
+    const box = el('div', { className: 'trade-selector' });
+    box.appendChild(el('div', { className: 'trade-selector-title' }, title));
+    const search = el('input', { type: 'text', className: 'trade-selector-search', placeholder: 'Search player or club…' });
+    box.appendChild(search);
+    const list = el('div', { className: 'trade-selector-list' });
+    box.appendChild(list);
+    let q = '';
+    function draw() {
+      list.innerHTML = '';
+      const sel = getSel();
+      players.filter(pl => !q || (pl.web_name || '').toLowerCase().includes(q) || (teamMap[pl.team] || '').toLowerCase().includes(q))
+        .sort((a, b) => (b.total_points || 0) - (a.total_points || 0)).slice(0, 100)
+        .forEach(pl => {
+          const pos = POS[pl.element_type] || '?';
+          const row = el('div', { className: `trade-opt${sel && sel.id === pl.id ? ' sel' : ''}` },
+            el('span', { className: `draft-pos-badge pos-${pos.toLowerCase()}` }, pos),
+            el('span', { className: 'trade-opt-name' }, pl.web_name),
+            el('span', { className: 'trade-opt-club' }, teamMap[pl.team] || '')
+          );
+          row.addEventListener('click', () => onPick(pl));
+          list.appendChild(row);
+        });
+    }
+    search.addEventListener('input', () => { q = search.value.toLowerCase().trim(); draw(); });
+    draw();
+    return { el: box, redraw: draw };
+  }
+
+  // ── Trade picker modal ──
+  async function openTradePicker(col, pickIdx, seed, existing) {
+    const overlay = el('div', { className: 'trade-picker-overlay open' });
+    const modal = el('div', { className: 'trade-picker' });
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    const close = () => overlay.remove();
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+
+    const closeBtn = el('button', { className: 'trade-picker-close' }, '✕');
+    closeBtn.addEventListener('click', close);
+    modal.appendChild(el('div', { className: 'trade-picker-head' },
+      el('div', { className: 'trade-picker-title' }, `${nameForSeed(seed)} · ${col.label} trade`), closeBtn));
+
+    let outSel = existing && existing.out || null;
+    let inSel  = existing && existing.in || null;
+
+    // OUT list = the manager's real squad if we can load it, else the full pool (demo / pre-season)
+    const entryId = entryForSeed(seed);
+    let outPlayers = null;
+    if (entryId && bs) {
+      try {
+        const gw = [...bs.events].reverse().find(e => e.finished || e.is_current);
+        if (gw) { const d = await getPicks(entryId, gw.id); outPlayers = (d.picks || []).map(pk => playerMap[pk.element]).filter(Boolean); }
+      } catch (e) { /* fall back to pool */ }
+    }
+    const pool = (bs && bs.elements) ? bs.elements.slice() : [];
+    if (!outPlayers || !outPlayers.length) outPlayers = pool;
+
+    const body = el('div', { className: 'trade-picker-body' });
+    const outCol = buildSelector('Trade OUT (from squad)', outPlayers, () => outSel, (pl) => { outSel = toPlayerObj(pl); refresh(); });
+    const inCol  = buildSelector('Trade IN (free pool)',   pool,       () => inSel,  (pl) => { inSel  = toPlayerObj(pl); refresh(); });
+    body.appendChild(outCol.el); body.appendChild(inCol.el);
+    modal.appendChild(body);
+
+    const summary = el('div', { className: 'trade-picker-summary' });
+    const confirm = el('button', { className: 'trade-confirm-btn' }, existing ? 'Update trade' : 'Confirm trade');
+    confirm.addEventListener('click', async () => {
+      if (!outSel || !inSel) return;
+      confirm.disabled = true; confirm.textContent = 'Saving…';
+      try {
+        await db.collection('trades').doc(`${col.key}_${pickIdx}`).set({
+          month: col.key, pickIndex: pickIdx, seed,
+          entryId: entryId || null, managerName: nameForSeed(seed),
+          out: outSel, in: inSel,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        close();
+      } catch (e) { alert('Save failed: ' + e.message); confirm.disabled = false; confirm.textContent = 'Confirm trade'; }
+    });
+    modal.appendChild(el('div', { className: 'trade-picker-foot' }, summary, confirm));
+
+    function refresh() {
+      summary.innerHTML = '';
+      summary.appendChild(el('span', { className: 'trade-sum out' }, outSel ? outSel.name : 'select OUT'));
+      summary.appendChild(el('span', { className: 'trade-sum-arrow' }, '⇄'));
+      summary.appendChild(el('span', { className: 'trade-sum in' }, inSel ? inSel.name : 'select IN'));
+      confirm.disabled = !(outSel && inSel);
+      outCol.redraw(); inCol.redraw();
+    }
+    refresh();
+  }
+
+  // ── Load + live subscribe ──
+  (async () => {
+    try {
+      bs = await getBootstrap();
+      bs.teams.forEach(t => { teamMap[t.id] = t.short_name; });
+      bs.elements.forEach(pl => { playerMap[pl.id] = pl; });
+    } catch (e) { /* players may be unavailable */ }
+    seeds = await computeGw5Seeds().catch(() => null);
+    try {
+      const unsub = db.collection('trades').onSnapshot(snap => {
+        trades.clear();
+        snap.forEach(doc => { const d = doc.data(); if (d && d.month != null && d.pickIndex != null) trades.set(`${d.month}_${d.pickIndex}`, d); });
+        render();
+      }, () => render());
+      _tradeCleanup = () => { try { unsub(); } catch (e) {} };
+    } catch (e) { /* offline */ }
+    render();
+  })();
+
+  return frag;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Draft Room tab
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -5921,6 +6217,7 @@ let _activeTab = 'league';
 
 let _draftRoomCleanup  = null; // cleanup fn for Draft Room Firestore listeners
 let _settingsCleanup   = null; // cleanup fn for Settings tab Firestore listener
+let _tradeCleanup      = null; // cleanup fn for the Trade Order Firestore listener
 
 // ── Admin lock ───────────────────────────────────────────────────────────────
 // SHA-256 of the admin code — the code itself is never stored in source.
@@ -5937,6 +6234,7 @@ async function checkAdminCode(code) {
 
 function switchTab(tabName) {
   // Cleanup Firestore listeners when leaving tabs
+  if (_tradeCleanup) { _tradeCleanup(); _tradeCleanup = null; }
   if (_draftRoomCleanup) { _draftRoomCleanup(); _draftRoomCleanup = null; }
   if (_settingsCleanup)  { _settingsCleanup();  _settingsCleanup  = null; }
 
@@ -5947,7 +6245,7 @@ function switchTab(tabName) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
   document.querySelectorAll('.tab-dropdown-item').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
   const _draftDropBtn = document.getElementById('draftDropdownBtn');
-  if (_draftDropBtn) _draftDropBtn.classList.toggle('active', tabName === 'draft' || tabName === 'draft-room');
+  if (_draftDropBtn) _draftDropBtn.classList.toggle('active', tabName === 'draft' || tabName === 'draft-room' || tabName === 'trade-order');
   document.getElementById('final-hero-anchor').style.display = tabName === 'cup' ? '' : 'none';
 
   const app = document.getElementById('app');
@@ -5996,6 +6294,8 @@ function switchTab(tabName) {
     app.appendChild(draftFrag);
     const wrapper = app.querySelector('.draft-room');
     if (wrapper?._cleanup) _draftRoomCleanup = wrapper._cleanup;
+  } else if (tabName === 'trade-order') {
+    app.appendChild(buildTradeOrderTab());
   } else if (tabName === 'settings') {
     const settingsFrag = buildSettingsTab();
     app.appendChild(settingsFrag);
@@ -6250,7 +6550,7 @@ Promise.all([
   });
 
   // Reopen the tab the user was last on (falls back to League)
-  const _validTabs = ['league', 'cup', 'podcast', 'draft', 'draft-room', 'stats', 'history', 'settings'];
+  const _validTabs = ['league', 'cup', 'podcast', 'draft', 'draft-room', 'trade-order', 'stats', 'history', 'settings'];
   let _startTab = 'league';
   try { const t = localStorage.getItem('ff_active_tab'); if (t && _validTabs.includes(t)) _startTab = t; } catch (e) {}
   switchTab(_startTab);
