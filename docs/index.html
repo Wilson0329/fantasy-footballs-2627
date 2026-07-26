@@ -6132,6 +6132,34 @@ function buildSettingsTab() {
     draftSection.appendChild(resetDraftBtn);
     form.appendChild(draftSection);
 
+    // Monthly trades reset
+    const tradesSection = el('div', { className: 'settings-field', style: 'margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)' });
+    tradesSection.appendChild(el('label', { className: 'settings-field-label' }, 'Monthly Trades'));
+    tradesSection.appendChild(el('div', { className: 'settings-field-hint', style: 'margin-bottom:0.75rem' },
+      'Clear every monthly trade pick so the trade board starts fresh. This cannot be undone.'));
+    const resetTradesBtn = el('button', {
+      className: 'draft-modal-cancel',
+      style: 'color:var(--red,#ef4444);border-color:var(--red,#ef4444)'
+    }, '⚠ Clear all monthly trades');
+    resetTradesBtn.addEventListener('click', async () => {
+      if (!confirm('This will delete ALL monthly trade picks. Are you sure?')) return;
+      resetTradesBtn.disabled = true; resetTradesBtn.textContent = 'Clearing…';
+      try {
+        const snapshot = await db.collection('trades').get();
+        const batch = db.batch();
+        snapshot.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+        resetTradesBtn.textContent = '✓ Trades cleared';
+        setTimeout(() => { resetTradesBtn.disabled = false; resetTradesBtn.textContent = '⚠ Clear all monthly trades'; }, 3000);
+      } catch(e) {
+        errorMsg.textContent = `Reset failed: ${e.message}`;
+        errorMsg.style.display = 'block';
+        resetTradesBtn.disabled = false; resetTradesBtn.textContent = '⚠ Clear all monthly trades';
+      }
+    });
+    tradesSection.appendChild(resetTradesBtn);
+    form.appendChild(tradesSection);
+
     // Load & real-time sync
     let _unsub = null;
 
