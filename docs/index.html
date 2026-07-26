@@ -1591,6 +1591,19 @@
       font-size: 0.8rem; font-weight: 600; margin-bottom: 1.25rem; line-height: 1.4;
     }
     .archive-banner svg { width: 16px; height: 16px; flex-shrink: 0; }
+    /* ── Monthly trade order ── */
+    .trade-intro { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 1.25rem; }
+    .trade-loading { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1.5rem 0; }
+    .trade-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 12px; }
+    .trade-table { border-collapse: collapse; width: 100%; font-size: 0.78rem; background: var(--surface); }
+    .trade-table th, .trade-table td { padding: 0.5rem 0.7rem; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border); }
+    .trade-table th { background: var(--surface2); font-weight: 800; color: var(--purple); text-transform: uppercase; letter-spacing: 0.03em; font-size: 0.68rem; position: sticky; top: 0; }
+    .trade-table tr:last-child td { border-bottom: none; }
+    .trade-pick-h, .trade-pick-num { text-align: center; color: var(--muted); font-weight: 800; width: 40px; }
+    .trade-col-now { background: rgba(0,255,135,0.12); }
+    .trade-table th.trade-col-now { color: var(--purple); box-shadow: inset 0 -3px 0 var(--green); }
+    .trade-first { font-weight: 700; }
+    .trade-first.trade-col-now::after { content: ' \2190'; color: var(--purple); }
 
     /* ── News tab ── */
     .news-meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
@@ -2166,6 +2179,7 @@
       <div class="tab-dropdown-menu" id="draftDropdownMenu">
         <button class="tab-dropdown-item" data-tab="draft-room"><i data-lucide="zap"></i>Draft Room</button>
         <button class="tab-dropdown-item" data-tab="draft"><i data-lucide="list"></i>Player List</button>
+        <button class="tab-dropdown-item" data-tab="trade-order"><i data-lucide="repeat"></i>Trade Order</button>
       </div>
     </div>
     <button class="tab-btn" data-tab="stats"><i data-lucide="trending-up"></i>Stats</button>
@@ -5112,6 +5126,112 @@ function buildDraftTab(leagueData) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Monthly Trade Order
+// Draft order = league standings at end of GW5 (seed 1 = leader, picks first).
+// Each monthly trade rotates the order; Feb & Mar are fairness resets, then the
+// "top 4 reversed to the bottom" rule resumes.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const TRADE_MONTHS = [
+  { key: 'nov', label: 'Nov', reset: 'reverse' },   // reverse of the original draft
+  { key: 'dec', label: 'Dec' },                     // rotate from previous
+  { key: 'jan', label: 'Jan' },                     // rotate from previous
+  { key: 'feb', label: 'Feb', reset: 'reverse' },   // reset: exact reverse of the original (post-Jan window)
+  { key: 'mar', label: 'Mar', reset: 'original' },  // reset: back to the original draft order
+  { key: 'apr', label: 'Apr' },                     // rotate from previous
+  { key: 'may', label: 'May' },                     // rotate from previous
+];
+// Calendar month (0=Jan) → trade-month key, for highlighting the current month.
+const TRADE_MONTH_BY_CAL = { 10: 'nov', 11: 'dec', 0: 'jan', 1: 'feb', 2: 'mar', 3: 'apr', 4: 'may' };
+
+// Take the top 4 picks, reverse them, and move them to the bottom.
+function rotateTradeOrder(order) {
+  const top4 = order.slice(0, 4).reverse();
+  return order.slice(4).concat(top4);
+}
+
+// Returns [{ key, label, order:[seed,...] }] — Draft plus each monthly trade.
+function buildTradeSchedule() {
+  const original = Array.from({ length: 12 }, (_, i) => i + 1); // seeds 1..12
+  const cols = [{ key: 'draft', label: 'Draft', order: original.slice() }];
+  let prev = original.slice();
+  for (const m of TRADE_MONTHS) {
+    let order;
+    if (m.reset === 'reverse')       order = original.slice().reverse();
+    else if (m.reset === 'original') order = original.slice();
+    else                             order = rotateTradeOrder(prev);
+    cols.push({ key: m.key, label: m.label, order });
+    prev = order;
+  }
+  return cols;
+}
+
+// Rank the league by cumulative points at the end of GW5 → seed order (1 = leader).
+// Returns null until GW5 is complete (so the order can't be shown early).
+async function computeGw5Seeds() {
+  const data = _leagueData;
+  if (!data || !data.standings || !data.standings.length) return null;
+  let bs;
+  try { bs = await getBootstrap(); } catch (e) { return null; }
+  const gw5 = (bs.events || []).find(e => e.id === 5);
+  if (!gw5 || !gw5.finished) return null;
+  const withPts = await Promise.all(data.standings.map(async s => {
+    const hist = await getTeamHistory(s.entry_id).catch(() => []);
+    const g5 = (hist || []).find(h => h.event === 5);
+    return { entry_id: s.entry_id, name: s.name, manager: s.manager, pts: g5 ? g5.total_points : null };
+  }));
+  if (withPts.some(m => m.pts == null)) return null; // history incomplete
+  withPts.sort((a, b) => b.pts - a.pts); // seed 1 = most points (leader)
+  return withPts.map((m, i) => ({ ...m, seed: i + 1 }));
+}
+
+function buildTradeOrderTab() {
+  const frag = document.createDocumentFragment();
+  frag.appendChild(el('div', { className: 'section-title' }, icon('repeat'), ' Monthly Trade Order'));
+  frag.appendChild(el('div', { className: 'trade-intro' },
+    'Draft order is set by the league table at the end of Gameweek 5 (leader picks first). '
+    + 'Each month, one trade per team in the order below — the current month is highlighted.'));
+
+  const schedule = buildTradeSchedule();
+  const wrap = el('div');
+  frag.appendChild(wrap);
+  wrap.appendChild(el('div', { className: 'trade-loading' }, 'Loading draft order…'));
+
+  const nowMonthKey = TRADE_MONTH_BY_CAL[new Date().getMonth()] || null;
+
+  (async () => {
+    const seeds = await computeGw5Seeds().catch(() => null);
+    wrap.innerHTML = '';
+    if (!seeds) {
+      wrap.appendChild(buildEmptyPlaceholder(
+        'The draft order is set by the Gameweek 5 standings — names fill in after GW5. The rotation pattern is shown below by seed.'));
+    }
+    const nameFor = (seed) => (seeds && seeds[seed - 1]) ? seeds[seed - 1].name : `Seed ${seed}`;
+
+    const table = el('table', { className: 'trade-table' });
+    const head = el('tr', {}, el('th', { className: 'trade-pick-h' }, 'Pick'));
+    schedule.forEach(col => head.appendChild(
+      el('th', { className: col.key === nowMonthKey ? 'trade-col-now' : '' }, col.label)));
+    table.appendChild(head);
+
+    for (let pick = 1; pick <= 12; pick++) {
+      const tr = el('tr', {}, el('td', { className: 'trade-pick-num' }, String(pick)));
+      schedule.forEach(col => {
+        const seed = col.order[pick - 1];
+        const cls = (col.key === nowMonthKey ? 'trade-col-now' : '') + (pick === 1 ? ' trade-first' : '');
+        tr.appendChild(el('td', { className: cls.trim() }, nameFor(seed)));
+      });
+      table.appendChild(tr);
+    }
+    const scroll = el('div', { className: 'trade-table-scroll' });
+    scroll.appendChild(table);
+    wrap.appendChild(scroll);
+  })();
+
+  return frag;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Draft Room tab
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -5938,7 +6058,7 @@ function switchTab(tabName) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
   document.querySelectorAll('.tab-dropdown-item').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
   const _draftDropBtn = document.getElementById('draftDropdownBtn');
-  if (_draftDropBtn) _draftDropBtn.classList.toggle('active', tabName === 'draft' || tabName === 'draft-room');
+  if (_draftDropBtn) _draftDropBtn.classList.toggle('active', tabName === 'draft' || tabName === 'draft-room' || tabName === 'trade-order');
   document.getElementById('final-hero-anchor').style.display = tabName === 'cup' ? '' : 'none';
 
   const app = document.getElementById('app');
@@ -5987,6 +6107,8 @@ function switchTab(tabName) {
     app.appendChild(draftFrag);
     const wrapper = app.querySelector('.draft-room');
     if (wrapper?._cleanup) _draftRoomCleanup = wrapper._cleanup;
+  } else if (tabName === 'trade-order') {
+    app.appendChild(buildTradeOrderTab());
   } else if (tabName === 'settings') {
     const settingsFrag = buildSettingsTab();
     app.appendChild(settingsFrag);
@@ -6241,7 +6363,7 @@ Promise.all([
   });
 
   // Reopen the tab the user was last on (falls back to League)
-  const _validTabs = ['league', 'cup', 'podcast', 'draft', 'draft-room', 'stats', 'history', 'settings'];
+  const _validTabs = ['league', 'cup', 'podcast', 'draft', 'draft-room', 'trade-order', 'stats', 'history', 'settings'];
   let _startTab = 'league';
   try { const t = localStorage.getItem('ff_active_tab'); if (t && _validTabs.includes(t)) _startTab = t; } catch (e) {}
   switchTab(_startTab);
