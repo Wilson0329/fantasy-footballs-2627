@@ -28,6 +28,12 @@ service cloud.firestore {
       allow write: if true;
     }
 
+    // trades/{month_pickIndex} — the monthly trade board, streamed via onSnapshot
+    match /trades/{tradeId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
     // Deny everything else by default.
     match /{document=**} {
       allow read, write: if false;
