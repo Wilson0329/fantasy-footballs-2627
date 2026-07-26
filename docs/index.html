@@ -1584,6 +1584,13 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .error-msg { text-align: center; padding: 3rem 2rem; color: var(--red); }
     .not-available { text-align: center; padding: 3rem 2rem; color: var(--muted); font-size: 0.9rem; }
+    .archive-banner {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(184,134,11,0.10); border: 1px solid rgba(184,134,11,0.3);
+      color: #8a6400; border-radius: 10px; padding: 0.6rem 0.9rem;
+      font-size: 0.8rem; font-weight: 600; margin-bottom: 1.25rem; line-height: 1.4;
+    }
+    .archive-banner svg { width: 16px; height: 16px; flex-shrink: 0; }
 
     /* ── News tab ── */
     .news-meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
@@ -2204,6 +2211,27 @@ function scoreClass(score, opp) {
 
 function fmtDiff(n) {
   return (n >= 0 ? '+' : '') + n;
+}
+
+// ── Season awareness: label the current FPL season, and flag stale/archive data ──
+function currentSeasonLabel(now = new Date()) {
+  const y = now.getFullYear();
+  const startYear = now.getMonth() >= 5 ? y : y - 1; // Jun onward → this August's season
+  return `${startYear}/${String((startYear + 1) % 100).padStart(2, '0')}`;
+}
+function isArchiveSeason(metaSeason) {
+  return !!metaSeason && metaSeason !== currentSeasonLabel();
+}
+// Banner shown on data tabs when the displayed data is from a past season (archive).
+function buildArchiveBanner(metaSeason) {
+  if (!isArchiveSeason(metaSeason)) return null;
+  return el('div', { className: 'archive-banner' },
+    icon('archive'),
+    el('span', {}, ` Last season (${metaSeason}) — archived results. Live ${currentSeasonLabel()} data appears once the new season kicks off.`)
+  );
+}
+function buildEmptyPlaceholder(msg) {
+  return el('div', { className: 'not-available' }, msg || 'No data yet.');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2986,7 +3014,13 @@ function icon(name) {
   i.setAttribute('data-lucide', name);
   return i;
 }
-const LEAGUE_ID = 286779;
+const DEFAULT_LEAGUE_ID = 271949; // 2026/27 league; fallback only if league_data.json metadata is missing
+// The live-standings overlay must query whichever league the data was built for.
+// Read it from league_data.json metadata (which is stamped from the Settings league id)
+// rather than hard-coding, so switching leagues just needs a rebuild — no code change.
+function getLeagueId() {
+  return (_leagueData && _leagueData.metadata && _leagueData.metadata.league_id) || DEFAULT_LEAGUE_ID;
+}
 
 const _fplCache = {};
 let _leagueStandings = null; // live standings from FPL API
@@ -3085,7 +3119,7 @@ function updateLastPolled() {
 
 async function getLeagueStandings() {
   // Returns map of entry_id -> { event_total, total, rank, last_rank }
-  const data = await fetchFPL(`leagues-classic/${LEAGUE_ID}/standings/`);
+  const data = await fetchFPL(`leagues-classic/${getLeagueId()}/standings/`);
   const map = {};
   (data.standings.results || []).forEach(r => {
     map[r.entry] = { gw_points: r.event_total, total_points: r.total, rank: r.rank, rank_last: r.last_rank };
@@ -3962,6 +3996,13 @@ function buildLeagueTab(data) {
   const wrap = el('div');
   wrap.appendChild(el('div', { className: 'section-title' }, icon('bar-chart-2'), ' League Table'));
 
+  const _arch = buildArchiveBanner(data && data.metadata && data.metadata.season);
+  if (_arch) wrap.appendChild(_arch);
+  if (!data || !data.standings || !data.standings.length) {
+    wrap.appendChild(buildEmptyPlaceholder('The season has not started yet — the league table will appear after Gameweek 1.'));
+    return wrap;
+  }
+
   const statusBar = el('div', { className: 'gw-selector-bar' },
     el('span', { className: 'gw-status-text' }, 'Loading FPL data...')
   );
@@ -4554,6 +4595,13 @@ function buildStatsTab(data) {
   const frag = document.createDocumentFragment();
   frag.appendChild(el('div', { className: 'section-title' }, icon('trending-up'), ' Stats'));
 
+  const _arch = buildArchiveBanner(data && data.metadata && data.metadata.season);
+  if (_arch) frag.appendChild(_arch);
+  if (!data || !data.standings || !data.standings.length) {
+    frag.appendChild(buildEmptyPlaceholder('Stats will appear once the season is underway.'));
+    return frag;
+  }
+
   // Season points chart — async, self-appending
   const chartContainer = el('div');
   frag.appendChild(chartContainer);
@@ -4806,6 +4854,9 @@ function buildPodcastTab(podcastData) {
 function buildDraftTab(leagueData) {
   const frag = document.createDocumentFragment();
   frag.appendChild(el('div', { className: 'section-title' }, icon('list'), ' Player List'));
+
+  const _arch = buildArchiveBanner(leagueData && leagueData.metadata && leagueData.metadata.season);
+  if (_arch) frag.appendChild(_arch);
 
   // ── Mutable state ──
   let currentView = 'available'; // 'available' | 'squads' | 'all'
@@ -6075,10 +6126,24 @@ function openCupSettings() {
 function renderCup(data, liveGW) {
   const heroAnchor = document.getElementById('final-hero-anchor');
   heroAnchor.innerHTML = '';
-  heroAnchor.appendChild(buildFinalHero(data.knockout.final, liveGW));
 
   const app = document.getElementById('app');
   app.innerHTML = '';
+
+  // No cup built yet (e.g. pre-season, before the group-stage seeding gameweek)
+  if (!data || !data.knockout || !data.knockout.final) {
+    heroAnchor.style.display = 'none';
+    app.appendChild(el('div', { className: 'section-title' }, icon('trophy'), ' Cup'));
+    const _archEmpty = buildArchiveBanner(data && data.metadata && data.metadata.season);
+    if (_archEmpty) app.appendChild(_archEmpty);
+    app.appendChild(buildEmptyPlaceholder('The cup gets going mid-season — group standings are seeded around Gameweek 17.'));
+    return;
+  }
+
+  heroAnchor.style.display = '';
+  heroAnchor.appendChild(buildFinalHero(data.knockout.final, liveGW));
+  const _arch = buildArchiveBanner(data && data.metadata && data.metadata.season);
+  if (_arch) app.appendChild(_arch);
 
   // Final pitch view
   const final = data.knockout.final;
@@ -6171,7 +6236,9 @@ Promise.all([
 
   // Update header meta from whichever data is available
   const meta = (cupData || leagueData || {}).metadata || {};
-  if (meta.season && !_seasonConfigured) document.getElementById('season-badge').textContent = meta.season;
+  // Header pill shows the CURRENT season. If Settings hasn't set one, derive it from the
+  // date (so during an archive period the header still reads the live season, not the old data's).
+  if (!_seasonConfigured) document.getElementById('season-badge').textContent = currentSeasonLabel();
   if (meta.last_updated) document.getElementById('last-updated').textContent = `Updated: ${meta.last_updated} · GW${meta.current_gw}`;
 
   window.amplitude?.track('Data Loaded', {
