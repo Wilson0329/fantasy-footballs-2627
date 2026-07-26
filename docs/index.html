@@ -1637,6 +1637,12 @@
     .trade-sum.out { color: var(--red); } .trade-sum.in { color: var(--win); } .trade-sum-arrow { color: var(--muted); }
     .trade-confirm-btn { background: var(--green); color: var(--purple); border: none; border-radius: 999px; padding: 0.55rem 1.3rem; font-weight: 800; font-size: 0.85rem; cursor: pointer; }
     .trade-confirm-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .trade-confirm-btn.override { background: var(--gold); color: #3a2a00; }
+    .trade-warn { margin: 0 1.1rem; padding: 0.7rem 0.9rem; background: rgba(220,38,38,0.08); border: 1px solid rgba(220,38,38,0.3); border-radius: 10px; }
+    .trade-warn-title { font-weight: 800; color: var(--red); font-size: 0.82rem; display: flex; align-items: center; gap: 0.35rem; }
+    .trade-warn-title svg { width: 15px; height: 15px; }
+    .trade-warn-item { font-size: 0.78rem; color: var(--text); margin-top: 0.3rem; }
+    .trade-warn-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.4rem; }
 
     /* ── News tab ── */
     .news-meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
@@ -5247,11 +5253,46 @@ function buildTradeOrderTab() {
   let bs = null; const playerMap = {}, teamMap = {};
   let seeds = null;                 // GW5 seeds (null pre-season)
   const trades = new Map();         // `${month}_${pickIdx}` -> trade doc
+  const baseOwnerMap = new Map();   // playerId -> { entryId, managerName } from real squads (empty pre-season)
 
   const nameForSeed  = (seed) => (seeds && seeds[seed - 1]) ? seeds[seed - 1].name : `Seed ${seed}`;
   const entryForSeed = (seed) => (seeds && seeds[seed - 1]) ? seeds[seed - 1].entry_id : null;
   const toPlayerObj  = (pl) => ({ id: pl.id, name: pl.web_name, club: teamMap[pl.team] || '', pos: POS[pl.element_type] || '' });
   const cellGlobal   = (monthKey, pickIdx) => monthKeys.indexOf(monthKey) * 12 + pickIdx;
+
+  // Ownership can only be validated once real squads are loaded. Pre-season it's empty,
+  // so no clashes are raised (the picker just shows all players).
+  const hasOwnershipData = () => baseOwnerMap.size > 0;
+  // Effective ownership = real squads adjusted by every recorded trade (out → pool, in → owned),
+  // optionally excluding the trade currently being edited so it doesn't clash with itself.
+  function effectiveOwnership(excludeKey) {
+    const owner = new Map(baseOwnerMap);
+    [...trades.entries()]
+      .filter(([k]) => k !== excludeKey)
+      .sort((a, b) => cellGlobal(a[1].month, a[1].pickIndex) - cellGlobal(b[1].month, b[1].pickIndex))
+      .forEach(([, t]) => {
+        if (t.out && t.out.id != null) owner.delete(t.out.id);
+        if (t.in && t.in.id != null) owner.set(t.in.id, { entryId: t.entryId, managerName: t.managerName });
+      });
+    return owner;
+  }
+  // Returns a list of clash messages (empty = clean). No-op until real squads exist.
+  function validateTrade(seed, outSel, inSel, excludeKey) {
+    if (!hasOwnershipData()) return [];
+    const issues = [];
+    const owner = effectiveOwnership(excludeKey);
+    const myEntry = entryForSeed(seed);
+    if (outSel) {
+      const o = owner.get(outSel.id);
+      if (!o) issues.push(`${outSel.name} isn't in anyone's squad — can't trade them out.`);
+      else if (myEntry != null && o.entryId !== myEntry) issues.push(`${outSel.name} is in ${o.managerName}'s squad, not ${nameForSeed(seed)}'s.`);
+    }
+    if (inSel) {
+      const o = owner.get(inSel.id);
+      if (o) issues.push(`${inSel.name} is already owned by ${o.managerName} — not a free-pool player.`);
+    }
+    return issues;
+  }
 
   // ── Grid render ──
   function render() {
@@ -5366,24 +5407,55 @@ function buildTradeOrderTab() {
     body.appendChild(outCol.el); body.appendChild(inCol.el);
     modal.appendChild(body);
 
+    const defaultLabel = existing ? 'Update trade' : 'Confirm trade';
+    const excludeKey = existing ? `${col.key}_${pickIdx}` : null;
+    let overriding = false;
+
     const summary = el('div', { className: 'trade-picker-summary' });
-    const confirm = el('button', { className: 'trade-confirm-btn' }, existing ? 'Update trade' : 'Confirm trade');
-    confirm.addEventListener('click', async () => {
-      if (!outSel || !inSel) return;
+    const warn = el('div', { className: 'trade-warn', style: 'display:none' });
+    const confirm = el('button', { className: 'trade-confirm-btn' }, defaultLabel);
+
+    async function saveTrade(wasOverridden) {
       confirm.disabled = true; confirm.textContent = 'Saving…';
       try {
         await db.collection('trades').doc(`${col.key}_${pickIdx}`).set({
           month: col.key, pickIndex: pickIdx, seed,
           entryId: entryId || null, managerName: nameForSeed(seed),
-          out: outSel, in: inSel,
+          out: outSel, in: inSel, override: !!wasOverridden,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
         close();
-      } catch (e) { alert('Save failed: ' + e.message); confirm.disabled = false; confirm.textContent = 'Confirm trade'; }
+      } catch (e) { alert('Save failed: ' + e.message); confirm.disabled = false; confirm.textContent = defaultLabel; }
+    }
+
+    confirm.addEventListener('click', () => {
+      if (!outSel || !inSel) return;
+      const issues = validateTrade(seed, outSel, inSel, excludeKey);
+      if (issues.length && !overriding) {
+        warn.innerHTML = '';
+        warn.appendChild(el('div', { className: 'trade-warn-title' }, icon('alert-triangle'), ' Possible clash'));
+        issues.forEach(m => warn.appendChild(el('div', { className: 'trade-warn-item' }, m)));
+        warn.appendChild(el('div', { className: 'trade-warn-note' },
+          'Might be stale data or a swap agreed offline. Tap again to save anyway.'));
+        warn.style.display = 'block';
+        overriding = true;
+        confirm.textContent = 'Save anyway (override)';
+        confirm.classList.add('override');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        return;
+      }
+      saveTrade(overriding && issues.length > 0);
     });
+
+    modal.appendChild(warn);
     modal.appendChild(el('div', { className: 'trade-picker-foot' }, summary, confirm));
 
     function refresh() {
+      // Any change to the selection resets the override warning.
+      overriding = false;
+      warn.style.display = 'none';
+      confirm.classList.remove('override');
+      confirm.textContent = defaultLabel;
       summary.innerHTML = '';
       summary.appendChild(el('span', { className: 'trade-sum out' }, outSel ? outSel.name : 'select OUT'));
       summary.appendChild(el('span', { className: 'trade-sum-arrow' }, '⇄'));
@@ -5402,6 +5474,18 @@ function buildTradeOrderTab() {
       bs.elements.forEach(pl => { playerMap[pl.id] = pl; });
     } catch (e) { /* players may be unavailable */ }
     seeds = await computeGw5Seeds().catch(() => null);
+    // Load real squads → base ownership map (enables clash detection). Only once live seeds exist.
+    if (seeds && bs) {
+      const gw = [...bs.events].reverse().find(e => e.finished || e.is_current);
+      if (gw) {
+        await Promise.all(seeds.map(async sd => {
+          try {
+            const d = await getPicks(sd.entry_id, gw.id);
+            (d.picks || []).forEach(pk => baseOwnerMap.set(pk.element, { entryId: sd.entry_id, managerName: sd.name }));
+          } catch (e) { /* skip */ }
+        }));
+      }
+    }
     try {
       const unsub = db.collection('trades').onSnapshot(snap => {
         trades.clear();
