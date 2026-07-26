@@ -2996,7 +2996,13 @@ function icon(name) {
   i.setAttribute('data-lucide', name);
   return i;
 }
-const LEAGUE_ID = 286779;
+const DEFAULT_LEAGUE_ID = 286779; // fallback only if league_data.json metadata is missing
+// The live-standings overlay must query whichever league the data was built for.
+// Read it from league_data.json metadata (which is stamped from the Settings league id)
+// rather than hard-coding, so switching leagues just needs a rebuild — no code change.
+function getLeagueId() {
+  return (_leagueData && _leagueData.metadata && _leagueData.metadata.league_id) || DEFAULT_LEAGUE_ID;
+}
 
 const _fplCache = {};
 let _leagueStandings = null; // live standings from FPL API
@@ -3095,7 +3101,7 @@ function updateLastPolled() {
 
 async function getLeagueStandings() {
   // Returns map of entry_id -> { event_total, total, rank, last_rank }
-  const data = await fetchFPL(`leagues-classic/${LEAGUE_ID}/standings/`);
+  const data = await fetchFPL(`leagues-classic/${getLeagueId()}/standings/`);
   const map = {};
   (data.standings.results || []).forEach(r => {
     map[r.entry] = { gw_points: r.event_total, total_points: r.total, rank: r.rank, rank_last: r.last_rank };
