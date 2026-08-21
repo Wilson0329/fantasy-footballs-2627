@@ -11,6 +11,7 @@ Usage:
 
 import argparse
 import json
+import os
 import time
 from datetime import date
 
@@ -351,6 +352,21 @@ def main():
         "bench_points":      bench_pts,
         "captain_hit_rate":  captain_hr,
     }
+
+    # Don't clobber good data with an empty result. Before the season's first
+    # gameweek completes (and on a transient API blip) the standings come back
+    # empty; in that case keep whatever is already on disk — e.g. last season's
+    # archive — so the site never shows a bare table. Once real GW1 data lands,
+    # this writes it and the front-end flips from archive to live automatically.
+    if not standings and os.path.exists(args.output):
+        try:
+            existing = json.load(open(args.output))
+        except ValueError:
+            existing = {}
+        if existing.get("standings"):
+            print(f"\nStandings empty (season not started yet) — keeping existing "
+                  f"{args.output} untouched.")
+            return
 
     with open(args.output, "w") as f:
         json.dump(league_data, f, indent=2)
