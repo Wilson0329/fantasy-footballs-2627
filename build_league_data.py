@@ -76,8 +76,35 @@ def get_current_gw(bootstrap):
 def build_standings():
     print("Fetching league standings...")
     data = fetch(f"/leagues-classic/{LEAGUE_ID}/standings/")
+    results = data["standings"]["results"]
+
+    if not results:
+        # Before GW1 is scored the ranked table is empty and managers appear only
+        # under `new_entries` (they've joined but haven't been ranked). Seed a
+        # provisional table from them — 0 points, join order — so the site has the
+        # entry list it needs to load everyone's squad and track live scores the
+        # moment the deadline passes, instead of showing "season not started" until
+        # the first gameweek is scored days later.
+        new_entries = data.get("new_entries", {}).get("results", [])
+        print(f"  No ranked standings yet — seeding {len(new_entries)} provisional "
+              f"team(s) from new_entries.")
+        return [
+            {
+                "rank":         i + 1,
+                "rank_last":    i + 1,
+                "entry_id":     e["entry"],
+                "name":         e["entry_name"],
+                "manager":      f"{e.get('player_first_name', '')} "
+                                f"{e.get('player_last_name', '')}".strip(),
+                "total_points": 0,
+                "gw_points":    0,
+                "provisional":  True,
+            }
+            for i, e in enumerate(new_entries)
+        ]
+
     out = []
-    for r in data["standings"]["results"]:
+    for r in results:
         out.append({
             "rank":         r["rank"],
             "rank_last":    r["last_rank"],
