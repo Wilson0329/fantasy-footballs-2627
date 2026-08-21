@@ -29,16 +29,16 @@ jobs:
       - name: Install dependencies
         run: pip install requests firebase-admin google-genai
 
+      # League + cup builds pass the league id directly so they run WITHOUT
+      # Firestore/FIREBASE_SERVICE_ACCOUNT. Standings stay empty (front-end shows
+      # the "season starting" placeholder) until GW1 completes, then fill in
+      # automatically. Change LEAGUE_ID / SEASON here at the start of each season.
       - name: Rebuild league data
-        run: python3 build_league_data.py --output docs/league_data.json
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: python3 build_league_data.py --league-id 271949 --season "2026/27" --output docs/league_data.json
 
       - name: Rebuild cup data
-        run: python3 build_cup_data.py --output docs/cup_data.json
+        run: python3 build_cup_data.py --league-id 271949 --season "2026/27" --output docs/cup_data.json
         continue-on-error: true
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
       - name: Prepare podcast brief (evening before a gameweek only)
         run: python3 build_podcast_data.py

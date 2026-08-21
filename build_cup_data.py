@@ -11,6 +11,7 @@ Usage:
 
 import argparse
 import json
+import os
 import time
 from datetime import date
 
@@ -453,6 +454,19 @@ def main():
     for i, t in enumerate(seeding):
         group = "A" if i < 6 else "B"
         print(f"  {i+1}. [{group}] {t['name']} — {t['seeding_points']} pts")
+
+    # Before the seeding gameweek is played the standings are empty; don't wipe
+    # last season's cup archive with a blank bracket. Keep the existing file so
+    # the site flips from archive to live only once real data exists.
+    if not seeding and os.path.exists(args.output):
+        try:
+            existing = json.load(open(args.output))
+        except ValueError:
+            existing = {}
+        if existing.get("groups"):
+            print(f"\nSeeding standings empty (season not started yet) — keeping "
+                  f"existing {args.output} untouched.")
+            return
 
     group_a_teams = seeding[:6]
     group_b_teams = seeding[6:]
