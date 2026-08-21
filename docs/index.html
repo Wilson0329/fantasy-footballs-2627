@@ -1497,6 +1497,12 @@
     .chip-icon.fh  { background:#3b82f6; color:#fff; }
     .chip-icon.chip-used    { background:rgba(55,0,60,0.06); color:rgba(55,0,60,0.35); }
     .chip-icon.chip-expired { background:rgba(239,68,68,0.12); color:rgba(239,68,68,0.45); text-decoration:line-through; }
+    /* Chip being played in the live gameweek — keep its bright colour, add a pulse */
+    .chip-icon.chip-live { box-shadow:0 0 0 1.5px var(--green), 0 0 5px rgba(0,255,135,0.6); animation:chip-live-pulse 1.2s ease-in-out infinite; }
+    @keyframes chip-live-pulse {
+      0%,100% { box-shadow:0 0 0 1.5px var(--green), 0 0 3px rgba(0,255,135,0.45); }
+      50%     { box-shadow:0 0 0 1.5px var(--green), 0 0 9px rgba(0,255,135,0.95); }
+    }
 
     /* ── Season points chart (Feature 6) ── */
     .chart-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1rem; margin-top:1rem; }
@@ -4244,9 +4250,16 @@ function buildLeagueTab(data) {
         slots.forEach(({ n, s, e }) => {
           const abbr = n != null ? `${cls.toUpperCase()}${n}` : cls.toUpperCase();
           const { state, gw } = slotStatus(gwList, s, e);
-          const stateClass = state === 'used' ? ' chip-used' : state === 'expired' ? ' chip-expired' : '';
+          // A chip counts as "live" when it's being played in the gameweek we're
+          // currently showing and that GW is live — keep it bright + pulsing
+          // instead of the faded "used" look reserved for past gameweeks.
+          const isLiveUse = state === 'used' && isLiveGW && gw === selectedGW;
+          const stateClass = isLiveUse ? ' chip-live'
+                           : state === 'used' ? ' chip-used'
+                           : state === 'expired' ? ' chip-expired' : '';
           const slotLabel = n != null ? `${label} ${n}` : label;
-          const titleText = state === 'used'    ? `${slotLabel} used GW${gw}`
+          const titleText = isLiveUse           ? `${slotLabel} — playing now (GW${gw})`
+                          : state === 'used'    ? `${slotLabel} used GW${gw}`
                           : state === 'expired' ? `${slotLabel} expired — window was GW${s}–${e}`
                           :                       `${slotLabel} available (GW${s}–${e})`;
           iconsRow.appendChild(el('span', { className: `chip-icon ${cls}${stateClass}`, title: titleText }, abbr));
