@@ -6,20 +6,30 @@
   <title>Fantasy Footballs 2026/27</title>
   <script src="https://cdn.amplitude.com/script/14c41b3ff0acd4f230fa11586c904098.js"></script>
   <script>
-  window.amplitude.init('14c41b3ff0acd4f230fa11586c904098', {
-    fetchRemoteConfig: true,
-    autocapture: {
-      attribution: true,
-      pageViews: true,
-      sessions: true,
-      formInteractions: true,
-      fileDownloads: true,
-      elementInteractions: true,
-      frustrationInteractions: true,
-      networkTracking: false,
-      webVitals: true,
-    },
-  });
+  // Identify a returning user from their saved team BEFORE autocapture fires its
+  // first events, so page-view/session events carry the User ID instead of "none".
+  // (First-time visitors stay anonymous until they pick a team in the splash.)
+  (function () {
+    var uid;
+    try {
+      var t = JSON.parse(localStorage.getItem('ff_team_identity') || 'null');
+      if (t && t.name) uid = t.name;
+    } catch (e) {}
+    window.amplitude.init('14c41b3ff0acd4f230fa11586c904098', uid, {
+      fetchRemoteConfig: true,
+      autocapture: {
+        attribution: true,
+        pageViews: true,
+        sessions: true,
+        formInteractions: true,
+        fileDownloads: true,
+        elementInteractions: true,
+        frustrationInteractions: true,
+        networkTracking: false,
+        webVitals: true,
+      },
+    });
+  })();
   </script>
   <!-- Firebase compat SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -1227,16 +1237,18 @@
       letter-spacing: 0.01em;
     }
     .bench-section {
-      margin-top: 0.75rem;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding-top: 0.5rem;
+      margin-top: 0.6rem;
+      background: linear-gradient(180deg, #158a4f 0%, #0f8a49 100%);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 0.45rem 0.5rem 0.55rem;
     }
     .bench-label {
       font-size: 0.62rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: var(--muted);
+      color: rgba(255,255,255,0.8);
       text-align: center;
       margin-bottom: 0.4rem;
     }
@@ -1497,11 +1509,11 @@
     .chip-icon.fh  { background:#3b82f6; color:#fff; }
     .chip-icon.chip-used    { background:rgba(55,0,60,0.06); color:rgba(55,0,60,0.35); }
     .chip-icon.chip-expired { background:rgba(239,68,68,0.12); color:rgba(239,68,68,0.45); text-decoration:line-through; }
-    /* Chip being played in the live gameweek — keep its bright colour, add a pulse */
-    .chip-icon.chip-live { box-shadow:0 0 0 1.5px var(--green), 0 0 5px rgba(0,255,135,0.6); animation:chip-live-pulse 1.2s ease-in-out infinite; }
+    /* Chip being played in the live gameweek — keep its bright colour, add a red pulse */
+    .chip-icon.chip-live { box-shadow:0 0 0 1.5px #ff2020, 0 0 6px rgba(255,32,32,0.75); animation:chip-live-pulse 1.05s ease-in-out infinite; }
     @keyframes chip-live-pulse {
-      0%,100% { box-shadow:0 0 0 1.5px var(--green), 0 0 3px rgba(0,255,135,0.45); }
-      50%     { box-shadow:0 0 0 1.5px var(--green), 0 0 9px rgba(0,255,135,0.95); }
+      0%,100% { box-shadow:0 0 0 1.5px #ff2020, 0 0 3px rgba(255,32,32,0.55); }
+      50%     { box-shadow:0 0 0 2px #ff2020, 0 0 11px rgba(255,32,32,1); }
     }
 
     /* ── Season points chart (Feature 6) ── */
@@ -2404,8 +2416,21 @@ function showTeamSplash(standings) {
 function initTeamIdentity(leagueData) {
   const standings = (leagueData && leagueData.standings) || [];
   const saved = getSavedTeam();
-  if (saved) { applyTeamIdentity(saved); }
-  else if (standings.length) { showTeamSplash(standings); }
+  if (saved) {
+    // Self-heal: teams get renamed on FPL, but entry_id is stable. If the saved
+    // name is stale, refresh it (and the Amplitude User ID) to the current name
+    // so old names like a previous "Joe's Team" stop being re-sent.
+    const cur = standings.find(s => s.entry_id === saved.entry_id);
+    if (cur && (cur.name !== saved.name || cur.manager !== saved.manager)) {
+      const updated = { name: cur.name, manager: cur.manager, entry_id: cur.entry_id };
+      saveTeam(updated);
+      applyTeamIdentity(updated);
+    } else {
+      applyTeamIdentity(saved);
+    }
+  } else if (standings.length) {
+    showTeamSplash(standings);
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
