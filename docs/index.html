@@ -1618,18 +1618,19 @@
     }
     .team-splash-head h2 { margin: 0 0 0.25rem; font-size: 1.15rem; }
     .team-splash-head p { margin: 0; font-size: 0.82rem; opacity: 0.85; }
-    .team-splash-list { overflow-y: auto; padding: 0.6rem; display: grid; gap: 0.4rem; }
-    .team-splash-btn {
-      display: flex; flex-direction: column; align-items: flex-start; gap: 0.1rem;
+    .team-splash-body { padding: 1rem 1.1rem 1.2rem; display: grid; gap: 0.7rem; }
+    .team-splash-select {
+      width: 100%; padding: 0.7rem 0.8rem; font-size: 0.9rem; color: var(--text);
       background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
-      padding: 0.6rem 0.8rem; cursor: pointer; text-align: left; width: 100%;
-      transition: border-color 0.12s, background 0.12s;
+      -webkit-appearance: none; appearance: none; cursor: pointer;
     }
-    .team-splash-btn:hover { border-color: var(--pink); background: #fff; }
-    .team-splash-btn .tsb-team { font-weight: 700; font-size: 0.9rem; color: var(--text); }
-    .team-splash-btn .tsb-mgr { font-size: 0.75rem; color: var(--muted); }
-    .team-splash-foot { padding: 0.5rem 1rem 0.9rem; text-align: center; }
-    .team-splash-skip { background: none; border: none; color: var(--muted); font-size: 0.75rem; cursor: pointer; text-decoration: underline; }
+    .team-splash-select:focus { outline: none; border-color: var(--pink); }
+    .team-splash-confirm {
+      width: 100%; padding: 0.72rem; font-size: 0.9rem; font-weight: 700; cursor: pointer;
+      color: #fff; background: var(--pink); border: none; border-radius: 10px;
+    }
+    .team-splash-confirm:disabled { opacity: 0.45; cursor: not-allowed; }
+    .team-splash-confirm:not(:disabled):hover { filter: brightness(1.06); }
     /* ── Monthly trade order ── */
     .trade-intro { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 1.25rem; }
     .trade-loading { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1.5rem 0; }
@@ -2366,35 +2367,47 @@ function showTeamSplash(standings) {
   const existing = document.querySelector('.team-splash-overlay');
   if (existing) existing.remove();
 
-  const list = el('div', { className: 'team-splash-list' });
+  // Dropdown of teams with a disabled placeholder. There is deliberately no
+  // skip — a team must be chosen before the splash can be dismissed.
+  const select = el('select', { className: 'team-splash-select' });
+  const placeholder = document.createElement('option');
+  placeholder.value = ''; placeholder.textContent = 'Select your team…';
+  placeholder.disabled = true; placeholder.selected = true;
+  select.appendChild(placeholder);
+  standings.forEach((s, i) => {
+    const opt = document.createElement('option');
+    opt.value = String(i);
+    opt.textContent = s.manager ? `${s.name} — ${s.manager}` : s.name;
+    select.appendChild(opt);
+  });
+
+  const confirmBtn = el('button', { className: 'team-splash-confirm', disabled: 'true' }, 'Continue');
+  select.addEventListener('change', () => {
+    if (select.value === '') confirmBtn.setAttribute('disabled', 'true');
+    else confirmBtn.removeAttribute('disabled');
+  });
+
   const overlay = el('div', { className: 'team-splash-overlay' },
     el('div', { className: 'team-splash' },
       el('div', { className: 'team-splash-head' },
         el('h2', {}, 'Which team is yours?'),
         el('p', {}, 'Pick your side so we can tailor your view.')
       ),
-      list,
-      el('div', { className: 'team-splash-foot' },
-        el('button', { className: 'team-splash-skip', onClick: () => overlay.remove() }, 'Skip for now')
-      )
+      el('div', { className: 'team-splash-body' }, select, confirmBtn)
     )
   );
-  standings.forEach(s => {
-    list.appendChild(el('button', {
-      className: 'team-splash-btn',
-      onClick: () => {
-        const t = { name: s.name, manager: s.manager, entry_id: s.entry_id };
-        saveTeam(t);
-        applyTeamIdentity(t);
-        updatePlayingAsChip(t);
-        window.amplitude?.track('Team Selected', { team_name: t.name, manager_name: t.manager, entry_id: t.entry_id });
-        overlay.remove();
-      }
-    },
-      el('span', { className: 'tsb-team' }, s.name),
-      el('span', { className: 'tsb-mgr' }, s.manager || '')
-    ));
+
+  confirmBtn.addEventListener('click', () => {
+    if (select.value === '') return;
+    const s = standings[Number(select.value)];
+    const t = { name: s.name, manager: s.manager, entry_id: s.entry_id };
+    saveTeam(t);
+    applyTeamIdentity(t);
+    updatePlayingAsChip(t);
+    window.amplitude?.track('Team Selected', { team_name: t.name, manager_name: t.manager, entry_id: t.entry_id });
+    overlay.remove();
   });
+
   document.body.appendChild(overlay);
 }
 // Wire the header chip and decide whether to prompt on load.
