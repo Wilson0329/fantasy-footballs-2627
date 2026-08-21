@@ -3276,6 +3276,21 @@ async function getTeamHistory(entryId) {
   return _teamHistoryCache[entryId];
 }
 
+// During a live GW the history endpoint's `chips` array is still empty (it only
+// records a chip once the GW is finalised). The live pick uses it though, via
+// picks.active_chip — so pull that and merge a synthetic {name, event} into the
+// chip cache, letting the league-table chip pills/badges reflect it in real time.
+async function mergeLiveActiveChips(entryIds, gw) {
+  await Promise.all(entryIds.map(async id => {
+    try {
+      const picks = await getPicks(id, gw);
+      if (!picks || !picks.active_chip) return;
+      const list = _chipsCache[id] = _chipsCache[id] || [];
+      if (!list.some(c => c.event === gw)) list.push({ name: picks.active_chip, event: gw });
+    } catch (e) { /* ignore — chip just won't show until history updates */ }
+  }));
+}
+
 // The header freshness/GW should reflect the most recently built dataset, not
 // whichever happens to be checked first. The cup JSON can be a stale archive
 // (e.g. last season) while the league JSON is live, so pick the freshest by
@@ -4440,6 +4455,12 @@ function buildLeagueTab(data) {
 
         buildStandingsTable(newGW, newIsLive, gwHistories);
       });
+
+      // Live GW: merge each manager's active chip (from picks) into the cache so
+      // the chip pills show chips played this GW before the history endpoint updates.
+      if (isLiveGW && data && data.standings) {
+        await mergeLiveActiveChips(data.standings.map(s => s.entry_id), selectedGW);
+      }
 
       buildStandingsTable(selectedGW, isLiveGW);
       if (isLiveGW) refreshLeagueScores();
