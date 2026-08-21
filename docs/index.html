@@ -2521,9 +2521,12 @@ function buildAddBonusTeams(fixtures) {
 function makeLiveMap(elements, addBonusTeams) {
   const map = {};
   elements.forEach(e => {
-    const teamId = _playerTeamMap[e.id];
-    const addBonus = addBonusTeams && teamId && addBonusTeams.has(teamId);
-    map[e.id] = e.stats.total_points + (addBonus ? (e.stats.bonus || 0) : 0);
+    // total_points from the live endpoint ALREADY includes provisional bonus once
+    // a fixture is finished_provisional (verified against the explain breakdown —
+    // e.g. Ødegaard 2+5+1+3bonus = 11 = total_points). Adding stats.bonus again
+    // double-counted it on the pitch view and league table. addBonusTeams is kept
+    // for call-site compatibility but intentionally no longer applied.
+    map[e.id] = e.stats.total_points;
   });
   return map;
 }
@@ -2877,9 +2880,8 @@ async function openPlayerModal(pid, gw, liveData, playerMap, teamMap, gwFixtures
 
     // GW breakdown
     if (explainFixtures.length || (liveStats.minutes != null && liveStats.minutes > 0)) {
-      const playerTeam = _playerTeamMap[pid];
-      const addBonus = playerTeam && buildAddBonusTeams(_gwFixtures || gwFixtures).has(playerTeam);
-      const totalLivePts = (liveStats.total_points || 0) + (addBonus ? (liveStats.bonus || 0) : 0);
+      // total_points already includes any provisional bonus — don't add it again.
+      const totalLivePts = liveStats.total_points || 0;
       inner.appendChild(el('div', { className: 'psd-section-label' },
         `GW${gw} Points`,
         totalLivePts ? el('span', { style: 'margin-left:0.5rem;color:var(--accent);font-weight:800' }, String(totalLivePts)) : null
@@ -3809,11 +3811,13 @@ async function buildPitchView(entryId, gw, container, isLive) {
 
         // ── GW breakdown ──
         if (explainFixtures.length || liveStats.minutes > 0) {
-          // Add bonus only if this player's fixture is finished_provisional but not yet overnight-processed
+          // total_points already includes provisional bonus once the fixture is
+          // finished_provisional — don't add it again. Still flag how much of the
+          // total is provisional bonus (it can change until finalised).
           const playerTeam = _playerTeamMap[pid];
-          const addBonus = playerTeam && buildAddBonusTeams(_gwFixtures).has(playerTeam);
-          const provBonus = addBonus ? (liveStats.bonus || 0) : 0;
-          const totalLivePts = (liveStats.total_points || 0) + provBonus;
+          const isProvisional = playerTeam && buildAddBonusTeams(_gwFixtures).has(playerTeam);
+          const provBonus = isProvisional ? (liveStats.bonus || 0) : 0;
+          const totalLivePts = liveStats.total_points || 0;
           rightCol.appendChild(el('div', { className: 'psd-section-label' },
             `GW${gw} Points`,
             totalLivePts ? el('span', { style: 'margin-left:0.5rem;color:var(--accent);font-weight:800' }, String(totalLivePts)) : null,
