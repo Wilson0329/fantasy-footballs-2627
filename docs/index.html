@@ -4905,8 +4905,12 @@ function buildChampionsTab() {
 // History tab
 // ─────────────────────────────────────────────────────────────────────────────
 
-const FOUNDING_YEAR = 2012;
-const TOTAL_SEASONS = new Date().getFullYear() - FOUNDING_YEAR + (new Date().getMonth() >= 7 ? 1 : 0);
+const FOUNDING_YEAR = 2012; // "Est." year on the founder card / quote only
+// Completed seasons. The league is in its 13th season in 2026/27, so 12 have
+// completed. Anchored to the season start year (Jun onward → new season) so it
+// ticks up on its own each year. Kept separate from FOUNDING_YEAR.
+const _seasonStartYear = new Date().getFullYear() - (new Date().getMonth() >= 5 ? 0 : 1);
+const TOTAL_SEASONS = _seasonStartYear - 2014; // 2026/27 → 12
 const TOTAL_CUPS = CHAMPIONS_DATA.reduce((sum, m) => sum + m.cups, 0);
 
 function buildHistoryTab() {
