@@ -4245,8 +4245,15 @@ function buildLeagueTab(data) {
       const events = bs.events;
       const liveEvent = events.find(e => e.is_current && !e.finished);
       const lastFinished = [...events].reverse().find(e => e.finished);
-      let selectedGW = liveEvent ? liveEvent.id : (lastFinished ? lastFinished.id : null);
+      // Before the season's first deadline there is no current or finished GW.
+      // Fall back to the upcoming GW so the (provisional) table still renders
+      // instead of bailing — squads/live scores light up once it goes live.
+      const upcomingEvent = events.find(e => e.is_next) || events.find(e => !e.finished);
+      let selectedGW = liveEvent ? liveEvent.id
+                     : (lastFinished ? lastFinished.id
+                     : (upcomingEvent ? upcomingEvent.id : null));
       const isLiveGW = !!liveEvent;
+      const preSeason = !liveEvent && !lastFinished; // upcoming GW only, none played yet
       _currentGW = selectedGW; // actual current GW — used for chip expiry, doesn't change with selector
 
       if (!selectedGW) {
@@ -4263,6 +4270,7 @@ function buildLeagueTab(data) {
       if (isLiveGW) startLivePoll(selectedGW);
 
       const availableGWs = events.filter(e => e.finished || e.is_current).map(e => e.id).reverse();
+      if (!availableGWs.length && selectedGW) availableGWs.push(selectedGW); // pre-season: show the upcoming GW
       const gwSelect = el('select', { className: 'gw-select' });
       availableGWs.forEach(gw => {
         const opt = document.createElement('option');
@@ -4275,7 +4283,7 @@ function buildLeagueTab(data) {
       statusBar.innerHTML = '';
       statusBar.appendChild(isLiveGW
         ? el('span', { className: 'gw-live-badge' }, icon('circle'), ' Live')
-        : el('span', { className: 'gw-status-text' }, 'Showing:')
+        : el('span', { className: 'gw-status-text' }, preSeason ? 'Upcoming:' : 'Showing:')
       );
       statusBar.appendChild(gwSelect);
 
