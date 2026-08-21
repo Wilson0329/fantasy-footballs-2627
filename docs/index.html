@@ -1591,6 +1591,45 @@
       font-size: 0.8rem; font-weight: 600; margin-bottom: 1.25rem; line-height: 1.4;
     }
     .archive-banner svg { width: 16px; height: 16px; flex-shrink: 0; }
+    /* ── Team identity: "playing as" chip + first-visit splash ── */
+    .playing-as {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.28);
+      color: #fff; border-radius: 999px; padding: 0.22rem 0.62rem;
+      font-size: 0.72rem; font-weight: 600; cursor: pointer; line-height: 1;
+    }
+    .playing-as:hover { background: rgba(255,255,255,0.22); }
+    .playing-as svg { width: 13px; height: 13px; }
+    .playing-as .pa-label { opacity: 0.8; font-weight: 500; }
+    .playing-as .pa-team { color: var(--green); }
+    .team-splash-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(30,0,33,0.72); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center; padding: 1.25rem;
+    }
+    .team-splash {
+      background: var(--surface); border-radius: 16px; width: 100%; max-width: 460px;
+      max-height: 88vh; display: flex; flex-direction: column; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(30,0,33,0.5);
+    }
+    .team-splash-head {
+      background: linear-gradient(120deg, var(--purple), var(--purple-d));
+      color: #fff; padding: 1.3rem 1.4rem 1.1rem;
+    }
+    .team-splash-head h2 { margin: 0 0 0.25rem; font-size: 1.15rem; }
+    .team-splash-head p { margin: 0; font-size: 0.82rem; opacity: 0.85; }
+    .team-splash-list { overflow-y: auto; padding: 0.6rem; display: grid; gap: 0.4rem; }
+    .team-splash-btn {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 0.1rem;
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 0.6rem 0.8rem; cursor: pointer; text-align: left; width: 100%;
+      transition: border-color 0.12s, background 0.12s;
+    }
+    .team-splash-btn:hover { border-color: var(--pink); background: #fff; }
+    .team-splash-btn .tsb-team { font-weight: 700; font-size: 0.9rem; color: var(--text); }
+    .team-splash-btn .tsb-mgr { font-size: 0.75rem; color: var(--muted); }
+    .team-splash-foot { padding: 0.5rem 1rem 0.9rem; text-align: center; }
+    .team-splash-skip { background: none; border: none; color: var(--muted); font-size: 0.75rem; cursor: pointer; text-decoration: underline; }
     /* ── Monthly trade order ── */
     .trade-intro { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 1.25rem; }
     .trade-loading { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1.5rem 0; }
@@ -2205,6 +2244,9 @@
     <h1>Fantasy Footballs</h1>
     <div class="header-meta">
       <span class="season-badge" id="season-badge">2026/27</span>
+      <button class="playing-as" id="playing-as" style="display:none" title="Tap to change your team">
+        <i data-lucide="user"></i><span class="pa-label">Playing as</span> <span class="pa-team"></span>
+      </button>
       <span class="last-updated" id="last-updated"></span>
     </div>
   </div>
@@ -2276,15 +2318,93 @@ function isArchiveSeason(metaSeason) {
   return !!metaSeason && metaSeason !== currentSeasonLabel();
 }
 // Banner shown on data tabs when the displayed data is from a past season (archive).
-function buildArchiveBanner(metaSeason) {
+function buildArchiveBanner(metaSeason, customMsg) {
   if (!isArchiveSeason(metaSeason)) return null;
   return el('div', { className: 'archive-banner' },
     icon('archive'),
-    el('span', {}, ` Last season (${metaSeason}) — archived results. Live ${currentSeasonLabel()} data appears once the new season kicks off.`)
+    el('span', {}, customMsg || ` Last season (${metaSeason}) — archived results. Live ${currentSeasonLabel()} data appears once the new season kicks off.`)
   );
 }
 function buildEmptyPlaceholder(msg) {
   return el('div', { className: 'not-available' }, msg || 'No data yet.');
+}
+
+// ── Team identity: first-visit splash + Amplitude User ID ───────────────────
+// On first visit we ask the user which team is theirs, remember it in
+// localStorage, and stamp it as the Amplitude User ID so all their analytics
+// are attributed to their team. The header "Playing as" chip lets them change it.
+const TEAM_STORE_KEY = 'ff_team_identity';
+
+function getSavedTeam() {
+  try { return JSON.parse(localStorage.getItem(TEAM_STORE_KEY) || 'null'); } catch (e) { return null; }
+}
+function saveTeam(t) {
+  try { localStorage.setItem(TEAM_STORE_KEY, JSON.stringify(t)); } catch (e) {}
+}
+// The selected team name becomes the Amplitude User ID (with a couple of
+// supporting user properties for richer segmentation).
+function applyTeamIdentity(t) {
+  if (!t || !t.name || !window.amplitude) return;
+  window.amplitude.setUserId(t.name);
+  try {
+    const id = new window.amplitude.Identify();
+    id.set('team_name', t.name);
+    if (t.manager)  id.set('manager_name', t.manager);
+    if (t.entry_id) id.set('entry_id', t.entry_id);
+    window.amplitude.identify(id);
+  } catch (e) {}
+}
+function updatePlayingAsChip(t) {
+  const chip = document.getElementById('playing-as');
+  if (!chip) return;
+  const teamEl = chip.querySelector('.pa-team');
+  if (t && t.name) { if (teamEl) teamEl.textContent = t.name; chip.style.display = ''; }
+  else { chip.style.display = 'none'; }
+}
+function showTeamSplash(standings) {
+  if (!Array.isArray(standings) || !standings.length) return;
+  const existing = document.querySelector('.team-splash-overlay');
+  if (existing) existing.remove();
+
+  const list = el('div', { className: 'team-splash-list' });
+  const overlay = el('div', { className: 'team-splash-overlay' },
+    el('div', { className: 'team-splash' },
+      el('div', { className: 'team-splash-head' },
+        el('h2', {}, 'Which team is yours?'),
+        el('p', {}, 'Pick your side so we can tailor your view.')
+      ),
+      list,
+      el('div', { className: 'team-splash-foot' },
+        el('button', { className: 'team-splash-skip', onClick: () => overlay.remove() }, 'Skip for now')
+      )
+    )
+  );
+  standings.forEach(s => {
+    list.appendChild(el('button', {
+      className: 'team-splash-btn',
+      onClick: () => {
+        const t = { name: s.name, manager: s.manager, entry_id: s.entry_id };
+        saveTeam(t);
+        applyTeamIdentity(t);
+        updatePlayingAsChip(t);
+        window.amplitude?.track('Team Selected', { team_name: t.name, manager_name: t.manager, entry_id: t.entry_id });
+        overlay.remove();
+      }
+    },
+      el('span', { className: 'tsb-team' }, s.name),
+      el('span', { className: 'tsb-mgr' }, s.manager || '')
+    ));
+  });
+  document.body.appendChild(overlay);
+}
+// Wire the header chip and decide whether to prompt on load.
+function initTeamIdentity(leagueData) {
+  const standings = (leagueData && leagueData.standings) || [];
+  const chip = document.getElementById('playing-as');
+  if (chip) chip.onclick = () => showTeamSplash(standings);
+  const saved = getSavedTeam();
+  if (saved) { applyTeamIdentity(saved); updatePlayingAsChip(saved); }
+  else if (standings.length) { showTeamSplash(standings); }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -6545,7 +6665,7 @@ function renderCup(data, liveGW) {
   if (!data || !data.knockout || !data.knockout.final) {
     heroAnchor.style.display = 'none';
     app.appendChild(el('div', { className: 'section-title' }, icon('trophy'), ' Cup'));
-    const _archEmpty = buildArchiveBanner(data && data.metadata && data.metadata.season);
+    const _archEmpty = buildArchiveBanner(data && data.metadata && data.metadata.season, 'The cup will be updated once the new format has been announced.');
     if (_archEmpty) app.appendChild(_archEmpty);
     app.appendChild(buildEmptyPlaceholder('The cup gets going mid-season — group standings are seeded around Gameweek 17.'));
     return;
@@ -6553,7 +6673,7 @@ function renderCup(data, liveGW) {
 
   heroAnchor.style.display = '';
   heroAnchor.appendChild(buildFinalHero(data.knockout.final, liveGW));
-  const _arch = buildArchiveBanner(data && data.metadata && data.metadata.season);
+  const _arch = buildArchiveBanner(data && data.metadata && data.metadata.season, 'The cup will be updated once the new format has been announced.');
   if (_arch) app.appendChild(_arch);
 
   // Final pitch view
@@ -6634,6 +6754,10 @@ db.collection('settings').doc('site').onSnapshot(doc => {
   }
 }, () => {});
 
+// Stamp a returning user's saved team as the Amplitude User ID as early as
+// possible, so load-time autocapture events are attributed to them.
+try { const _savedTeam = getSavedTeam(); if (_savedTeam) applyTeamIdentity(_savedTeam); } catch (e) {}
+
 Promise.all([
   // cache: 'no-cache' → always revalidate with the server (via ETag) so a fresh
   // build/episode shows up without a hard refresh, instead of serving a stale copy.
@@ -6651,6 +6775,10 @@ Promise.all([
   // date (so during an archive period the header still reads the live season, not the old data's).
   if (!_seasonConfigured) document.getElementById('season-badge').textContent = currentSeasonLabel();
   if (meta.last_updated) document.getElementById('last-updated').textContent = `Updated: ${meta.last_updated} · GW${meta.current_gw}`;
+
+  // Set the Amplitude User ID from the saved team (or prompt on first visit)
+  // before the first tracked event fires, so it's attributed to their team.
+  initTeamIdentity(leagueData);
 
   window.amplitude?.track('Data Loaded', {
     has_cup_data: !!cupData,
