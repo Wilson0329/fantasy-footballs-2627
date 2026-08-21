@@ -1631,6 +1631,10 @@
     }
     .team-splash-confirm:disabled { opacity: 0.45; cursor: not-allowed; }
     .team-splash-confirm:not(:disabled):hover { filter: brightness(1.06); }
+    /* Highlight the viewing user's own team row in the league table */
+    .league-table tbody tr.my-team-row > td { background: rgba(0,255,135,0.14); }
+    .league-table tbody tr.my-team-row > td:first-child { box-shadow: inset 3px 0 0 var(--green); }
+    .league-table tbody tr.my-team-row:hover > td { background: rgba(0,255,135,0.2); }
     /* ── Monthly trade order ── */
     .trade-intro { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 1.25rem; }
     .trade-loading { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1.5rem 0; }
@@ -4282,7 +4286,9 @@ function buildLeagueTab(data) {
       return (liveB ? liveB.total_points : b.total_points) - (liveA ? liveA.total_points : a.total_points);
     });
 
+    const myEntryId = (getSavedTeam() || {}).entry_id;
     standings.forEach((s, rank) => {
+      const isMine = myEntryId != null && s.entry_id === myEntryId;
       const live = _leagueStandings && _leagueStandings[s.entry_id];
       const prevTotal = live ? live.total_points : s.total_points;
       const prevRank = s.rank_last || s.rank;
@@ -4325,6 +4331,7 @@ function buildLeagueTab(data) {
         el('td', { className: 'league-total' }, String(displayTotal)),
         el('td', {}, expandBtn)
       );
+      if (isMine) summaryRow.classList.add('my-team-row');
 
       let loaded = false;
       summaryRow.addEventListener('click', () => {
