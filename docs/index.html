@@ -3286,11 +3286,21 @@ async function getTeamHistory(entryId) {
   return _teamHistoryCache[entryId];
 }
 
+// The header freshness/GW should reflect the most recently built dataset, not
+// whichever happens to be checked first. The cup JSON can be a stale archive
+// (e.g. last season) while the league JSON is live, so pick the freshest by
+// last_updated rather than always preferring the cup.
+function freshestMeta() {
+  const metas = [_leagueData, _cupData].filter(Boolean).map(d => d.metadata || {});
+  if (!metas.length) return {};
+  return metas.reduce((a, b) => ((b.last_updated || '') > (a.last_updated || '') ? b : a));
+}
+
 function updateLastPolled() {
   const span = document.getElementById('last-updated');
   if (!span) return;
   const t = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  const meta = ((_cupData || _leagueData || {}).metadata || {});
+  const meta = freshestMeta();
   const base = meta.last_updated ? `Data: ${meta.last_updated} · ` : '';
   span.textContent = `${base}FPL polled ${t}`;
 }
@@ -6807,8 +6817,9 @@ Promise.all([
   _leagueData = leagueData;
   _podcastData = podcastData;
 
-  // Update header meta from whichever data is available
-  const meta = (cupData || leagueData || {}).metadata || {};
+  // Update header meta from the freshest dataset (the cup JSON may be a stale
+  // archive while the league JSON is live — don't let the old date/GW win).
+  const meta = freshestMeta();
   // Header pill shows the CURRENT season. If Settings hasn't set one, derive it from the
   // date (so during an archive period the header still reads the live season, not the old data's).
   if (!_seasonConfigured) document.getElementById('season-badge').textContent = currentSeasonLabel();
