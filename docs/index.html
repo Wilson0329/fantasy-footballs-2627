@@ -3701,15 +3701,19 @@ async function buildPitchView(entryId, gw, container, isLive) {
       });
     }
 
-    // Build pitch rows — visually swap auto-subbed players onto the pitch
+    // Build pitch rows — visually swap auto-subbed players onto the pitch.
+    // The player coming on is placed in THEIR OWN position row (not the outgoing
+    // starter's), so the formation adapts — e.g. a defender coming on for a
+    // forward moves into the defenders' row (3-4-3 → 4-4-2), instead of being
+    // drawn up top as a striker.
     const rows = { 1: [], 2: [], 3: [], 4: [] };
     starters.forEach(p => {
       const et = playerMap[p.element]?.element_type || 3;
       const subInId = autoSubPairs.get(p.element);
       if (subInId) {
-        // Render the bench player that came on, in the starter's row slot
         const benchPick = bench.find(b => b.element === subInId);
-        rows[et].push({ _pick: benchPick || p, _autoIn: true, _origEt: et });
+        const benchEt = playerMap[subInId]?.element_type || et;
+        rows[benchEt].push({ _pick: benchPick || p, _autoIn: true, _origEt: benchEt });
       } else {
         rows[et].push({ _pick: p, _autoIn: false });
       }
