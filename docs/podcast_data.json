@@ -1,6 +1,14 @@
 {
   "episodes": [
     {
+      "gw": 2,
+      "title": "Twelve Teams, One Brain",
+      "description": "The whole league captained the same man and every armband flopped, nobody owned the two best players in the game, and reigning cup king Dom serves up the worst team in the league. Groupthink, punished.",
+      "audio_file": "podcast-gw2.m4a",
+      "published_at": "2026-08-27",
+      "badge": "Gameweek 2"
+    },
+    {
       "gw": 1,
       "title": "Welcome to 2026/27",
       "description": "The lads are back for a new season. We look back at Charlie's title romp and Dom's cup glory, and dig into the big roster news: a former champion returns, and the most decorated manager in league history cheats the drop.",
