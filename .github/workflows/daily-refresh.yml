@@ -1,15 +1,14 @@
 name: Daily data refresh
 
 on:
-  # Daily schedule is PAUSED for the off-season — there's no live FPL data to
-  # refresh yet, so scheduled runs only fail. To re-enable for the 2026/27 season,
-  # uncomment the schedule below (and make sure the FIREBASE_SERVICE_ACCOUNT and
-  # GEMINI_API_KEY secrets are set and the league ID is saved in the Settings tab):
-  #
-  # schedule:
-  #   # 18:00 UTC daily — evening check. The podcast step self-gates so it only
-  #   # actually builds a brief the evening before a gameweek deadline.
-  #   - cron: '0 18 * * *'
+  # Re-enabled for the live 2026/27 season (was paused for the off-season). The
+  # league/cup builds pass --league-id so they need no secrets. Two off-peak,
+  # non-round-minute slots a day for reliability — GitHub often drops runs that
+  # land on the exact hour. 06:41 UTC catches finalised data after the overnight
+  # bonus processing; 17:11 UTC is the evening-before-a-gameweek podcast slot.
+  schedule:
+    - cron: '41 6 * * *'
+    - cron: '11 17 * * *'
   workflow_dispatch: # manual trigger from the GitHub Actions tab
 
 jobs:
