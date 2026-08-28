@@ -3485,8 +3485,14 @@ async function refreshLeagueScores() {
       const gwCell = row.querySelector('.league-gw');
       if (gwCell) gwCell.textContent = String(gwScore);
 
-      // Total = JSON base total (last completed GW) + live GW score
-      const baseTotal = Number(row.dataset.baseTotal) || 0;
+      // Total = points BEFORE this GW + live GW score. Prefer the live FPL
+      // standings for the base (cumulative total minus this GW's contribution),
+      // since the built JSON can be stale/zero if the daily refresh hasn't run —
+      // which would make the total collapse to just the current GW score.
+      const liveStd = _leagueStandings && _leagueStandings[entryId];
+      const baseTotal = liveStd
+        ? (liveStd.total_points - liveStd.gw_points)
+        : (Number(row.dataset.baseTotal) || 0);
       const totalCell = row.querySelector('.league-total');
       if (totalCell) totalCell.textContent = String(baseTotal + gwScore);
 
