@@ -1,15 +1,15 @@
 name: Daily data refresh
 
 on:
+  # Re-enabled for the live 2026/27 season (was paused for the off-season). The
+  # league/cup builds pass --league-id so they need no secrets. Two off-peak,
+  # non-round-minute slots a day for reliability — GitHub often drops runs that
+  # land on the exact hour. 06:41 UTC catches finalised data after the overnight
+  # bonus processing; 17:11 UTC is the evening-before-a-gameweek podcast slot.
   schedule:
-    # Two off-peak, non-round-minute slots a day. GitHub silently drops many
-    # scheduled runs that land on the exact hour (peak load), which is why the
-    # old '0 18' cron effectively never fired — a couple of odd-minute attempts
-    # is far more reliable. 06:41 UTC catches finalised data after the overnight
-    # bonus processing; 17:11 UTC is the evening-before-a-gameweek podcast slot.
     - cron: '41 6 * * *'
     - cron: '11 17 * * *'
-  workflow_dispatch: # manual trigger from GitHub Actions UI
+  workflow_dispatch: # manual trigger from the GitHub Actions tab
 
 jobs:
   refresh:

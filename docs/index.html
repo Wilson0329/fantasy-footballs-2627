@@ -2269,8 +2269,8 @@
       <button class="tab-btn tab-dropdown-btn" id="draftDropdownBtn"><i data-lucide="users"></i>Draft<i data-lucide="chevron-down" class="tab-chevron"></i></button>
       <div class="tab-dropdown-menu" id="draftDropdownMenu">
         <button class="tab-dropdown-item" data-tab="draft-room"><i data-lucide="zap"></i>Draft Room</button>
+        <button class="tab-dropdown-item" data-tab="trade-order"><i data-lucide="repeat"></i>Monthly Trade</button>
         <button class="tab-dropdown-item" data-tab="draft"><i data-lucide="list"></i>Player List</button>
-        <button class="tab-dropdown-item" data-tab="trade-order"><i data-lucide="repeat"></i>Trade Order</button>
       </div>
     </div>
     <button class="tab-btn" data-tab="stats"><i data-lucide="trending-up"></i>Stats</button>
@@ -3076,6 +3076,9 @@ function buildBenchPanel(teamName, bench, playerMap, teamMap, isLiveFinal, gw, o
 async function buildFinalPitchView(final, liveGW, container) {
   const isLiveFinal = liveGW && liveGW === final.gw;
   const isComplete = final.status === 'complete';
+  // Show per-player points for a live final AND a completed one (final points).
+  const showPts = isLiveFinal || isComplete;
+  const ptsGW = liveGW || final.gw;
 
   // Choose which GW to fetch picks from
   // If live or complete → use final.gw; otherwise use last completed GW for preview
@@ -3123,20 +3126,6 @@ async function buildFinalPitchView(final, liveGW, container) {
       });
     }
 
-    // If live, seed live points into player elements
-    if (isLiveFinal) {
-      try {
-        const [live, fixtures] = await Promise.all([getLive(liveGW), getGWFixtures(liveGW).catch(() => null)]);
-        if (live) {
-          const liveMap = makeLiveMap(live.elements, buildAddBonusTeams(fixtures));
-          container.querySelectorAll('[data-live-player]').forEach(el => {
-            const id = Number(el.dataset.livePlayer);
-            if (liveMap[id] != null) el.textContent = String(liveMap[id]);
-          });
-        }
-      } catch (_) {}
-    }
-
     // Build one half of the pitch as vertical columns (GK→FWD for home, FWD→GK for away)
     // Feature 15: pass onClickPlayer handler
     let liveDataRef = null;
@@ -3164,7 +3153,7 @@ async function buildFinalPitchView(final, liveGW, container) {
           const pm = playerMap[pick.element];
           const teamCode = pm && teamMap[pm.team] ? teamMap[pm.team].code : null;
           const fixture = pm ? (opponentMap[pm.team] || null) : null;
-          col.appendChild(buildMiniPlayerCard(pick, pm, teamCode, isLiveFinal, liveGW || final.gw, fixture, onClickPlayer));
+          col.appendChild(buildMiniPlayerCard(pick, pm, teamCode, showPts, ptsGW, fixture, onClickPlayer));
         });
         colsRow.appendChild(col);
       });
@@ -3186,14 +3175,15 @@ async function buildFinalPitchView(final, liveGW, container) {
     pitchMain.appendChild(pitchBg);
 
     container.innerHTML = '';
-    container.appendChild(buildBenchPanel(final.team_a.name, benchA, playerMap, teamMap, isLiveFinal, liveGW || final.gw, opponentMap, onClickPlayer));
+    container.appendChild(buildBenchPanel(final.team_a.name, benchA, playerMap, teamMap, showPts, ptsGW, opponentMap, onClickPlayer));
     container.appendChild(pitchMain);
-    container.appendChild(buildBenchPanel(final.team_b.name, benchB, playerMap, teamMap, isLiveFinal, liveGW || final.gw, opponentMap, onClickPlayer));
+    container.appendChild(buildBenchPanel(final.team_b.name, benchB, playerMap, teamMap, showPts, ptsGW, opponentMap, onClickPlayer));
 
-    // If live, update player pts from current live data
-    if (isLiveFinal) {
+    // Fill in per-player points — from live data for a live final, or the final
+    // gameweek's (now settled) points for a completed one.
+    if (showPts) {
       try {
-        const [live, fixtures] = await Promise.all([getLive(liveGW), getGWFixtures(liveGW).catch(() => null)]);
+        const [live, fixtures] = await Promise.all([getLive(ptsGW), getGWFixtures(ptsGW).catch(() => null)]);
         if (live) {
           liveDataRef = live;
           const liveMap = makeLiveMap(live.elements, buildAddBonusTeams(fixtures));
@@ -3201,7 +3191,7 @@ async function buildFinalPitchView(final, liveGW, container) {
             const id = Number(pEl.dataset.livePlayer);
             if (liveMap[id] != null) {
               pEl.textContent = String(liveMap[id]);
-              pEl.classList.add('live');
+              if (isLiveFinal) pEl.classList.add('live');
             }
           });
         }
@@ -3845,8 +3835,10 @@ async function buildPitchView(entryId, gw, container, isLive) {
           ));
           if (explainFixtures.length) rightCol.appendChild(buildBreakdown(explainFixtures, fixtureMap));
 
-          // Show defensive contributions + bonus from raw stats (more reliable during live matches)
-          if (liveStats.minutes != null) {
+          // Fallback only: if FPL hasn't provided the per-fixture breakdown yet, derive
+          // defensive points from raw stats. When the official breakdown exists it already
+          // includes these, so showing them again would look double-counted.
+          if (liveStats.minutes != null && !explainFixtures.length) {
             const rawRows = [];
             const et = pm?.element_type;
             if (liveStats.clean_sheets && et <= 3)   rawRows.push(['Clean sheet', et <= 2 ? 4 : 1]); // GK=4, DEF=4, MID=1; FWD no bonus
@@ -3952,6 +3944,17 @@ async function buildPitchView(entryId, gw, container, isLive) {
     container.querySelectorAll('.player-card').forEach(card => {
       card.addEventListener('click', () => {
         const pid = Number(card.dataset.playerId);
+
+        // Mobile: the side panel stacks off-screen below the pitch, so show the stats
+        // as a modal overlay instead — it appears in place over the squad, keeps context,
+        // and is dismissible (the same pattern used on the Cup final). Best practice for
+        // master–detail on small screens.
+        if (window.innerWidth <= 640) {
+          openPlayerModal(pid, gw, _liveData, playerMap, teamMap, _gwFixtures);
+          return;
+        }
+
+        // Desktop: master–detail side panel (both squad and stats visible at once).
         container.querySelectorAll('.player-card').forEach(c => c.classList.remove('selected'));
         if (activePid === pid) {
           activePid = null;
@@ -4396,8 +4399,14 @@ function buildLeagueTab(data) {
             loaded = true;
             buildPitchView(s.entry_id, selectedGW, pitchPanelDiv, isLiveGW);
           }
-          // Bring the opened squad into view — on mobile it opens below the fold
-          setTimeout(() => summaryRow.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+          // Bring the opened squad into view. scrollIntoView is unreliable (an ancestor,
+          // .league-table-wrap, has overflow:hidden) and native smooth scroll is a no-op in
+          // some browsers, so animate the window scroll manually. Puts the row ~70px down,
+          // leaving the squad panel filling the screen below it.
+          setTimeout(() => {
+            const y = window.scrollY + summaryRow.getBoundingClientRect().top - 70;
+            window.scrollTo(0, Math.max(0, y));
+          }, 80);
         }
         if (!open) delete _openPitchRefresh[s.entry_id];
       });
