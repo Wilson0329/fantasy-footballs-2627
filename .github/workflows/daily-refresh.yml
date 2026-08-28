@@ -2,9 +2,13 @@ name: Daily data refresh
 
 on:
   schedule:
-    # 18:00 UTC daily — evening check. The podcast step self-gates so it only
-    # actually builds a brief the evening before a gameweek deadline.
-    - cron: '0 18 * * *'
+    # Two off-peak, non-round-minute slots a day. GitHub silently drops many
+    # scheduled runs that land on the exact hour (peak load), which is why the
+    # old '0 18' cron effectively never fired — a couple of odd-minute attempts
+    # is far more reliable. 06:41 UTC catches finalised data after the overnight
+    # bonus processing; 17:11 UTC is the evening-before-a-gameweek podcast slot.
+    - cron: '41 6 * * *'
+    - cron: '11 17 * * *'
   workflow_dispatch: # manual trigger from GitHub Actions UI
 
 jobs:
