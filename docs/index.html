@@ -3456,7 +3456,7 @@ async function refreshLeagueScores() {
       _gwFixtures.forEach(f => {
         [f.team_h, f.team_a].forEach(tid => {
           if (!teamFixtures[tid]) teamFixtures[tid] = [];
-          teamFixtures[tid].push({ started: f.started, finished: f.finished });
+          teamFixtures[tid].push({ started: f.started, finished: f.finished, finished_provisional: f.finished_provisional });
         });
       });
       playerFixtureStatus = { playerTeam, teamFixtures };
@@ -3492,7 +3492,10 @@ async function refreshLeagueScores() {
         activePicks.forEach(p => {
           const tid = playerFixtureStatus.playerTeam[p.element];
           const fixtures = playerFixtureStatus.teamFixtures[tid] || [];
-          if (fixtures.some(f => f.started && !f.finished)) playing++;
+          // "Playing" = the match is actually in progress right now. A match that
+          // has ended but is awaiting overnight bonus is finished_provisional
+          // (still finished:false), so exclude it — those players have played.
+          if (fixtures.some(f => f.started && !f.finished && !f.finished_provisional)) playing++;
           else if (fixtures.some(f => !f.started)) toStart++;
         });
         const statusEl = row.querySelector('.team-live-status');
