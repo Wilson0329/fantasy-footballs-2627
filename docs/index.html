@@ -330,8 +330,16 @@
       white-space: nowrap;
     }
     .pos-num { font-weight: 700; width: 1.2rem; text-align: right; color: var(--muted); }
-    .team-name { font-weight: 600; }
-    .manager-name { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+    .team-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .manager-name { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .team-captain { font-size: 0.68rem; color: var(--muted); margin-top: 0.16rem; display: flex; align-items: center; gap: 0.3rem; min-width: 0; }
+    .team-captain .cap-badge-sm {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 14px; height: 14px; padding: 0 3px; border-radius: 7px; flex-shrink: 0;
+      background: var(--gold); color: #000; font-size: 0.54rem; font-weight: 800; letter-spacing: 0.02em;
+    }
+    .team-captain.tc .cap-badge-sm { background: var(--accent2); color: #fff; }
+    .team-captain .cap-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
     .qualified-pill {
       font-size: 0.62rem;
       font-weight: 700;
@@ -537,7 +545,10 @@
     .league-table tbody tr:last-child { border-bottom: none; }
     .league-table tbody tr:hover { background: var(--surface2); }
     .league-table td { padding: 0.65rem 1rem; text-align: center; }
-    .league-table td:nth-child(2) { text-align: left; }
+    /* Team is the flexible column: max-width:0 + width:100% makes it absorb the
+       remaining space and forces long names to ellipsis instead of wrapping,
+       while Rank/GW/Total/chevron size to their content. */
+    .league-table td:nth-child(2), .league-table th:nth-child(2) { text-align: left; max-width: 0; width: 100%; }
     .rank-cell { font-weight: 700; color: var(--muted); font-size: 0.9rem; }
     .rank-move { font-size: 0.65rem; font-weight: 700; margin-left: 2px; }
     .rank-move.up   { color: #4ade80; }
@@ -1567,8 +1578,13 @@
       .standings-table td, .standings-table th { padding: 0.5rem 0.4rem; }
       .standings-table { font-size: 0.78rem; }
 
-      /* League table */
-      .league-table td, .league-table th { padding: 0.5rem 0.6rem; }
+      /* League table — tighten for small screens */
+      .league-table { font-size: 0.82rem; }
+      .league-table td, .league-table th { padding: 0.5rem 0.4rem; }
+      .league-table td:first-child, .league-table th:first-child { padding-left: 0.6rem; }
+      .league-total { font-size: 0.95rem; }
+      .league-gw { font-size: 0.82rem; }
+      .team-name { font-size: 0.85rem; }
 
       /* Stats tables: scroll only the table, header stays */
       .stats-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -3440,6 +3456,32 @@ function refreshOpenPitchViews() {
   Object.values(_openPitchRefresh).forEach(fn => fn());
 }
 
+// Fill in each manager's captain for the shown GW, inside the team cell.
+// Picks are only public from the deadline onward, so pre-deadline GWs stay blank.
+async function populateLeagueCaptains(gw) {
+  if (!gw) return;
+  const bs = await getBootstrap().catch(() => null);
+  if (!bs) return;
+  const nameById = {};
+  bs.elements.forEach(p => { nameById[p.id] = p.web_name; });
+  const rows = [...document.querySelectorAll('.league-table tbody tr[data-entry]')];
+  await Promise.all(rows.map(async row => {
+    const capEl = row.querySelector('.team-captain');
+    if (!capEl) return;
+    try {
+      const picks = await getPicks(Number(row.dataset.entry), gw);
+      const cap = picks.picks.find(p => p.is_captain);
+      if (!cap) return;
+      const isTC = picks.active_chip === '3xc';
+      capEl.className = 'team-captain' + (isTC ? ' tc' : '');
+      capEl.innerHTML = '';
+      capEl.appendChild(el('span', { className: 'cap-badge-sm', title: isTC ? 'Triple Captain' : 'Captain' }, isTC ? 'TC' : 'C'));
+      capEl.appendChild(el('span', { className: 'cap-name' }, nameById[cap.element] || ''));
+      capEl.style.display = '';
+    } catch (e) { /* picks not available (e.g. pre-deadline) — leave blank */ }
+  }));
+}
+
 async function refreshLeagueScores() {
   if (!_liveData || !_liveGW) return;
   const liveMap = makeLiveMap(_liveData.elements, buildAddBonusTeams(_gwFixtures));
@@ -4382,6 +4424,7 @@ function buildLeagueTab(data) {
         el('td', {},
           el('div', { className: 'team-name' }, s.name),
           el('div', { className: 'manager-name' }, s.manager),
+          el('div', { className: 'team-captain', style: 'display:none' }),
           chipIconsEl,
           ...(liveStatusEl ? [liveStatusEl] : [])
         ),
@@ -4509,6 +4552,7 @@ function buildLeagueTab(data) {
         } catch(e) { /* show — if history unavailable */ }
 
         buildStandingsTable(newGW, newIsLive, gwHistories);
+        populateLeagueCaptains(newGW);
       });
 
       // Live GW: merge each manager's active chip (from picks) into the cache so
@@ -4518,6 +4562,7 @@ function buildLeagueTab(data) {
       }
 
       buildStandingsTable(selectedGW, isLiveGW);
+      populateLeagueCaptains(selectedGW);
       if (isLiveGW) refreshLeagueScores();
 
     } catch(e) {
