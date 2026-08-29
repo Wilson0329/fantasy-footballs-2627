@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-08-28",
+    "last_updated": "2026-08-29",
     "current_gw": 2,
     "season": "2026/27"
   },
@@ -12,8 +12,8 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_points": 97,
-      "gw_points": 31
+      "total_points": 98,
+      "gw_points": 32
     },
     {
       "rank": 2,
@@ -30,8 +30,8 @@
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "total_points": 88,
-      "gw_points": 33
+      "total_points": 89,
+      "gw_points": 34
     },
     {
       "rank": 4,
@@ -39,8 +39,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_points": 84,
-      "gw_points": 18
+      "total_points": 85,
+      "gw_points": 19
     },
     {
       "rank": 5,
@@ -48,20 +48,38 @@
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
-      "total_points": 82,
-      "gw_points": 31
+      "total_points": 83,
+      "gw_points": 32
     },
     {
       "rank": 6,
+      "rank_last": 2,
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
+      "total_points": 76,
+      "gw_points": 5
+    },
+    {
+      "rank": 7,
+      "rank_last": 11,
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "total_points": 74,
+      "gw_points": 34
+    },
+    {
+      "rank": 8,
       "rank_last": 5,
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_points": 73,
-      "gw_points": 18
+      "total_points": 74,
+      "gw_points": 19
     },
     {
-      "rank": 7,
+      "rank": 9,
       "rank_last": 12,
       "entry_id": 6815970,
       "name": "Tonali-tarian",
@@ -70,40 +88,13 @@
       "gw_points": 40
     },
     {
-      "rank": 8,
-      "rank_last": 11,
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "total_points": 71,
-      "gw_points": 31
-    },
-    {
-      "rank": 8,
-      "rank_last": 2,
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
-      "total_points": 71,
-      "gw_points": 0
-    },
-    {
       "rank": 10,
       "rank_last": 9,
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
-      "total_points": 63,
-      "gw_points": 13
-    },
-    {
-      "rank": 11,
-      "rank_last": 10,
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
-      "total_points": 61,
-      "gw_points": 13
+      "total_points": 65,
+      "gw_points": 15
     },
     {
       "rank": 11,
@@ -111,8 +102,17 @@
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_points": 61,
-      "gw_points": 10
+      "total_points": 62,
+      "gw_points": 11
+    },
+    {
+      "rank": 11,
+      "rank_last": 10,
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
+      "total_points": 62,
+      "gw_points": 14
     }
   ],
   "trade_differential": [
@@ -152,6 +152,20 @@
       "trades": []
     },
     {
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
+      "net_gain": 0,
+      "trades": []
+    },
+    {
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "net_gain": 0,
+      "trades": []
+    },
+    {
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
@@ -166,20 +180,6 @@
       "trades": []
     },
     {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "net_gain": 0,
-      "trades": []
-    },
-    {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
-      "net_gain": 0,
-      "trades": []
-    },
-    {
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
@@ -187,16 +187,16 @@
       "trades": []
     },
     {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
       "net_gain": 0,
       "trades": []
     },
     {
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
       "net_gain": 0,
       "trades": []
     }
@@ -238,6 +238,20 @@
       "by_gw": []
     },
     {
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
+      "total_captain_bonus": 0,
+      "by_gw": []
+    },
+    {
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "total_captain_bonus": 0,
+      "by_gw": []
+    },
+    {
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
@@ -252,20 +266,6 @@
       "by_gw": []
     },
     {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "total_captain_bonus": 0,
-      "by_gw": []
-    },
-    {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
-      "total_captain_bonus": 0,
-      "by_gw": []
-    },
-    {
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
@@ -273,16 +273,16 @@
       "by_gw": []
     },
     {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
       "total_captain_bonus": 0,
       "by_gw": []
     },
     {
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
       "total_captain_bonus": 0,
       "by_gw": []
     }
@@ -532,6 +532,23 @@
       ]
     },
     {
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
+      "total_bench_points": 2,
+      "avg_bench_per_gw": 1.0,
+      "by_gw": [
+        {
+          "gw": 1,
+          "bench_pts": 0
+        },
+        {
+          "gw": 2,
+          "bench_pts": 2
+        }
+      ]
+    },
+    {
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
       "manager": "Arun Quayum",
@@ -632,23 +649,6 @@
           "bench_pts": 0
         }
       ]
-    },
-    {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
-      "total_bench_points": 0,
-      "avg_bench_per_gw": 0.0,
-      "by_gw": [
-        {
-          "gw": 1,
-          "bench_pts": 0
-        },
-        {
-          "gw": 2,
-          "bench_pts": 0
-        }
-      ]
     }
   ],
   "captain_hit_rate": [
@@ -693,6 +693,22 @@
       "hit_rate": 0.0
     },
     {
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
+      "captain_hits": 0,
+      "gws_played": 1,
+      "hit_rate": 0.0
+    },
+    {
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "captain_hits": 0,
+      "gws_played": 1,
+      "hit_rate": 0.0
+    },
+    {
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
@@ -709,22 +725,6 @@
       "hit_rate": 0.0
     },
     {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "captain_hits": 0,
-      "gws_played": 1,
-      "hit_rate": 0.0
-    },
-    {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
-      "captain_hits": 0,
-      "gws_played": 1,
-      "hit_rate": 0.0
-    },
-    {
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
@@ -733,17 +733,17 @@
       "hit_rate": 0.0
     },
     {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
       "captain_hits": 0,
       "gws_played": 1,
       "hit_rate": 0.0
     },
     {
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
       "captain_hits": 0,
       "gws_played": 1,
       "hit_rate": 0.0

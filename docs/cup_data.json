@@ -1,440 +1,440 @@
 {
   "metadata": {
     "cup_name": "Fantasy Footballs Cup",
-    "league_id": 286779,
-    "last_updated": "2026-07-14",
-    "current_gw": 38,
-    "season": "2025/26"
+    "league_id": 271949,
+    "last_updated": "2026-08-29",
+    "current_gw": 2,
+    "season": "2026/27"
   },
   "groups": {
     "A": {
       "teams": [
         {
-          "entry_id": 8794696,
-          "name": "Return of the Fox",
-          "manager": "Charles Smith",
-          "seeding_points": 938
+          "entry_id": 1552043,
+          "name": "Respect The CV ****",
+          "manager": "Joe Wilson",
+          "seeding_points": 97
         },
         {
-          "entry_id": 5155229,
-          "name": "Vik the Impaler",
-          "manager": "David Pontin",
-          "seeding_points": 854
+          "entry_id": 5171746,
+          "name": "Soucek Sadness",
+          "manager": "Sam Haseltine",
+          "seeding_points": 93
         },
         {
-          "entry_id": 1623042,
-          "name": "GVG XI *",
-          "manager": "George Georgiou",
-          "seeding_points": 851
-        },
-        {
-          "entry_id": 5751594,
-          "name": "I love big Gy\u0151k",
+          "entry_id": 6415977,
+          "name": "Call the Tzolis",
           "manager": "Adam Georghiou",
-          "seeding_points": 818
+          "seeding_points": 88
         },
         {
-          "entry_id": 7552664,
-          "name": "Beef Cherki",
+          "entry_id": 3285103,
+          "name": "Super Park Rateta FC",
+          "manager": "David Pontin",
+          "seeding_points": 84
+        },
+        {
+          "entry_id": 3523822,
+          "name": "Pain in Dias",
           "manager": "Alexander Bodek",
-          "seeding_points": 814
+          "seeding_points": 82
         },
         {
-          "entry_id": 6366909,
-          "name": "HC XI II",
-          "manager": "Dominic Byrne",
-          "seeding_points": 776
+          "entry_id": 8444994,
+          "name": "Silverware Foxes *",
+          "manager": "Charles Smith",
+          "seeding_points": 73
         }
       ],
       "fixtures": [
         {
           "gw": 18,
           "label": "Round 1",
-          "status": "complete",
+          "status": "upcoming",
           "matches": [
             {
               "home": {
-                "entry_id": 8794696,
-                "name": "Return of the Fox",
-                "score": 35,
-                "captain_pts": 2,
-                "vice_pts": 5
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 5155229,
-                "name": "Vik the Impaler",
-                "score": 21,
-                "captain_pts": 2,
-                "vice_pts": 1
+                "entry_id": 5171746,
+                "name": "Soucek Sadness",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "home",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 1623042,
-                "name": "GVG XI *",
-                "score": 37,
-                "captain_pts": 5,
-                "vice_pts": 7
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 5751594,
-                "name": "I love big Gy\u0151k",
-                "score": 33,
-                "captain_pts": 2,
-                "vice_pts": 1
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "home",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 7552664,
-                "name": "Beef Cherki",
-                "score": 45,
-                "captain_pts": 9,
-                "vice_pts": 8
+                "entry_id": 3523822,
+                "name": "Pain in Dias",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 6366909,
-                "name": "HC XI II",
-                "score": 45,
-                "captain_pts": 10,
-                "vice_pts": 2
+                "entry_id": 8444994,
+                "name": "Silverware Foxes *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             }
           ]
         },
         {
           "gw": 20,
           "label": "Round 2",
-          "status": "complete",
+          "status": "upcoming",
           "matches": [
             {
               "home": {
-                "entry_id": 8794696,
-                "name": "Return of the Fox",
-                "score": 57,
-                "captain_pts": 2,
-                "vice_pts": 2
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 1623042,
-                "name": "GVG XI *",
-                "score": 43,
-                "captain_pts": 0,
-                "vice_pts": 4
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "home",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 5155229,
-                "name": "Vik the Impaler",
-                "score": 55,
-                "captain_pts": 5,
-                "vice_pts": 0
+                "entry_id": 5171746,
+                "name": "Soucek Sadness",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 7552664,
-                "name": "Beef Cherki",
-                "score": 34,
-                "captain_pts": 1,
-                "vice_pts": 2
+                "entry_id": 3523822,
+                "name": "Pain in Dias",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "home",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 5751594,
-                "name": "I love big Gy\u0151k",
-                "score": 30,
-                "captain_pts": 2,
-                "vice_pts": 0
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 6366909,
-                "name": "HC XI II",
-                "score": 33,
-                "captain_pts": 2,
-                "vice_pts": 2
+                "entry_id": 8444994,
+                "name": "Silverware Foxes *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             }
           ]
         },
         {
           "gw": 22,
           "label": "Round 3",
-          "status": "complete",
+          "status": "upcoming",
           "matches": [
             {
               "home": {
-                "entry_id": 8794696,
-                "name": "Return of the Fox",
-                "score": 32,
-                "captain_pts": 2,
-                "vice_pts": 0
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 5751594,
-                "name": "I love big Gy\u0151k",
-                "score": 41,
-                "captain_pts": 8,
-                "vice_pts": 3
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 5155229,
-                "name": "Vik the Impaler",
-                "score": 29,
-                "captain_pts": 2,
-                "vice_pts": 2
+                "entry_id": 5171746,
+                "name": "Soucek Sadness",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 6366909,
-                "name": "HC XI II",
-                "score": 43,
-                "captain_pts": 10,
-                "vice_pts": 10
+                "entry_id": 8444994,
+                "name": "Silverware Foxes *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 1623042,
-                "name": "GVG XI *",
-                "score": 35,
-                "captain_pts": 2,
-                "vice_pts": 1
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 7552664,
-                "name": "Beef Cherki",
-                "score": 46,
-                "captain_pts": 2,
-                "vice_pts": 8
+                "entry_id": 3523822,
+                "name": "Pain in Dias",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             }
           ]
         },
         {
           "gw": 24,
           "label": "Round 4",
-          "status": "complete",
+          "status": "upcoming",
           "matches": [
             {
               "home": {
-                "entry_id": 8794696,
-                "name": "Return of the Fox",
-                "score": 45,
-                "captain_pts": 5,
-                "vice_pts": 3
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 7552664,
-                "name": "Beef Cherki",
-                "score": 59,
-                "captain_pts": 7,
-                "vice_pts": 10
+                "entry_id": 3523822,
+                "name": "Pain in Dias",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 5155229,
-                "name": "Vik the Impaler",
-                "score": 31,
-                "captain_pts": 1,
-                "vice_pts": 2
+                "entry_id": 5171746,
+                "name": "Soucek Sadness",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 5751594,
-                "name": "I love big Gy\u0151k",
-                "score": 29,
-                "captain_pts": 8,
-                "vice_pts": 6
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "home",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 1623042,
-                "name": "GVG XI *",
-                "score": 27,
-                "captain_pts": 13,
-                "vice_pts": 2
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 6366909,
-                "name": "HC XI II",
-                "score": 47,
-                "captain_pts": 10,
-                "vice_pts": 12
+                "entry_id": 8444994,
+                "name": "Silverware Foxes *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             }
           ]
         },
         {
           "gw": 26,
           "label": "Round 5",
-          "status": "complete",
+          "status": "upcoming",
           "matches": [
             {
               "home": {
-                "entry_id": 8794696,
-                "name": "Return of the Fox",
-                "score": 36,
-                "captain_pts": 5,
-                "vice_pts": 11
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 6366909,
-                "name": "HC XI II",
-                "score": 34,
-                "captain_pts": 2,
-                "vice_pts": 3
+                "entry_id": 8444994,
+                "name": "Silverware Foxes *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "home",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 5155229,
-                "name": "Vik the Impaler",
-                "score": 26,
-                "captain_pts": 1,
-                "vice_pts": 2
+                "entry_id": 5171746,
+                "name": "Soucek Sadness",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 1623042,
-                "name": "GVG XI *",
-                "score": 25,
-                "captain_pts": 1,
-                "vice_pts": 2
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "home",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 5751594,
-                "name": "I love big Gy\u0151k",
-                "score": 27,
-                "captain_pts": 3,
-                "vice_pts": 6
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 7552664,
-                "name": "Beef Cherki",
-                "score": 38,
-                "captain_pts": 14,
-                "vice_pts": 10
+                "entry_id": 3523822,
+                "name": "Pain in Dias",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             }
           ]
         }
       ],
       "standings": [
         {
-          "entry_id": 6366909,
-          "name": "HC XI II",
-          "manager": "Dominic Byrne",
-          "played": 5,
-          "won": 4,
+          "entry_id": 1552043,
+          "name": "Respect The CV ****",
+          "manager": "Joe Wilson",
+          "played": 0,
+          "won": 0,
           "drawn": 0,
-          "lost": 1,
-          "points_for": 202,
-          "points_against": 167,
-          "cup_points": 8,
+          "lost": 0,
+          "points_for": 0,
+          "points_against": 0,
+          "cup_points": 0,
           "position": 1,
           "qualified": true
         },
         {
-          "entry_id": 7552664,
-          "name": "Beef Cherki",
-          "manager": "Alexander Bodek",
-          "played": 5,
-          "won": 3,
+          "entry_id": 5171746,
+          "name": "Soucek Sadness",
+          "manager": "Sam Haseltine",
+          "played": 0,
+          "won": 0,
           "drawn": 0,
-          "lost": 2,
-          "points_for": 222,
-          "points_against": 207,
-          "cup_points": 6,
+          "lost": 0,
+          "points_for": 0,
+          "points_against": 0,
+          "cup_points": 0,
           "position": 2,
           "qualified": true
         },
         {
-          "entry_id": 8794696,
-          "name": "Return of the Fox",
-          "manager": "Charles Smith",
-          "played": 5,
-          "won": 3,
+          "entry_id": 6415977,
+          "name": "Call the Tzolis",
+          "manager": "Adam Georghiou",
+          "played": 0,
+          "won": 0,
           "drawn": 0,
-          "lost": 2,
-          "points_for": 205,
-          "points_against": 198,
-          "cup_points": 6,
+          "lost": 0,
+          "points_for": 0,
+          "points_against": 0,
+          "cup_points": 0,
           "position": 3,
           "qualified": false
         },
         {
-          "entry_id": 5155229,
-          "name": "Vik the Impaler",
+          "entry_id": 3285103,
+          "name": "Super Park Rateta FC",
           "manager": "David Pontin",
-          "played": 5,
-          "won": 3,
+          "played": 0,
+          "won": 0,
           "drawn": 0,
-          "lost": 2,
-          "points_for": 162,
-          "points_against": 166,
-          "cup_points": 6,
+          "lost": 0,
+          "points_for": 0,
+          "points_against": 0,
+          "cup_points": 0,
           "position": 4,
           "qualified": false
         },
         {
-          "entry_id": 1623042,
-          "name": "GVG XI *",
-          "manager": "George Georgiou",
-          "played": 5,
-          "won": 1,
+          "entry_id": 3523822,
+          "name": "Pain in Dias",
+          "manager": "Alexander Bodek",
+          "played": 0,
+          "won": 0,
           "drawn": 0,
-          "lost": 4,
-          "points_for": 167,
-          "points_against": 209,
-          "cup_points": 2,
+          "lost": 0,
+          "points_for": 0,
+          "points_against": 0,
+          "cup_points": 0,
           "position": 5,
           "qualified": false
         },
         {
-          "entry_id": 5751594,
-          "name": "I love big Gy\u0151k",
-          "manager": "Adam Georghiou",
-          "played": 5,
-          "won": 1,
+          "entry_id": 8444994,
+          "name": "Silverware Foxes *",
+          "manager": "Charles Smith",
+          "played": 0,
+          "won": 0,
           "drawn": 0,
-          "lost": 4,
-          "points_for": 160,
-          "points_against": 171,
-          "cup_points": 2,
+          "lost": 0,
+          "points_for": 0,
+          "points_against": 0,
+          "cup_points": 0,
           "position": 6,
           "qualified": false
         }
@@ -443,431 +443,431 @@
     "B": {
       "teams": [
         {
-          "entry_id": 4160647,
-          "name": "Forever20****",
-          "manager": "Joe Wilson",
-          "seeding_points": 764
+          "entry_id": 6815970,
+          "name": "Tonali-tarian",
+          "manager": "Dominic Byrne",
+          "seeding_points": 72
         },
         {
-          "entry_id": 5124113,
-          "name": "Soucek Madness \u00b2 \u00b2",
-          "manager": "Sam Haseltine",
-          "seeding_points": 763
+          "entry_id": 7067293,
+          "name": "currywirtz",
+          "manager": "Ed Pragnell",
+          "seeding_points": 71
         },
         {
-          "entry_id": 5150105,
-          "name": "Gy\u00f6k, Stock & Barrel",
-          "manager": "Aron Rouse",
-          "seeding_points": 737
+          "entry_id": 1442119,
+          "name": "GVG XI *",
+          "manager": "George Georgiou",
+          "seeding_points": 71
         },
         {
-          "entry_id": 5145283,
+          "entry_id": 153220,
+          "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+          "manager": "Anthony Savvides",
+          "seeding_points": 63
+        },
+        {
+          "entry_id": 5291090,
+          "name": "Change Name",
+          "manager": "Jason Knightly",
+          "seeding_points": 61
+        },
+        {
+          "entry_id": 5194548,
           "name": "Habibi Jeebies",
           "manager": "Arun Quayum",
-          "seeding_points": 710
-        },
-        {
-          "entry_id": 4789233,
-          "name": "Inevitable***",
-          "manager": "Jason Knightly",
-          "seeding_points": 709
-        },
-        {
-          "entry_id": 5191754,
-          "name": "Stay Classy SanDiogo",
-          "manager": "Ed Pragnell",
-          "seeding_points": 705
+          "seeding_points": 61
         }
       ],
       "fixtures": [
         {
           "gw": 18,
           "label": "Round 1",
-          "status": "complete",
+          "status": "upcoming",
           "matches": [
             {
               "home": {
-                "entry_id": 4160647,
-                "name": "Forever20****",
-                "score": 40,
-                "captain_pts": 2,
-                "vice_pts": 2
+                "entry_id": 6815970,
+                "name": "Tonali-tarian",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 5124113,
-                "name": "Soucek Madness \u00b2 \u00b2",
-                "score": 49,
-                "captain_pts": 2,
-                "vice_pts": 8
+                "entry_id": 7067293,
+                "name": "currywirtz",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 5150105,
-                "name": "Gy\u00f6k, Stock & Barrel",
-                "score": 11,
-                "captain_pts": 0,
-                "vice_pts": 0
+                "entry_id": 1442119,
+                "name": "GVG XI *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 5145283,
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "result": null,
+              "status": "upcoming"
+            },
+            {
+              "home": {
+                "entry_id": 5291090,
+                "name": "Change Name",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "away": {
+                "entry_id": 5194548,
                 "name": "Habibi Jeebies",
-                "score": 43,
-                "captain_pts": 2,
-                "vice_pts": 1
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
-            },
-            {
-              "home": {
-                "entry_id": 4789233,
-                "name": "Inevitable***",
-                "score": 50,
-                "captain_pts": 2,
-                "vice_pts": 12
-              },
-              "away": {
-                "entry_id": 5191754,
-                "name": "Stay Classy SanDiogo",
-                "score": 34,
-                "captain_pts": 2,
-                "vice_pts": 2
-              },
-              "result": "home",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             }
           ]
         },
         {
           "gw": 20,
           "label": "Round 2",
-          "status": "complete",
+          "status": "upcoming",
           "matches": [
             {
               "home": {
-                "entry_id": 4160647,
-                "name": "Forever20****",
-                "score": 34,
-                "captain_pts": 6,
-                "vice_pts": 2
+                "entry_id": 6815970,
+                "name": "Tonali-tarian",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 5150105,
-                "name": "Gy\u00f6k, Stock & Barrel",
-                "score": 20,
-                "captain_pts": 1,
-                "vice_pts": 2
+                "entry_id": 1442119,
+                "name": "GVG XI *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "home",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 5124113,
-                "name": "Soucek Madness \u00b2 \u00b2",
-                "score": 35,
-                "captain_pts": 4,
-                "vice_pts": 0
+                "entry_id": 7067293,
+                "name": "currywirtz",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 4789233,
-                "name": "Inevitable***",
-                "score": 40,
-                "captain_pts": 7,
-                "vice_pts": 4
+                "entry_id": 5291090,
+                "name": "Change Name",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 5145283,
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "away": {
+                "entry_id": 5194548,
                 "name": "Habibi Jeebies",
-                "score": 29,
-                "captain_pts": 9,
-                "vice_pts": 2
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "away": {
-                "entry_id": 5191754,
-                "name": "Stay Classy SanDiogo",
-                "score": 35,
-                "captain_pts": 2,
-                "vice_pts": 2
-              },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             }
           ]
         },
         {
           "gw": 22,
           "label": "Round 3",
-          "status": "complete",
+          "status": "upcoming",
           "matches": [
             {
               "home": {
-                "entry_id": 4160647,
-                "name": "Forever20****",
-                "score": 28,
-                "captain_pts": 2,
-                "vice_pts": 2
+                "entry_id": 6815970,
+                "name": "Tonali-tarian",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 5145283,
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "result": null,
+              "status": "upcoming"
+            },
+            {
+              "home": {
+                "entry_id": 7067293,
+                "name": "currywirtz",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "away": {
+                "entry_id": 5194548,
                 "name": "Habibi Jeebies",
-                "score": 30,
-                "captain_pts": 4,
-                "vice_pts": 0
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 5124113,
-                "name": "Soucek Madness \u00b2 \u00b2",
-                "score": 39,
-                "captain_pts": 3,
-                "vice_pts": 2
+                "entry_id": 1442119,
+                "name": "GVG XI *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 5191754,
-                "name": "Stay Classy SanDiogo",
-                "score": 23,
-                "captain_pts": 9,
-                "vice_pts": 3
+                "entry_id": 5291090,
+                "name": "Change Name",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "home",
-              "status": "complete"
-            },
-            {
-              "home": {
-                "entry_id": 5150105,
-                "name": "Gy\u00f6k, Stock & Barrel",
-                "score": 36,
-                "captain_pts": 1,
-                "vice_pts": 8
-              },
-              "away": {
-                "entry_id": 4789233,
-                "name": "Inevitable***",
-                "score": 26,
-                "captain_pts": 2,
-                "vice_pts": 2
-              },
-              "result": "home",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             }
           ]
         },
         {
           "gw": 24,
           "label": "Round 4",
-          "status": "complete",
+          "status": "upcoming",
           "matches": [
             {
               "home": {
-                "entry_id": 4160647,
-                "name": "Forever20****",
-                "score": 26,
-                "captain_pts": 3,
-                "vice_pts": -2
+                "entry_id": 6815970,
+                "name": "Tonali-tarian",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 4789233,
-                "name": "Inevitable***",
-                "score": 47,
-                "captain_pts": 0,
-                "vice_pts": 7
+                "entry_id": 5291090,
+                "name": "Change Name",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 5124113,
-                "name": "Soucek Madness \u00b2 \u00b2",
-                "score": 36,
-                "captain_pts": 8,
-                "vice_pts": 2
+                "entry_id": 7067293,
+                "name": "currywirtz",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 5145283,
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "result": null,
+              "status": "upcoming"
+            },
+            {
+              "home": {
+                "entry_id": 1442119,
+                "name": "GVG XI *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "away": {
+                "entry_id": 5194548,
                 "name": "Habibi Jeebies",
-                "score": 39,
-                "captain_pts": 9,
-                "vice_pts": 6
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
-            },
-            {
-              "home": {
-                "entry_id": 5150105,
-                "name": "Gy\u00f6k, Stock & Barrel",
-                "score": 27,
-                "captain_pts": 2,
-                "vice_pts": 2
-              },
-              "away": {
-                "entry_id": 5191754,
-                "name": "Stay Classy SanDiogo",
-                "score": 47,
-                "captain_pts": 2,
-                "vice_pts": 1
-              },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
             }
           ]
         },
         {
           "gw": 26,
           "label": "Round 5",
-          "status": "complete",
+          "status": "upcoming",
           "matches": [
             {
               "home": {
-                "entry_id": 4160647,
-                "name": "Forever20****",
-                "score": 34,
-                "captain_pts": 0,
-                "vice_pts": 2
+                "entry_id": 6815970,
+                "name": "Tonali-tarian",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 5191754,
-                "name": "Stay Classy SanDiogo",
-                "score": 37,
-                "captain_pts": 12,
-                "vice_pts": 1
-              },
-              "result": "away",
-              "status": "complete"
-            },
-            {
-              "home": {
-                "entry_id": 5124113,
-                "name": "Soucek Madness \u00b2 \u00b2",
-                "score": 34,
-                "captain_pts": 5,
-                "vice_pts": 2
-              },
-              "away": {
-                "entry_id": 5150105,
-                "name": "Gy\u00f6k, Stock & Barrel",
-                "score": 22,
-                "captain_pts": 1,
-                "vice_pts": 0
-              },
-              "result": "home",
-              "status": "complete"
-            },
-            {
-              "home": {
-                "entry_id": 5145283,
+                "entry_id": 5194548,
                 "name": "Habibi Jeebies",
-                "score": 40,
-                "captain_pts": 2,
-                "vice_pts": 8
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "result": null,
+              "status": "upcoming"
+            },
+            {
+              "home": {
+                "entry_id": 7067293,
+                "name": "currywirtz",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
               "away": {
-                "entry_id": 4789233,
-                "name": "Inevitable***",
-                "score": 49,
-                "captain_pts": 13,
-                "vice_pts": 2
+                "entry_id": 1442119,
+                "name": "GVG XI *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
               },
-              "result": "away",
-              "status": "complete"
+              "result": null,
+              "status": "upcoming"
+            },
+            {
+              "home": {
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "away": {
+                "entry_id": 5291090,
+                "name": "Change Name",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "result": null,
+              "status": "upcoming"
             }
           ]
         }
       ],
       "standings": [
         {
-          "entry_id": 4789233,
-          "name": "Inevitable***",
-          "manager": "Jason Knightly",
-          "played": 5,
-          "won": 4,
+          "entry_id": 6815970,
+          "name": "Tonali-tarian",
+          "manager": "Dominic Byrne",
+          "played": 0,
+          "won": 0,
           "drawn": 0,
-          "lost": 1,
-          "points_for": 212,
-          "points_against": 171,
-          "cup_points": 8,
+          "lost": 0,
+          "points_for": 0,
+          "points_against": 0,
+          "cup_points": 0,
           "position": 1,
           "qualified": true
         },
         {
-          "entry_id": 5124113,
-          "name": "Soucek Madness \u00b2 \u00b2",
-          "manager": "Sam Haseltine",
-          "played": 5,
-          "won": 3,
+          "entry_id": 7067293,
+          "name": "currywirtz",
+          "manager": "Ed Pragnell",
+          "played": 0,
+          "won": 0,
           "drawn": 0,
-          "lost": 2,
-          "points_for": 193,
-          "points_against": 164,
-          "cup_points": 6,
+          "lost": 0,
+          "points_for": 0,
+          "points_against": 0,
+          "cup_points": 0,
           "position": 2,
           "qualified": true
         },
         {
-          "entry_id": 5145283,
-          "name": "Habibi Jeebies",
-          "manager": "Arun Quayum",
-          "played": 5,
-          "won": 3,
+          "entry_id": 1442119,
+          "name": "GVG XI *",
+          "manager": "George Georgiou",
+          "played": 0,
+          "won": 0,
           "drawn": 0,
-          "lost": 2,
-          "points_for": 181,
-          "points_against": 159,
-          "cup_points": 6,
+          "lost": 0,
+          "points_for": 0,
+          "points_against": 0,
+          "cup_points": 0,
           "position": 3,
           "qualified": false
         },
         {
-          "entry_id": 5191754,
-          "name": "Stay Classy SanDiogo",
-          "manager": "Ed Pragnell",
-          "played": 5,
-          "won": 3,
+          "entry_id": 153220,
+          "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+          "manager": "Anthony Savvides",
+          "played": 0,
+          "won": 0,
           "drawn": 0,
-          "lost": 2,
-          "points_for": 176,
-          "points_against": 179,
-          "cup_points": 6,
+          "lost": 0,
+          "points_for": 0,
+          "points_against": 0,
+          "cup_points": 0,
           "position": 4,
           "qualified": false
         },
         {
-          "entry_id": 4160647,
-          "name": "Forever20****",
-          "manager": "Joe Wilson",
-          "played": 5,
-          "won": 1,
+          "entry_id": 5291090,
+          "name": "Change Name",
+          "manager": "Jason Knightly",
+          "played": 0,
+          "won": 0,
           "drawn": 0,
-          "lost": 4,
-          "points_for": 162,
-          "points_against": 183,
-          "cup_points": 2,
+          "lost": 0,
+          "points_for": 0,
+          "points_against": 0,
+          "cup_points": 0,
           "position": 5,
           "qualified": false
         },
         {
-          "entry_id": 5150105,
-          "name": "Gy\u00f6k, Stock & Barrel",
-          "manager": "Aron Rouse",
-          "played": 5,
-          "won": 1,
+          "entry_id": 5194548,
+          "name": "Habibi Jeebies",
+          "manager": "Arun Quayum",
+          "played": 0,
+          "won": 0,
           "drawn": 0,
-          "lost": 4,
-          "points_for": 116,
-          "points_against": 184,
-          "cup_points": 2,
+          "lost": 0,
+          "points_for": 0,
+          "points_against": 0,
+          "cup_points": 0,
           "position": 6,
           "qualified": false
         }
@@ -879,92 +879,80 @@
       {
         "label": "Semi-Final 1",
         "team_a": {
-          "entry_id": 6366909,
-          "name": "HC XI II",
-          "manager": "Dominic Byrne"
+          "entry_id": 1552043,
+          "name": "Respect The CV ****",
+          "manager": "Joe Wilson"
         },
         "team_b": {
-          "entry_id": 5124113,
-          "name": "Soucek Madness \u00b2 \u00b2",
-          "manager": "Sam Haseltine"
+          "entry_id": 7067293,
+          "name": "currywirtz",
+          "manager": "Ed Pragnell"
         },
         "legs": [
           {
             "gw": 31,
-            "score_a": 37,
-            "score_b": 38,
-            "status": "complete"
+            "score_a": null,
+            "score_b": null,
+            "status": "upcoming"
           },
           {
             "gw": 33,
-            "score_a": 41,
-            "score_b": 27,
-            "status": "complete"
+            "score_a": null,
+            "score_b": null,
+            "status": "upcoming"
           }
         ],
-        "aggregate_a": 78,
-        "aggregate_b": 65,
-        "winner": {
-          "entry_id": 6366909,
-          "name": "HC XI II",
-          "manager": "Dominic Byrne"
-        }
+        "aggregate_a": 0,
+        "aggregate_b": 0,
+        "winner": null
       },
       {
         "label": "Semi-Final 2",
         "team_a": {
-          "entry_id": 7552664,
-          "name": "Beef Cherki",
-          "manager": "Alexander Bodek"
+          "entry_id": 5171746,
+          "name": "Soucek Sadness",
+          "manager": "Sam Haseltine"
         },
         "team_b": {
-          "entry_id": 4789233,
-          "name": "Inevitable***",
-          "manager": "Jason Knightly"
+          "entry_id": 6815970,
+          "name": "Tonali-tarian",
+          "manager": "Dominic Byrne"
         },
         "legs": [
           {
             "gw": 31,
-            "score_a": 31,
-            "score_b": 43,
-            "status": "complete"
+            "score_a": null,
+            "score_b": null,
+            "status": "upcoming"
           },
           {
             "gw": 33,
-            "score_a": 31,
-            "score_b": 61,
-            "status": "complete"
+            "score_a": null,
+            "score_b": null,
+            "status": "upcoming"
           }
         ],
-        "aggregate_a": 62,
-        "aggregate_b": 104,
-        "winner": {
-          "entry_id": 4789233,
-          "name": "Inevitable***",
-          "manager": "Jason Knightly"
-        }
+        "aggregate_a": 0,
+        "aggregate_b": 0,
+        "winner": null
       }
     ],
     "final": {
       "gw": 38,
       "team_a": {
-        "entry_id": 6366909,
-        "name": "HC XI II",
-        "manager": "Dominic Byrne"
+        "entry_id": null,
+        "name": "TBD",
+        "manager": ""
       },
       "team_b": {
-        "entry_id": 4789233,
-        "name": "Inevitable***",
-        "manager": "Jason Knightly"
+        "entry_id": null,
+        "name": "TBD",
+        "manager": ""
       },
-      "score_a": 47,
-      "score_b": 43,
-      "winner": {
-        "entry_id": 6366909,
-        "name": "HC XI II",
-        "manager": "Dominic Byrne"
-      },
-      "status": "complete"
+      "score_a": null,
+      "score_b": null,
+      "winner": null,
+      "status": "upcoming"
     }
   }
 }
