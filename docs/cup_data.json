@@ -10,40 +10,40 @@
     "A": {
       "teams": [
         {
-          "entry_id": 3523822,
-          "name": "Pain in Dias",
-          "manager": "Alexander Bodek",
-          "seeding_points": 100
+          "entry_id": 5171746,
+          "name": "Soucek Sadness",
+          "manager": "Sam Haseltine",
+          "seeding_points": 173
+        },
+        {
+          "entry_id": 5194548,
+          "name": "Habibi Jeebies",
+          "manager": "Arun Quayum",
+          "seeding_points": 160
+        },
+        {
+          "entry_id": 8444994,
+          "name": "Silverware Foxes *",
+          "manager": "Charles Smith",
+          "seeding_points": 152
+        },
+        {
+          "entry_id": 153220,
+          "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+          "manager": "Anthony Savvides",
+          "seeding_points": 147
+        },
+        {
+          "entry_id": 5291090,
+          "name": "Change Name",
+          "manager": "Jason Knightly",
+          "seeding_points": 145
         },
         {
           "entry_id": 1552043,
           "name": "Respect The CV ****",
           "manager": "Joe Wilson",
-          "seeding_points": 99
-        },
-        {
-          "entry_id": 5171746,
-          "name": "Soucek Sadness",
-          "manager": "Sam Haseltine",
-          "seeding_points": 98
-        },
-        {
-          "entry_id": 7067293,
-          "name": "currywirtz",
-          "manager": "Ed Pragnell",
-          "seeding_points": 97
-        },
-        {
-          "entry_id": 6415977,
-          "name": "Call the Tzolis",
-          "manager": "Adam Georghiou",
-          "seeding_points": 94
-        },
-        {
-          "entry_id": 1442119,
-          "name": "GVG XI *",
-          "manager": "George Georgiou",
-          "seeding_points": 93
+          "seeding_points": 136
         }
       ],
       "fixtures": [
@@ -54,24 +54,6 @@
           "matches": [
             {
               "home": {
-                "entry_id": 3523822,
-                "name": "Pain in Dias",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "away": {
-                "entry_id": 1552043,
-                "name": "Respect The CV ****",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "result": null,
-              "status": "upcoming"
-            },
-            {
-              "home": {
                 "entry_id": 5171746,
                 "name": "Soucek Sadness",
                 "score": null,
@@ -79,8 +61,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 7067293,
-                "name": "currywirtz",
+                "entry_id": 5194548,
+                "name": "Habibi Jeebies",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -90,15 +72,33 @@
             },
             {
               "home": {
-                "entry_id": 6415977,
-                "name": "Call the Tzolis",
+                "entry_id": 8444994,
+                "name": "Silverware Foxes *",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 1442119,
-                "name": "GVG XI *",
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "result": null,
+              "status": "upcoming"
+            },
+            {
+              "home": {
+                "entry_id": 5291090,
+                "name": "Change Name",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "away": {
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -115,51 +115,51 @@
           "matches": [
             {
               "home": {
-                "entry_id": 3523822,
-                "name": "Pain in Dias",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "away": {
                 "entry_id": 5171746,
                 "name": "Soucek Sadness",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
+              "away": {
+                "entry_id": 8444994,
+                "name": "Silverware Foxes *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
               "result": null,
               "status": "upcoming"
             },
             {
               "home": {
+                "entry_id": 5194548,
+                "name": "Habibi Jeebies",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "away": {
+                "entry_id": 5291090,
+                "name": "Change Name",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "result": null,
+              "status": "upcoming"
+            },
+            {
+              "home": {
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "away": {
                 "entry_id": 1552043,
                 "name": "Respect The CV ****",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "away": {
-                "entry_id": 6415977,
-                "name": "Call the Tzolis",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "result": null,
-              "status": "upcoming"
-            },
-            {
-              "home": {
-                "entry_id": 7067293,
-                "name": "currywirtz",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "away": {
-                "entry_id": 1442119,
-                "name": "GVG XI *",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -176,42 +176,6 @@
           "matches": [
             {
               "home": {
-                "entry_id": 3523822,
-                "name": "Pain in Dias",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "away": {
-                "entry_id": 7067293,
-                "name": "currywirtz",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "result": null,
-              "status": "upcoming"
-            },
-            {
-              "home": {
-                "entry_id": 1552043,
-                "name": "Respect The CV ****",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "away": {
-                "entry_id": 1442119,
-                "name": "GVG XI *",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "result": null,
-              "status": "upcoming"
-            },
-            {
-              "home": {
                 "entry_id": 5171746,
                 "name": "Soucek Sadness",
                 "score": null,
@@ -219,8 +183,44 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 6415977,
-                "name": "Call the Tzolis",
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "result": null,
+              "status": "upcoming"
+            },
+            {
+              "home": {
+                "entry_id": 5194548,
+                "name": "Habibi Jeebies",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "away": {
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "result": null,
+              "status": "upcoming"
+            },
+            {
+              "home": {
+                "entry_id": 8444994,
+                "name": "Silverware Foxes *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "away": {
+                "entry_id": 5291090,
+                "name": "Change Name",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -237,42 +237,6 @@
           "matches": [
             {
               "home": {
-                "entry_id": 3523822,
-                "name": "Pain in Dias",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "away": {
-                "entry_id": 6415977,
-                "name": "Call the Tzolis",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "result": null,
-              "status": "upcoming"
-            },
-            {
-              "home": {
-                "entry_id": 1552043,
-                "name": "Respect The CV ****",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "away": {
-                "entry_id": 7067293,
-                "name": "currywirtz",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "result": null,
-              "status": "upcoming"
-            },
-            {
-              "home": {
                 "entry_id": 5171746,
                 "name": "Soucek Sadness",
                 "score": null,
@@ -280,8 +244,44 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 1442119,
-                "name": "GVG XI *",
+                "entry_id": 5291090,
+                "name": "Change Name",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "result": null,
+              "status": "upcoming"
+            },
+            {
+              "home": {
+                "entry_id": 5194548,
+                "name": "Habibi Jeebies",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "away": {
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "result": null,
+              "status": "upcoming"
+            },
+            {
+              "home": {
+                "entry_id": 8444994,
+                "name": "Silverware Foxes *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "away": {
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -298,51 +298,51 @@
           "matches": [
             {
               "home": {
-                "entry_id": 3523822,
-                "name": "Pain in Dias",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "away": {
-                "entry_id": 1442119,
-                "name": "GVG XI *",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "result": null,
-              "status": "upcoming"
-            },
-            {
-              "home": {
-                "entry_id": 1552043,
-                "name": "Respect The CV ****",
-                "score": null,
-                "captain_pts": null,
-                "vice_pts": null
-              },
-              "away": {
                 "entry_id": 5171746,
                 "name": "Soucek Sadness",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
+              "away": {
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
               "result": null,
               "status": "upcoming"
             },
             {
               "home": {
-                "entry_id": 7067293,
-                "name": "currywirtz",
+                "entry_id": 5194548,
+                "name": "Habibi Jeebies",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 6415977,
-                "name": "Call the Tzolis",
+                "entry_id": 8444994,
+                "name": "Silverware Foxes *",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "result": null,
+              "status": "upcoming"
+            },
+            {
+              "home": {
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "score": null,
+                "captain_pts": null,
+                "vice_pts": null
+              },
+              "away": {
+                "entry_id": 5291090,
+                "name": "Change Name",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -355,9 +355,9 @@
       ],
       "standings": [
         {
-          "entry_id": 3523822,
-          "name": "Pain in Dias",
-          "manager": "Alexander Bodek",
+          "entry_id": 5171746,
+          "name": "Soucek Sadness",
+          "manager": "Sam Haseltine",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -369,9 +369,9 @@
           "qualified": true
         },
         {
-          "entry_id": 1552043,
-          "name": "Respect The CV ****",
-          "manager": "Joe Wilson",
+          "entry_id": 5194548,
+          "name": "Habibi Jeebies",
+          "manager": "Arun Quayum",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -383,9 +383,9 @@
           "qualified": true
         },
         {
-          "entry_id": 5171746,
-          "name": "Soucek Sadness",
-          "manager": "Sam Haseltine",
+          "entry_id": 8444994,
+          "name": "Silverware Foxes *",
+          "manager": "Charles Smith",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -397,9 +397,9 @@
           "qualified": false
         },
         {
-          "entry_id": 7067293,
-          "name": "currywirtz",
-          "manager": "Ed Pragnell",
+          "entry_id": 153220,
+          "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+          "manager": "Anthony Savvides",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -411,9 +411,9 @@
           "qualified": false
         },
         {
-          "entry_id": 6415977,
-          "name": "Call the Tzolis",
-          "manager": "Adam Georghiou",
+          "entry_id": 5291090,
+          "name": "Change Name",
+          "manager": "Jason Knightly",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -425,9 +425,9 @@
           "qualified": false
         },
         {
-          "entry_id": 1442119,
-          "name": "GVG XI *",
-          "manager": "George Georgiou",
+          "entry_id": 1552043,
+          "name": "Respect The CV ****",
+          "manager": "Joe Wilson",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -443,40 +443,40 @@
     "B": {
       "teams": [
         {
-          "entry_id": 3285103,
-          "name": "Super Park Rateta FC",
-          "manager": "David Pontin",
-          "seeding_points": 92
+          "entry_id": 7067293,
+          "name": "currywirtz",
+          "manager": "Ed Pragnell",
+          "seeding_points": 134
         },
         {
           "entry_id": 6815970,
           "name": "Tonali-tarian",
           "manager": "Dominic Byrne",
-          "seeding_points": 85
+          "seeding_points": 131
         },
         {
-          "entry_id": 8444994,
-          "name": "Silverware Foxes *",
-          "manager": "Charles Smith",
-          "seeding_points": 79
+          "entry_id": 3523822,
+          "name": "Pain in Dias",
+          "manager": "Alexander Bodek",
+          "seeding_points": 125
         },
         {
-          "entry_id": 153220,
-          "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
-          "manager": "Anthony Savvides",
-          "seeding_points": 73
+          "entry_id": 3285103,
+          "name": "Super Park Rateta FC",
+          "manager": "David Pontin",
+          "seeding_points": 119
         },
         {
-          "entry_id": 5291090,
-          "name": "Change Name",
-          "manager": "Jason Knightly",
-          "seeding_points": 69
+          "entry_id": 6415977,
+          "name": "Call the Tzolis",
+          "manager": "Adam Georghiou",
+          "seeding_points": 119
         },
         {
-          "entry_id": 5194548,
-          "name": "Habibi Jeebies",
-          "manager": "Arun Quayum",
-          "seeding_points": 66
+          "entry_id": 1442119,
+          "name": "GVG XI *",
+          "manager": "George Georgiou",
+          "seeding_points": 114
         }
       ],
       "fixtures": [
@@ -487,8 +487,8 @@
           "matches": [
             {
               "home": {
-                "entry_id": 3285103,
-                "name": "Super Park Rateta FC",
+                "entry_id": 7067293,
+                "name": "currywirtz",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -505,15 +505,15 @@
             },
             {
               "home": {
-                "entry_id": 8444994,
-                "name": "Silverware Foxes *",
+                "entry_id": 3523822,
+                "name": "Pain in Dias",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 153220,
-                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -523,15 +523,15 @@
             },
             {
               "home": {
-                "entry_id": 5291090,
-                "name": "Change Name",
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 5194548,
-                "name": "Habibi Jeebies",
+                "entry_id": 1442119,
+                "name": "GVG XI *",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -548,15 +548,15 @@
           "matches": [
             {
               "home": {
-                "entry_id": 3285103,
-                "name": "Super Park Rateta FC",
+                "entry_id": 7067293,
+                "name": "currywirtz",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 8444994,
-                "name": "Silverware Foxes *",
+                "entry_id": 3523822,
+                "name": "Pain in Dias",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -573,8 +573,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 5291090,
-                "name": "Change Name",
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -584,15 +584,15 @@
             },
             {
               "home": {
-                "entry_id": 153220,
-                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 5194548,
-                "name": "Habibi Jeebies",
+                "entry_id": 1442119,
+                "name": "GVG XI *",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -609,15 +609,15 @@
           "matches": [
             {
               "home": {
-                "entry_id": 3285103,
-                "name": "Super Park Rateta FC",
+                "entry_id": 7067293,
+                "name": "currywirtz",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 153220,
-                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -634,8 +634,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 5194548,
-                "name": "Habibi Jeebies",
+                "entry_id": 1442119,
+                "name": "GVG XI *",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -645,15 +645,15 @@
             },
             {
               "home": {
-                "entry_id": 8444994,
-                "name": "Silverware Foxes *",
+                "entry_id": 3523822,
+                "name": "Pain in Dias",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 5291090,
-                "name": "Change Name",
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -670,15 +670,15 @@
           "matches": [
             {
               "home": {
-                "entry_id": 3285103,
-                "name": "Super Park Rateta FC",
+                "entry_id": 7067293,
+                "name": "currywirtz",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 5291090,
-                "name": "Change Name",
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -695,8 +695,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 153220,
-                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -706,15 +706,15 @@
             },
             {
               "home": {
-                "entry_id": 8444994,
-                "name": "Silverware Foxes *",
+                "entry_id": 3523822,
+                "name": "Pain in Dias",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 5194548,
-                "name": "Habibi Jeebies",
+                "entry_id": 1442119,
+                "name": "GVG XI *",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -731,15 +731,15 @@
           "matches": [
             {
               "home": {
-                "entry_id": 3285103,
-                "name": "Super Park Rateta FC",
+                "entry_id": 7067293,
+                "name": "currywirtz",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 5194548,
-                "name": "Habibi Jeebies",
+                "entry_id": 1442119,
+                "name": "GVG XI *",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -756,8 +756,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 8444994,
-                "name": "Silverware Foxes *",
+                "entry_id": 3523822,
+                "name": "Pain in Dias",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -767,15 +767,15 @@
             },
             {
               "home": {
-                "entry_id": 153220,
-                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 5291090,
-                "name": "Change Name",
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -788,9 +788,9 @@
       ],
       "standings": [
         {
-          "entry_id": 3285103,
-          "name": "Super Park Rateta FC",
-          "manager": "David Pontin",
+          "entry_id": 7067293,
+          "name": "currywirtz",
+          "manager": "Ed Pragnell",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -816,9 +816,9 @@
           "qualified": true
         },
         {
-          "entry_id": 8444994,
-          "name": "Silverware Foxes *",
-          "manager": "Charles Smith",
+          "entry_id": 3523822,
+          "name": "Pain in Dias",
+          "manager": "Alexander Bodek",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -830,9 +830,9 @@
           "qualified": false
         },
         {
-          "entry_id": 153220,
-          "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
-          "manager": "Anthony Savvides",
+          "entry_id": 3285103,
+          "name": "Super Park Rateta FC",
+          "manager": "David Pontin",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -844,9 +844,9 @@
           "qualified": false
         },
         {
-          "entry_id": 5291090,
-          "name": "Change Name",
-          "manager": "Jason Knightly",
+          "entry_id": 6415977,
+          "name": "Call the Tzolis",
+          "manager": "Adam Georghiou",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -858,9 +858,9 @@
           "qualified": false
         },
         {
-          "entry_id": 5194548,
-          "name": "Habibi Jeebies",
-          "manager": "Arun Quayum",
+          "entry_id": 1442119,
+          "name": "GVG XI *",
+          "manager": "George Georgiou",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -879,9 +879,9 @@
       {
         "label": "Semi-Final 1",
         "team_a": {
-          "entry_id": 3523822,
-          "name": "Pain in Dias",
-          "manager": "Alexander Bodek"
+          "entry_id": 5171746,
+          "name": "Soucek Sadness",
+          "manager": "Sam Haseltine"
         },
         "team_b": {
           "entry_id": 6815970,
@@ -909,14 +909,14 @@
       {
         "label": "Semi-Final 2",
         "team_a": {
-          "entry_id": 1552043,
-          "name": "Respect The CV ****",
-          "manager": "Joe Wilson"
+          "entry_id": 5194548,
+          "name": "Habibi Jeebies",
+          "manager": "Arun Quayum"
         },
         "team_b": {
-          "entry_id": 3285103,
-          "name": "Super Park Rateta FC",
-          "manager": "David Pontin"
+          "entry_id": 7067293,
+          "name": "currywirtz",
+          "manager": "Ed Pragnell"
         },
         "legs": [
           {
