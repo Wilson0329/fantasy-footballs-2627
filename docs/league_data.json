@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-08-29",
+    "last_updated": "2026-08-30",
     "current_gw": 2,
     "season": "2026/27"
   },
@@ -481,6 +481,23 @@
       ]
     },
     {
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
+      "total_bench_points": 14,
+      "avg_bench_per_gw": 7.0,
+      "by_gw": [
+        {
+          "gw": 1,
+          "bench_pts": 0
+        },
+        {
+          "gw": 2,
+          "bench_pts": 14
+        }
+      ]
+    },
+    {
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
@@ -532,9 +549,9 @@
       ]
     },
     {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
+      "entry_id": 3285103,
+      "name": "Super Park Rateta FC",
+      "manager": "David Pontin",
       "total_bench_points": 2,
       "avg_bench_per_gw": 1.0,
       "by_gw": [
@@ -620,23 +637,6 @@
       "entry_id": 1442119,
       "name": "GVG XI *",
       "manager": "George Georgiou",
-      "total_bench_points": 0,
-      "avg_bench_per_gw": 0.0,
-      "by_gw": [
-        {
-          "gw": 1,
-          "bench_pts": 0
-        },
-        {
-          "gw": 2,
-          "bench_pts": 0
-        }
-      ]
-    },
-    {
-      "entry_id": 3285103,
-      "name": "Super Park Rateta FC",
-      "manager": "David Pontin",
       "total_bench_points": 0,
       "avg_bench_per_gw": 0.0,
       "by_gw": [
