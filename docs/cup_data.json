@@ -461,15 +461,15 @@
           "seeding_points": 125
         },
         {
-          "entry_id": 3285103,
-          "name": "Super Park Rateta FC",
-          "manager": "David Pontin",
-          "seeding_points": 119
-        },
-        {
           "entry_id": 6415977,
           "name": "Call the Tzolis",
           "manager": "Adam Georghiou",
+          "seeding_points": 119
+        },
+        {
+          "entry_id": 3285103,
+          "name": "Super Park Rateta FC",
+          "manager": "David Pontin",
           "seeding_points": 119
         },
         {
@@ -512,8 +512,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 3285103,
-                "name": "Super Park Rateta FC",
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -523,8 +523,8 @@
             },
             {
               "home": {
-                "entry_id": 6415977,
-                "name": "Call the Tzolis",
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -573,8 +573,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 6415977,
-                "name": "Call the Tzolis",
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -584,8 +584,8 @@
             },
             {
               "home": {
-                "entry_id": 3285103,
-                "name": "Super Park Rateta FC",
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -616,8 +616,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 3285103,
-                "name": "Super Park Rateta FC",
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -652,8 +652,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 6415977,
-                "name": "Call the Tzolis",
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -677,8 +677,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 6415977,
-                "name": "Call the Tzolis",
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -695,8 +695,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 3285103,
-                "name": "Super Park Rateta FC",
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -767,15 +767,15 @@
             },
             {
               "home": {
-                "entry_id": 3285103,
-                "name": "Super Park Rateta FC",
+                "entry_id": 6415977,
+                "name": "Call the Tzolis",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 6415977,
-                "name": "Call the Tzolis",
+                "entry_id": 3285103,
+                "name": "Super Park Rateta FC",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -830,9 +830,9 @@
           "qualified": false
         },
         {
-          "entry_id": 3285103,
-          "name": "Super Park Rateta FC",
-          "manager": "David Pontin",
+          "entry_id": 6415977,
+          "name": "Call the Tzolis",
+          "manager": "Adam Georghiou",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -844,9 +844,9 @@
           "qualified": false
         },
         {
-          "entry_id": 6415977,
-          "name": "Call the Tzolis",
-          "manager": "Adam Georghiou",
+          "entry_id": 3285103,
+          "name": "Super Park Rateta FC",
+          "manager": "David Pontin",
           "played": 0,
           "won": 0,
           "drawn": 0,
