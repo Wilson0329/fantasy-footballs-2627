@@ -2,7 +2,7 @@
   "metadata": {
     "cup_name": "Fantasy Footballs Cup",
     "league_id": 271949,
-    "last_updated": "2026-08-31",
+    "last_updated": "2026-09-01",
     "current_gw": 2,
     "season": "2026/27"
   },
@@ -13,37 +13,37 @@
           "entry_id": 5171746,
           "name": "Soucek Sadness",
           "manager": "Sam Haseltine",
-          "seeding_points": 173
+          "seeding_points": 191
         },
         {
           "entry_id": 5194548,
           "name": "Habibi Jeebies",
           "manager": "Arun Quayum",
-          "seeding_points": 160
+          "seeding_points": 171
         },
         {
           "entry_id": 8444994,
           "name": "Silverware Foxes *",
           "manager": "Charles Smith",
-          "seeding_points": 152
+          "seeding_points": 169
+        },
+        {
+          "entry_id": 7067293,
+          "name": "currywirtz",
+          "manager": "Ed Pragnell",
+          "seeding_points": 160
         },
         {
           "entry_id": 153220,
           "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
           "manager": "Anthony Savvides",
-          "seeding_points": 147
+          "seeding_points": 158
         },
         {
           "entry_id": 5291090,
           "name": "Change Name",
           "manager": "Jason Knightly",
-          "seeding_points": 145
-        },
-        {
-          "entry_id": 1552043,
-          "name": "Respect The CV ****",
-          "manager": "Joe Wilson",
-          "seeding_points": 136
+          "seeding_points": 156
         }
       ],
       "fixtures": [
@@ -79,8 +79,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 153220,
-                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "entry_id": 7067293,
+                "name": "currywirtz",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -90,15 +90,15 @@
             },
             {
               "home": {
-                "entry_id": 5291090,
-                "name": "Change Name",
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 1552043,
-                "name": "Respect The CV ****",
+                "entry_id": 5291090,
+                "name": "Change Name",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -140,8 +140,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 5291090,
-                "name": "Change Name",
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -151,15 +151,15 @@
             },
             {
               "home": {
-                "entry_id": 153220,
-                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "entry_id": 7067293,
+                "name": "currywirtz",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 1552043,
-                "name": "Respect The CV ****",
+                "entry_id": 5291090,
+                "name": "Change Name",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -183,8 +183,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 153220,
-                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "entry_id": 7067293,
+                "name": "currywirtz",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -201,8 +201,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 1552043,
-                "name": "Respect The CV ****",
+                "entry_id": 5291090,
+                "name": "Change Name",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -219,8 +219,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 5291090,
-                "name": "Change Name",
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -244,8 +244,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 5291090,
-                "name": "Change Name",
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -262,8 +262,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 153220,
-                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "entry_id": 7067293,
+                "name": "currywirtz",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -280,8 +280,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 1552043,
-                "name": "Respect The CV ****",
+                "entry_id": 5291090,
+                "name": "Change Name",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -305,8 +305,8 @@
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 1552043,
-                "name": "Respect The CV ****",
+                "entry_id": 5291090,
+                "name": "Change Name",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -334,15 +334,15 @@
             },
             {
               "home": {
-                "entry_id": 153220,
-                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+                "entry_id": 7067293,
+                "name": "currywirtz",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
               },
               "away": {
-                "entry_id": 5291090,
-                "name": "Change Name",
+                "entry_id": 153220,
+                "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -397,9 +397,9 @@
           "qualified": false
         },
         {
-          "entry_id": 153220,
-          "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
-          "manager": "Anthony Savvides",
+          "entry_id": 7067293,
+          "name": "currywirtz",
+          "manager": "Ed Pragnell",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -411,9 +411,9 @@
           "qualified": false
         },
         {
-          "entry_id": 5291090,
-          "name": "Change Name",
-          "manager": "Jason Knightly",
+          "entry_id": 153220,
+          "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+          "manager": "Anthony Savvides",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -425,9 +425,9 @@
           "qualified": false
         },
         {
-          "entry_id": 1552043,
-          "name": "Respect The CV ****",
-          "manager": "Joe Wilson",
+          "entry_id": 5291090,
+          "name": "Change Name",
+          "manager": "Jason Knightly",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -443,34 +443,34 @@
     "B": {
       "teams": [
         {
-          "entry_id": 7067293,
-          "name": "currywirtz",
-          "manager": "Ed Pragnell",
-          "seeding_points": 134
+          "entry_id": 1552043,
+          "name": "Respect The CV ****",
+          "manager": "Joe Wilson",
+          "seeding_points": 150
         },
         {
           "entry_id": 6815970,
           "name": "Tonali-tarian",
           "manager": "Dominic Byrne",
-          "seeding_points": 131
+          "seeding_points": 148
         },
         {
           "entry_id": 3523822,
           "name": "Pain in Dias",
           "manager": "Alexander Bodek",
-          "seeding_points": 125
+          "seeding_points": 142
         },
         {
           "entry_id": 6415977,
           "name": "Call the Tzolis",
           "manager": "Adam Georghiou",
-          "seeding_points": 119
+          "seeding_points": 135
         },
         {
           "entry_id": 3285103,
           "name": "Super Park Rateta FC",
           "manager": "David Pontin",
-          "seeding_points": 119
+          "seeding_points": 131
         },
         {
           "entry_id": 1442119,
@@ -487,8 +487,8 @@
           "matches": [
             {
               "home": {
-                "entry_id": 7067293,
-                "name": "currywirtz",
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -548,8 +548,8 @@
           "matches": [
             {
               "home": {
-                "entry_id": 7067293,
-                "name": "currywirtz",
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -609,8 +609,8 @@
           "matches": [
             {
               "home": {
-                "entry_id": 7067293,
-                "name": "currywirtz",
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -670,8 +670,8 @@
           "matches": [
             {
               "home": {
-                "entry_id": 7067293,
-                "name": "currywirtz",
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -731,8 +731,8 @@
           "matches": [
             {
               "home": {
-                "entry_id": 7067293,
-                "name": "currywirtz",
+                "entry_id": 1552043,
+                "name": "Respect The CV ****",
                 "score": null,
                 "captain_pts": null,
                 "vice_pts": null
@@ -788,9 +788,9 @@
       ],
       "standings": [
         {
-          "entry_id": 7067293,
-          "name": "currywirtz",
-          "manager": "Ed Pragnell",
+          "entry_id": 1552043,
+          "name": "Respect The CV ****",
+          "manager": "Joe Wilson",
           "played": 0,
           "won": 0,
           "drawn": 0,
@@ -914,9 +914,9 @@
           "manager": "Arun Quayum"
         },
         "team_b": {
-          "entry_id": 7067293,
-          "name": "currywirtz",
-          "manager": "Ed Pragnell"
+          "entry_id": 1552043,
+          "name": "Respect The CV ****",
+          "manager": "Joe Wilson"
         },
         "legs": [
           {

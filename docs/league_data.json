@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-08-31",
+    "last_updated": "2026-09-01",
     "current_gw": 2,
     "season": "2026/27"
   },
@@ -102,8 +102,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_points": 129,
-      "gw_points": 63
+      "total_points": 131,
+      "gw_points": 65
     },
     {
       "rank": 12,
@@ -549,23 +549,6 @@
       ]
     },
     {
-      "entry_id": 3285103,
-      "name": "Super Park Rateta FC",
-      "manager": "David Pontin",
-      "total_bench_points": 8,
-      "avg_bench_per_gw": 4.0,
-      "by_gw": [
-        {
-          "gw": 1,
-          "bench_pts": 0
-        },
-        {
-          "gw": 2,
-          "bench_pts": 8
-        }
-      ]
-    },
-    {
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
@@ -579,6 +562,23 @@
         {
           "gw": 2,
           "bench_pts": 0
+        }
+      ]
+    },
+    {
+      "entry_id": 3285103,
+      "name": "Super Park Rateta FC",
+      "manager": "David Pontin",
+      "total_bench_points": 6,
+      "avg_bench_per_gw": 3.0,
+      "by_gw": [
+        {
+          "gw": 1,
+          "bench_pts": 0
+        },
+        {
+          "gw": 2,
+          "bench_pts": 6
         }
       ]
     },
