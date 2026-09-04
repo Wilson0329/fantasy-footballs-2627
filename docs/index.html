@@ -6712,9 +6712,9 @@ function switchTab(tabName) {
           if (liveEvent) {
             // Check if this GW is in any cup fixture
             const cupGWs = new Set();
-            ['A','B'].forEach(g => _cupData.groups[g].fixtures.forEach(f => cupGWs.add(f.gw)));
-            _cupData.knockout.semi_finals.forEach(sf => sf.legs.forEach(l => cupGWs.add(l.gw)));
-            if (_cupData.knockout.final.gw) cupGWs.add(_cupData.knockout.final.gw);
+            ['groups', 'groups2'].forEach(gk => Object.values(_cupData[gk] || {}).forEach(g => (g.fixtures || []).forEach(f => cupGWs.add(f.gw))));
+            (_cupData.knockout?.semi_finals || []).forEach(sf => (sf.legs || []).forEach(l => cupGWs.add(l.gw)));
+            if (_cupData.knockout?.final?.gw) cupGWs.add(_cupData.knockout.final.gw);
             getCupGWs().forEach(gw => cupGWs.add(gw));
             if (cupGWs.has(liveEvent.id)) cupLiveGW = liveEvent.id;
           }
@@ -6935,7 +6935,9 @@ function renderCup(data, liveGW) {
   // Until this season's cup is seeded (GW16), show the format & schedule instead
   // of the (previous-season) archive bracket.
   const cupSeason = data && data.metadata && data.metadata.season;
-  const notSeeded = !data || !data.knockout || !data.knockout.final || isArchiveSeason(cupSeason);
+  const notSeeded = !data || !data.knockout || !data.knockout.final
+                    || isArchiveSeason(cupSeason)
+                    || (data.metadata && data.metadata.seeded === false);
   if (notSeeded) {
     heroAnchor.style.display = 'none';
     app.appendChild(el('div', { className: 'section-title' }, icon('trophy'), ` ${currentSeasonLabel()} Cup`));

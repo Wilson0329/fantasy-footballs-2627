@@ -503,18 +503,26 @@ def main():
         print(f"  {i+1}. [{group}] {t['name']} — {t['seeding_points']} pts")
 
     # The groups are only seeded once GW15 is played. Until then, don't publish a
-    # speculative bracket (it would shuffle every week) — keep the existing file so
-    # the site keeps showing the format & schedule, and flips to the live bracket
-    # only once real seeding exists.
-    if (not seeding or not gw_is_finished(bootstrap, SEEDING_GW)) and os.path.exists(args.output):
-        try:
-            existing = json.load(open(args.output))
-        except ValueError:
-            existing = {}
-        if existing.get("groups"):
-            print(f"\nGW{SEEDING_GW} not finished yet — cup not seeded. Keeping "
-                  f"existing {args.output} untouched (format shown until then).")
-            return
+    # speculative bracket (it would shuffle every week) — write a pre-seed
+    # placeholder so the site shows the format & schedule, and only flip to the
+    # live bracket once real seeding exists.
+    if not seeding or not gw_is_finished(bootstrap, SEEDING_GW):
+        print(f"\nGW{SEEDING_GW} not finished yet — cup not seeded. Writing pre-seed "
+              f"placeholder (site shows the format & schedule until then).")
+        placeholder = {
+            "metadata": {
+                "cup_name":     CUP_NAME,
+                "league_id":    LEAGUE_ID,
+                "last_updated": date.today().isoformat(),
+                "current_gw":   cur_gw,
+                "season":       SEASON,
+                "seeded":       False,
+            },
+        }
+        with open(args.output, "w") as f:
+            json.dump(placeholder, f, indent=2)
+        print(f"Wrote pre-seed placeholder to {args.output}.")
+        return
 
     group_a_teams = seeding[:6]
     group_b_teams = seeding[6:]
@@ -536,6 +544,7 @@ def main():
             "last_updated": date.today().isoformat(),
             "current_gw": cur_gw,
             "season":     SEASON,
+            "seeded":     True,
         },
         "groups": {
             "A": group_a,
