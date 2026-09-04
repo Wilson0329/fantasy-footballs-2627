@@ -1625,6 +1625,34 @@
       font-size: 0.8rem; font-weight: 600; margin-bottom: 1.25rem; line-height: 1.4;
     }
     .archive-banner svg { width: 16px; height: 16px; flex-shrink: 0; }
+    /* ── Cup format & schedule ── */
+    .cup-format { display: flex; flex-direction: column; gap: 0.85rem; margin-top: 0.25rem; }
+    .cup-stage {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 0.95rem 1.05rem 0.95rem 1.15rem; position: relative; overflow: hidden;
+    }
+    .cup-stage::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+      background: linear-gradient(180deg, var(--cyan), var(--pink));
+    }
+    .cup-stage-final { background: linear-gradient(180deg, rgba(184,134,11,0.08), var(--surface)); border-color: rgba(184,134,11,0.35); }
+    .cup-stage-final::before { background: linear-gradient(180deg, var(--gold), #f0b429); }
+    .cup-stage-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+    .cup-stage-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px;
+      color: #fff; background: var(--purple); padding: 0.25rem 0.62rem; border-radius: 999px;
+    }
+    .cup-stage-final .cup-stage-badge { background: var(--gold); color: #000; }
+    .cup-stage-badge svg { width: 13px; height: 13px; }
+    .cup-stage-gws { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+    .cup-gw-chip {
+      font-size: 0.62rem; font-weight: 700; color: var(--accent);
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 0.12rem 0.42rem;
+    }
+    .cup-stage-title { font-weight: 700; font-size: 0.94rem; margin: 0.6rem 0 0.45rem; color: var(--text); }
+    .cup-stage-list { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.28rem; }
+    .cup-stage-list li { font-size: 0.82rem; color: var(--muted); line-height: 1.45; }
     /* ── Team identity: first-visit splash ── */
     .team-splash-overlay {
       position: fixed; inset: 0; z-index: 1000;
@@ -6722,7 +6750,8 @@ function switchTab(tabName) {
 // Cup render
 // ─────────────────────────────────────────────────────────────────────────────
 
-const DEFAULT_CUP_GWS = [18, 20, 22, 24, 26, 31, 33, 38];
+// 2026/27 cup gameweeks: two group rounds (16–24, 26–30), 2-leg semis (34,35), final (38).
+const DEFAULT_CUP_GWS = [16, 18, 20, 22, 24, 26, 28, 30, 34, 35, 38];
 let _firestoreCupGWs = null; // loaded from Firestore on boot; null = not yet loaded
 
 function getCupGWs() {
@@ -6836,6 +6865,58 @@ function openCupSettings() {
   document.body.appendChild(overlay);
 }
 
+// The 2026/27 cup format & schedule (shown until the competition is seeded at GW16).
+const CUP_FORMAT_STAGES = [
+  {
+    badge: 'Stage 1', title: 'Group Stage — Two Groups of Six',
+    gws: [16, 18, 20, 22, 24],
+    lines: [
+      'Seeded by the league table after Gameweek 15: 1st–6th form the top group, 7th–12th the bottom group.',
+      'Round-robin — everyone plays everyone else in their group.',
+      'The top 4 of each group advance — 8 teams through.',
+    ],
+  },
+  {
+    badge: 'Stage 2', title: 'Second Round — Two Groups of Four',
+    gws: [26, 28, 30],
+    lines: [
+      'The eight qualifiers are re-seeded into two fresh groups of four.',
+      'Another round-robin.',
+      'The top 2 of each group advance — 4 teams reach the semis.',
+    ],
+  },
+  {
+    badge: 'Semi-Finals', title: 'Two Legs, Back-to-Back',
+    gws: [34, 35],
+    lines: [
+      'Four teams, two ties, each played over two legs on consecutive gameweeks.',
+      'Aggregate score across both legs decides who reaches the final.',
+    ],
+  },
+  {
+    badge: 'Final', title: 'One Match, One Trophy', isFinal: true,
+    gws: [38],
+    lines: ['A single showdown on the final gameweek of the season.'],
+  },
+];
+
+function buildCupFormat() {
+  const wrap = el('div', { className: 'cup-format' });
+  CUP_FORMAT_STAGES.forEach(st => {
+    const card = el('div', { className: 'cup-stage' + (st.isFinal ? ' cup-stage-final' : '') });
+    card.appendChild(el('div', { className: 'cup-stage-head' },
+      el('span', { className: 'cup-stage-badge' }, st.isFinal ? icon('trophy') : null, st.badge),
+      el('div', { className: 'cup-stage-gws' }, ...st.gws.map(g => el('span', { className: 'cup-gw-chip' }, 'GW' + g)))
+    ));
+    card.appendChild(el('div', { className: 'cup-stage-title' }, st.title));
+    const ul = el('ul', { className: 'cup-stage-list' });
+    st.lines.forEach(l => ul.appendChild(el('li', {}, l)));
+    card.appendChild(ul);
+    wrap.appendChild(card);
+  });
+  return wrap;
+}
+
 function renderCup(data, liveGW) {
   const heroAnchor = document.getElementById('final-hero-anchor');
   heroAnchor.innerHTML = '';
@@ -6843,13 +6924,16 @@ function renderCup(data, liveGW) {
   const app = document.getElementById('app');
   app.innerHTML = '';
 
-  // No cup built yet (e.g. pre-season, before the group-stage seeding gameweek)
-  if (!data || !data.knockout || !data.knockout.final) {
+  // Until this season's cup is seeded (GW16), show the format & schedule instead
+  // of the (previous-season) archive bracket.
+  const cupSeason = data && data.metadata && data.metadata.season;
+  const notSeeded = !data || !data.knockout || !data.knockout.final || isArchiveSeason(cupSeason);
+  if (notSeeded) {
     heroAnchor.style.display = 'none';
-    app.appendChild(el('div', { className: 'section-title' }, icon('trophy'), ' Cup'));
-    const _archEmpty = buildArchiveBanner(data && data.metadata && data.metadata.season, 'The cup will be updated once the new format has been announced.');
-    if (_archEmpty) app.appendChild(_archEmpty);
-    app.appendChild(buildEmptyPlaceholder('The cup gets going mid-season — group standings are seeded around Gameweek 17.'));
+    app.appendChild(el('div', { className: 'section-title' }, icon('trophy'), ` ${currentSeasonLabel()} Cup`));
+    app.appendChild(el('p', { className: 'champions-intro' },
+      'A new format for this season. Groups are seeded from the Gameweek 15 league table, then it runs through two group rounds, two-legged semi-finals, and a one-off final. The competition begins at Gameweek 16.'));
+    app.appendChild(buildCupFormat());
     return;
   }
 
