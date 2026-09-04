@@ -1653,6 +1653,11 @@
     .cup-stage-title { font-weight: 700; font-size: 0.94rem; margin: 0.6rem 0 0.45rem; color: var(--text); }
     .cup-stage-list { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.28rem; }
     .cup-stage-list li { font-size: 0.82rem; color: var(--muted); line-height: 1.45; }
+    .cup-round-note { font-size: 0.8rem; color: var(--muted); line-height: 1.45; margin: -0.25rem 0 0.75rem; }
+    .group-advance-note {
+      margin-left: auto; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
+      color: var(--win); background: rgba(0,212,170,0.12); border-radius: 999px; padding: 0.15rem 0.5rem; white-space: nowrap;
+    }
     /* ── Team identity: first-visit splash ── */
     .team-splash-overlay {
       position: fixed; inset: 0; z-index: 1000;
@@ -2481,7 +2486,7 @@ function initTeamIdentity(leagueData) {
 // Cup tab builders
 // ─────────────────────────────────────────────────────────────────────────────
 
-function buildStandingsTable(standings) {
+function buildStandingsTable(standings, advance = 2) {
   const rows = standings.map((s, i) => {
     const posCell = el('div', { className: 'pos-cell' },
       el('span', { className: 'pos-num' }, String(s.position)),
@@ -2507,7 +2512,8 @@ function buildStandingsTable(standings) {
   const tbody = el('tbody');
   rows.forEach((tr, i) => {
     tbody.appendChild(tr);
-    if (i === 1) {
+    // Qualification line under the top `advance` teams
+    if (i === advance - 1 && i < rows.length - 1) {
       tbody.appendChild(el('tr', { className: 'separator-row' },
         el('td', { colspan: '7', style: 'height:3px;background:rgba(0,212,170,0.15)' })
       ));
@@ -2728,12 +2734,14 @@ function buildFixtures(fixtures, liveGW) {
 }
 
 function buildGroupCard(label, group, liveGW) {
+  const advance = group.advance || 2;
   return el('div', { className: 'group-card' },
     el('div', { className: 'group-header' },
       el('div', { className: 'group-badge' }, label),
-      el('h2', {}, `Group ${label}`)
+      el('h2', {}, `Group ${label}`),
+      el('span', { className: 'group-advance-note' }, `top ${advance} advance`)
     ),
-    buildStandingsTable(group.standings),
+    buildStandingsTable(group.standings, advance),
     buildFixtures(group.fixtures, liveGW)
   );
 }
@@ -6957,7 +6965,19 @@ function renderCup(data, liveGW) {
   const semis = el('div', { className: 'semis-grid' });
   data.knockout.semi_finals.forEach(sf => semis.appendChild(buildSFCard(sf, liveGW)));
   app.appendChild(semis);
+
+  // Second round — two groups of four (the eight round-1 qualifiers re-seeded)
+  if (data.groups2 && data.groups2.C && data.groups2.D) {
+    app.appendChild(el('div', { className: 'section-title', style: 'margin-top:1rem' }, icon('layout-grid'), ' Second Round'));
+    app.appendChild(el('p', { className: 'cup-round-note' }, 'The eight group-stage qualifiers, re-seeded into two groups of four. Top 2 of each reach the semi-finals.'));
+    app.appendChild(el('div', { className: 'groups-grid' },
+      buildGroupCard('C', data.groups2.C, liveGW),
+      buildGroupCard('D', data.groups2.D, liveGW)
+    ));
+  }
+
   app.appendChild(el('div', { className: 'section-title', style: 'margin-top:1rem' }, icon('layout-grid'), ' Group Stage'));
+  app.appendChild(el('p', { className: 'cup-round-note' }, 'Seeded by the league table after Gameweek 15. Top 4 of each group advance to the second round.'));
   app.appendChild(el('div', { className: 'groups-grid' },
     buildGroupCard('A', data.groups.A, liveGW),
     buildGroupCard('B', data.groups.B, liveGW)

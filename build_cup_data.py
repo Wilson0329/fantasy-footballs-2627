@@ -17,7 +17,7 @@ from datetime import date
 
 import requests
 
-from fpl_firestore import init_firebase, load_site_settings, require_league_id, fetch_teams_from_fpl, parse_cup_gws
+from fpl_firestore import init_firebase, load_site_settings, require_league_id, fetch_teams_from_fpl
 
 BASE = "https://fantasy.premierleague.com/api"
 CUP_NAME = "Fantasy Footballs Cup"
@@ -36,9 +36,8 @@ ARGS, _ = _cli.parse_known_args()
 if ARGS.league_id:
     print(f"Using --league-id {ARGS.league_id} (skipping Firestore).")
     LEAGUE_ID = ARGS.league_id
-    SEASON    = ARGS.season or "2025/26"
+    SEASON    = ARGS.season or "2026/27"
     TEAMS     = fetch_teams_from_fpl(LEAGUE_ID, SESSION)
-    GROUP_GWS, SEMI_GWS, FINAL_GW = parse_cup_gws({})  # defaults
 else:
     print("Loading site settings from Firestore...")
     _db        = init_firebase()
@@ -46,11 +45,20 @@ else:
     LEAGUE_ID  = require_league_id(_settings)
     SEASON     = _settings.get("season", "2026/27")
     TEAMS      = fetch_teams_from_fpl(LEAGUE_ID, SESSION)
-    GROUP_GWS, SEMI_GWS, FINAL_GW = parse_cup_gws(_settings)
 # ─────────────────────────────────────────────────────────────────────────────
 
-# The GW that determines group seeding (one before the first cup GW)
-SEEDING_GW = GROUP_GWS[0] - 1 if GROUP_GWS else 17
+# ── 2026/27 cup schedule (fixed format) ──────────────────────────────────────
+# Round 1: two groups of six, round-robin — top 4 of each advance (8 teams).
+# Round 2: the eight qualifiers are re-seeded into two groups of four, round-robin
+#          — top 2 of each reach the semis (4 teams).
+# Semis: two-legged. Final: single match.
+SEEDING_GW     = 15                    # groups formed by the league table after GW15
+GROUP_GWS      = [16, 18, 20, 22, 24]  # round 1 (5 rounds for 6 teams)
+GROUP2_GWS     = [26, 28, 30]          # round 2 (3 rounds for 4 teams)
+SEMI_GWS       = [34, 35]              # two-legged semi-finals
+FINAL_GW       = 38                    # single-match final
+GROUP1_ADVANCE = 4                     # top 4 of each group of six advance
+GROUP2_ADVANCE = 2                     # top 2 of each group of four reach the semis
 
 # Round-robin fixture pattern for 6 teams (positions 1–6 within group)
 GROUP_ROUNDS = [
@@ -59,6 +67,12 @@ GROUP_ROUNDS = [
     [(1, 4), (2, 6), (3, 5)],
     [(1, 5), (2, 4), (3, 6)],
     [(1, 6), (2, 3), (4, 5)],
+]
+# Round-robin fixture pattern for 4 teams (positions 1–4 within group)
+GROUP4_ROUNDS = [
+    [(1, 2), (3, 4)],
+    [(1, 3), (2, 4)],
+    [(1, 4), (2, 3)],
 ]
 
 
@@ -209,8 +223,8 @@ def get_first_fixture_by_team(gw):
 
 # ─── Group stage ─────────────────────────────────────────────────────────────
 
-def build_group(group_label, group_teams, bootstrap):
-    print(f"\nBuilding Group {group_label}...")
+def build_group(group_label, group_teams, bootstrap, rounds=GROUP_ROUNDS, gws=GROUP_GWS, advance=2):
+    print(f"\nBuilding Group {group_label} ({len(group_teams)} teams, top {advance} advance)...")
 
     ranked = {i + 1: group_teams[i] for i in range(len(group_teams))}
 
@@ -223,10 +237,10 @@ def build_group(group_label, group_teams, bootstrap):
 
     h2h = {t["entry_id"]: {t2["entry_id"]: None for t2 in group_teams} for t in group_teams}
 
-    for round_idx, round_fixtures in enumerate(GROUP_ROUNDS):
-        if round_idx >= len(GROUP_GWS):
+    for round_idx, round_fixtures in enumerate(rounds):
+        if round_idx >= len(gws):
             break
-        gw = GROUP_GWS[round_idx]
+        gw = gws[round_idx]
         finished = gw_is_finished(bootstrap, gw)
         matches = []
 
@@ -300,9 +314,9 @@ def build_group(group_label, group_teams, bootstrap):
     standings = build_standings(list(records.values()), h2h)
     for i, row in enumerate(standings):
         row["position"] = i + 1
-        row["qualified"] = i < 2
+        row["qualified"] = i < advance
 
-    return {"teams": list(group_teams), "fixtures": fixtures, "standings": standings}
+    return {"teams": list(group_teams), "fixtures": fixtures, "standings": standings, "advance": advance}
 
 
 def build_standings(records, h2h):
@@ -339,6 +353,39 @@ def build_standings(records, h2h):
         i = j
 
     return result
+
+
+# ─── Second-round group stage (re-seed the 8 qualifiers) ──────────────────────
+
+def build_second_round(group_a_standings, group_b_standings, bootstrap):
+    """
+    Take the top GROUP1_ADVANCE of each first-round group, re-seed the eight
+    qualifiers into two fresh groups of four (snake draw), and play a round-robin.
+    Top GROUP2_ADVANCE of each second-round group reach the semi-finals.
+    """
+    print("\nBuilding second-round groups...")
+    qualifiers = [s for s in group_a_standings if s["qualified"]] + \
+                 [s for s in group_b_standings if s["qualified"]]
+
+    # Seed the qualifiers: better first-round finish first, then cup points, then
+    # points for. Snake the eight seeds into two balanced groups of four:
+    #   Group C: seeds 1, 4, 5, 8    Group D: seeds 2, 3, 6, 7
+    seeds = sorted(qualifiers, key=lambda r: (r["position"], -r.get("cup_points", 0), -r.get("points_for", 0)))
+
+    def team_of(s):
+        return {"entry_id": s["entry_id"], "name": s["name"], "manager": s["manager"]}
+
+    if len(seeds) >= 8:
+        c_teams = [team_of(seeds[i]) for i in (0, 3, 4, 7)]
+        d_teams = [team_of(seeds[i]) for i in (1, 2, 5, 6)]
+    else:
+        # Round 1 not finished yet — split whatever qualifiers we have so far.
+        c_teams = [team_of(s) for s in seeds[0::2]]
+        d_teams = [team_of(s) for s in seeds[1::2]]
+
+    group_c = build_group("C", c_teams, bootstrap, rounds=GROUP4_ROUNDS, gws=GROUP2_GWS, advance=GROUP2_ADVANCE)
+    group_d = build_group("D", d_teams, bootstrap, rounds=GROUP4_ROUNDS, gws=GROUP2_GWS, advance=GROUP2_ADVANCE)
+    return {"C": group_c, "D": group_d}
 
 
 # ─── Knockout ─────────────────────────────────────────────────────────────────
@@ -455,26 +502,32 @@ def main():
         group = "A" if i < 6 else "B"
         print(f"  {i+1}. [{group}] {t['name']} — {t['seeding_points']} pts")
 
-    # Before the seeding gameweek is played the standings are empty; don't wipe
-    # last season's cup archive with a blank bracket. Keep the existing file so
-    # the site flips from archive to live only once real data exists.
-    if not seeding and os.path.exists(args.output):
+    # The groups are only seeded once GW15 is played. Until then, don't publish a
+    # speculative bracket (it would shuffle every week) — keep the existing file so
+    # the site keeps showing the format & schedule, and flips to the live bracket
+    # only once real seeding exists.
+    if (not seeding or not gw_is_finished(bootstrap, SEEDING_GW)) and os.path.exists(args.output):
         try:
             existing = json.load(open(args.output))
         except ValueError:
             existing = {}
         if existing.get("groups"):
-            print(f"\nSeeding standings empty (season not started yet) — keeping "
-                  f"existing {args.output} untouched.")
+            print(f"\nGW{SEEDING_GW} not finished yet — cup not seeded. Keeping "
+                  f"existing {args.output} untouched (format shown until then).")
             return
 
     group_a_teams = seeding[:6]
     group_b_teams = seeding[6:]
 
-    group_a = build_group("A", group_a_teams, bootstrap)
-    group_b = build_group("B", group_b_teams, bootstrap)
+    # Round 1 — two groups of six, top 4 of each advance
+    group_a = build_group("A", group_a_teams, bootstrap, rounds=GROUP_ROUNDS, gws=GROUP_GWS, advance=GROUP1_ADVANCE)
+    group_b = build_group("B", group_b_teams, bootstrap, rounds=GROUP_ROUNDS, gws=GROUP_GWS, advance=GROUP1_ADVANCE)
 
-    knockout = build_knockout(group_a["standings"], group_b["standings"], bootstrap)
+    # Round 2 — re-seed the eight qualifiers into two groups of four, top 2 advance
+    second = build_second_round(group_a["standings"], group_b["standings"], bootstrap)
+
+    # Knockout — semis + final, fed by the second-round group standings
+    knockout = build_knockout(second["C"]["standings"], second["D"]["standings"], bootstrap)
 
     cup_data = {
         "metadata": {
@@ -488,6 +541,10 @@ def main():
             "A": group_a,
             "B": group_b,
         },
+        "groups2": {
+            "C": second["C"],
+            "D": second["D"],
+        },
         "knockout": knockout,
     }
 
@@ -495,8 +552,10 @@ def main():
         json.dump(cup_data, f, indent=2)
 
     print(f"\nDone! Written to {args.output}")
-    print(f"Group A qualifiers: {[s['name'] for s in group_a['standings'] if s['qualified']]}")
-    print(f"Group B qualifiers: {[s['name'] for s in group_b['standings'] if s['qualified']]}")
+    print(f"Round 1 — Group A advance: {[s['name'] for s in group_a['standings'] if s['qualified']]}")
+    print(f"Round 1 — Group B advance: {[s['name'] for s in group_b['standings'] if s['qualified']]}")
+    print(f"Round 2 — Group C: {[t['name'] for t in second['C']['teams']]}")
+    print(f"Round 2 — Group D: {[t['name'] for t in second['D']['teams']]}")
 
 
 if __name__ == "__main__":
