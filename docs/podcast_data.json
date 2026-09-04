@@ -1,6 +1,14 @@
 {
   "episodes": [
     {
+      "gw": 3,
+      "title": "Fernandes Madness",
+      "description": "Bruno bags a hat-trick and the whole league piles on \u2014 none harder than Man United diehard Arun, whose Triple Captain rockets him up the table. Joe's early-weekend summit lasts about five minutes, George is rock bottom, and eleven Triple Captains are still burning holes in pockets before the draft.",
+      "audio_file": "podcast-gw3.m4a",
+      "published_at": "2026-09-04",
+      "badge": "Gameweek 3"
+    },
+    {
       "gw": 2,
       "title": "Twelve Teams, One Brain",
       "description": "The whole league captained the same man and every armband flopped, nobody owned the two best players in the game, and reigning cup king Dom serves up the worst team in the league. Groupthink, punished.",
