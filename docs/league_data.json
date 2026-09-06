@@ -12,8 +12,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_points": 230,
-      "gw_points": 39
+      "total_points": 245,
+      "gw_points": 54
     },
     {
       "rank": 2,
@@ -21,8 +21,8 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_points": 220,
-      "gw_points": 51
+      "total_points": 235,
+      "gw_points": 66
     },
     {
       "rank": 3,
@@ -30,17 +30,8 @@
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "total_points": 212,
-      "gw_points": 52
-    },
-    {
-      "rank": 4,
-      "rank_last": 6,
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
-      "total_points": 199,
-      "gw_points": 43
+      "total_points": 226,
+      "gw_points": 66
     },
     {
       "rank": 4,
@@ -48,17 +39,26 @@
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
-      "total_points": 199,
-      "gw_points": 41
+      "total_points": 221,
+      "gw_points": 63
     },
     {
-      "rank": 6,
+      "rank": 5,
+      "rank_last": 9,
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
+      "total_points": 217,
+      "gw_points": 75
+    },
+    {
+      "rank": 5,
       "rank_last": 2,
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
       "manager": "Arun Quayum",
-      "total_points": 198,
-      "gw_points": 27
+      "total_points": 217,
+      "gw_points": 46
     },
     {
       "rank": 7,
@@ -66,17 +66,17 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_points": 197,
-      "gw_points": 47
+      "total_points": 208,
+      "gw_points": 58
     },
     {
       "rank": 8,
-      "rank_last": 9,
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
-      "total_points": 191,
-      "gw_points": 49
+      "rank_last": 6,
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
+      "total_points": 204,
+      "gw_points": 48
     },
     {
       "rank": 9,
@@ -84,8 +84,8 @@
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "total_points": 188,
-      "gw_points": 40
+      "total_points": 204,
+      "gw_points": 56
     },
     {
       "rank": 10,
@@ -93,8 +93,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_points": 183,
-      "gw_points": 56
+      "total_points": 202,
+      "gw_points": 75
     },
     {
       "rank": 11,
@@ -102,8 +102,8 @@
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "total_points": 166,
-      "gw_points": 31
+      "total_points": 196,
+      "gw_points": 61
     },
     {
       "rank": 12,
@@ -111,8 +111,8 @@
       "entry_id": 1442119,
       "name": "GVG XI *",
       "manager": "George Georgiou",
-      "total_points": 164,
-      "gw_points": 50
+      "total_points": 173,
+      "gw_points": 59
     }
   ],
   "trade_differential": [
@@ -138,16 +138,16 @@
       "trades": []
     },
     {
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
+      "entry_id": 153220,
+      "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+      "manager": "Anthony Savvides",
       "net_gain": 0,
       "trades": []
     },
     {
-      "entry_id": 153220,
-      "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
-      "manager": "Anthony Savvides",
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
       "net_gain": 0,
       "trades": []
     },
@@ -166,9 +166,9 @@
       "trades": []
     },
     {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
       "net_gain": 0,
       "trades": []
     },
@@ -224,16 +224,16 @@
       "by_gw": []
     },
     {
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
+      "entry_id": 153220,
+      "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+      "manager": "Anthony Savvides",
       "total_captain_bonus": 0,
       "by_gw": []
     },
     {
-      "entry_id": 153220,
-      "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
-      "manager": "Anthony Savvides",
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
       "total_captain_bonus": 0,
       "by_gw": []
     },
@@ -252,9 +252,9 @@
       "by_gw": []
     },
     {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
       "total_captain_bonus": 0,
       "by_gw": []
     },
@@ -741,17 +741,17 @@
       "hit_rate": 50.0
     },
     {
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
+      "entry_id": 153220,
+      "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+      "manager": "Anthony Savvides",
       "captain_hits": 1,
       "gws_played": 2,
       "hit_rate": 50.0
     },
     {
-      "entry_id": 153220,
-      "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
-      "manager": "Anthony Savvides",
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
       "captain_hits": 1,
       "gws_played": 2,
       "hit_rate": 50.0
@@ -773,9 +773,9 @@
       "hit_rate": 50.0
     },
     {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
       "captain_hits": 1,
       "gws_played": 2,
       "hit_rate": 50.0
