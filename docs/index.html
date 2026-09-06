@@ -3518,6 +3518,43 @@ async function populateLeagueCaptains(gw) {
   }));
 }
 
+// Rank-movement chevron (vs last completed GW). Shared by the initial render and
+// the live re-sort so the arrow stays consistent.
+function buildRankMove(delta) {
+  if (delta > 0)      return el('span', { className: 'rank-move up' }, ` ▲${delta}`);
+  else if (delta < 0) return el('span', { className: 'rank-move down' }, ` ▼${Math.abs(delta)}`);
+  else                return el('span', { className: 'rank-move same' }, ' —');
+}
+
+// Re-order the league table by the live totals currently shown, and refresh each
+// row's rank number + movement arrow. Each manager is one <tbody> (summary +
+// pitch rows), so we just reorder the tbodies — keeping any expanded squad with
+// its team. Without this the numbers update live but the row order lags behind.
+function resortLeagueTable() {
+  const table = document.querySelector('.league-table');
+  if (!table) return;
+  const bodies = [...table.querySelectorAll('tbody')].filter(tb => tb.querySelector('tr[data-entry]'));
+  if (bodies.length < 2) return;
+  const items = bodies.map(tb => {
+    const row = tb.querySelector('tr[data-entry]');
+    const total = Number(row.querySelector('.league-total')?.textContent) || 0;
+    return { tb, row, total };
+  });
+  items.sort((a, b) => b.total - a.total); // highest total first
+  items.forEach((item, i) => {
+    table.appendChild(item.tb); // append in sorted order (moves existing tbody to the end)
+    const position = i + 1;
+    const rankCell = item.row.querySelector('.rank-cell');
+    if (rankCell) {
+      const rankLast = Number(item.row.dataset.rankLast) || position;
+      const delta = rankLast === 0 ? 0 : rankLast - position;
+      rankCell.innerHTML = '';
+      rankCell.appendChild(document.createTextNode(String(position)));
+      rankCell.appendChild(buildRankMove(delta));
+    }
+  });
+}
+
 async function refreshLeagueScores() {
   if (!_liveData || !_liveGW) return;
   const liveMap = makeLiveMap(_liveData.elements, buildAddBonusTeams(_gwFixtures));
@@ -3595,6 +3632,9 @@ async function refreshLeagueScores() {
       }
     } catch(e) { /* leave cells unchanged if picks unavailable */ }
   }));
+
+  // All totals updated — now re-order the rows to match the live standings.
+  resortLeagueTable();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -4429,10 +4469,7 @@ function buildLeagueTab(data) {
       const prevTotal = live ? live.total_points : s.total_points;
       const prevRank = s.rank_last || s.rank;
       const delta = prevRank === 0 ? 0 : prevRank - (rank + 1);
-      let moveEl;
-      if (delta > 0)      moveEl = el('span', { className: 'rank-move up' }, ` ▲${delta}`);
-      else if (delta < 0) moveEl = el('span', { className: 'rank-move down' }, ` ▼${Math.abs(delta)}`);
-      else                moveEl = el('span', { className: 'rank-move same' }, ' —');
+      const moveEl = buildRankMove(delta);
 
       const expandBtn = el('span', { className: 'expand-btn' }, '▾');
       const pitchPanelDiv = el('div', { className: 'pitch-panel', 'data-entry': String(s.entry_id) });
@@ -4455,7 +4492,7 @@ function buildLeagueTab(data) {
         gwCellChildren.push(el('span', { className: `chip-icon ${activeChip.cls}`, style: 'margin-left:4px;vertical-align:middle' }, activeChip.abbr));
       }
 
-      const summaryRow = el('tr', { style: 'cursor:pointer', 'data-entry': String(s.entry_id), 'data-base-total': String(baseTotal) },
+      const summaryRow = el('tr', { style: 'cursor:pointer', 'data-entry': String(s.entry_id), 'data-base-total': String(baseTotal), 'data-rank-last': String(prevRank) },
         el('td', { className: 'rank-cell' }, String(rank + 1), moveEl),
         el('td', {},
           el('div', { className: 'team-name' }, s.name),
