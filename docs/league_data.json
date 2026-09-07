@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-09-06",
+    "last_updated": "2026-09-07",
     "current_gw": 3,
     "season": "2026/27"
   },
@@ -30,8 +30,8 @@
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "total_points": 226,
-      "gw_points": 66
+      "total_points": 229,
+      "gw_points": 69
     },
     {
       "rank": 4,
@@ -48,17 +48,17 @@
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
-      "total_points": 217,
-      "gw_points": 75
+      "total_points": 220,
+      "gw_points": 78
     },
     {
-      "rank": 5,
+      "rank": 6,
       "rank_last": 2,
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
       "manager": "Arun Quayum",
-      "total_points": 217,
-      "gw_points": 46
+      "total_points": 219,
+      "gw_points": 48
     },
     {
       "rank": 7,
@@ -71,21 +71,21 @@
     },
     {
       "rank": 8,
+      "rank_last": 8,
+      "entry_id": 6815970,
+      "name": "Tonali-tarian",
+      "manager": "Dominic Byrne",
+      "total_points": 208,
+      "gw_points": 60
+    },
+    {
+      "rank": 9,
       "rank_last": 6,
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
       "total_points": 204,
       "gw_points": 48
-    },
-    {
-      "rank": 9,
-      "rank_last": 8,
-      "entry_id": 6815970,
-      "name": "Tonali-tarian",
-      "manager": "Dominic Byrne",
-      "total_points": 204,
-      "gw_points": 56
     },
     {
       "rank": 10,
@@ -166,16 +166,16 @@
       "trades": []
     },
     {
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
+      "entry_id": 6815970,
+      "name": "Tonali-tarian",
+      "manager": "Dominic Byrne",
       "net_gain": 0,
       "trades": []
     },
     {
-      "entry_id": 6815970,
-      "name": "Tonali-tarian",
-      "manager": "Dominic Byrne",
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
       "net_gain": 0,
       "trades": []
     },
@@ -252,16 +252,16 @@
       "by_gw": []
     },
     {
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
+      "entry_id": 6815970,
+      "name": "Tonali-tarian",
+      "manager": "Dominic Byrne",
       "total_captain_bonus": 0,
       "by_gw": []
     },
     {
-      "entry_id": 6815970,
-      "name": "Tonali-tarian",
-      "manager": "Dominic Byrne",
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
       "total_captain_bonus": 0,
       "by_gw": []
     },
@@ -471,6 +471,27 @@
   ],
   "bench_points": [
     {
+      "entry_id": 8444994,
+      "name": "Silverware Foxes *",
+      "manager": "Charles Smith",
+      "total_bench_points": 37,
+      "avg_bench_per_gw": 12.3,
+      "by_gw": [
+        {
+          "gw": 1,
+          "bench_pts": 19
+        },
+        {
+          "gw": 2,
+          "bench_pts": 0
+        },
+        {
+          "gw": 3,
+          "bench_pts": 18
+        }
+      ]
+    },
+    {
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
@@ -488,48 +509,6 @@
         {
           "gw": 3,
           "bench_pts": 14
-        }
-      ]
-    },
-    {
-      "entry_id": 8444994,
-      "name": "Silverware Foxes *",
-      "manager": "Charles Smith",
-      "total_bench_points": 33,
-      "avg_bench_per_gw": 11.0,
-      "by_gw": [
-        {
-          "gw": 1,
-          "bench_pts": 19
-        },
-        {
-          "gw": 2,
-          "bench_pts": 0
-        },
-        {
-          "gw": 3,
-          "bench_pts": 14
-        }
-      ]
-    },
-    {
-      "entry_id": 6815970,
-      "name": "Tonali-tarian",
-      "manager": "Dominic Byrne",
-      "total_bench_points": 32,
-      "avg_bench_per_gw": 10.7,
-      "by_gw": [
-        {
-          "gw": 1,
-          "bench_pts": 16
-        },
-        {
-          "gw": 2,
-          "bench_pts": 0
-        },
-        {
-          "gw": 3,
-          "bench_pts": 16
         }
       ]
     },
@@ -558,8 +537,8 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_bench_points": 24,
-      "avg_bench_per_gw": 8.0,
+      "total_bench_points": 29,
+      "avg_bench_per_gw": 9.7,
       "by_gw": [
         {
           "gw": 1,
@@ -571,7 +550,28 @@
         },
         {
           "gw": 3,
-          "bench_pts": 9
+          "bench_pts": 14
+        }
+      ]
+    },
+    {
+      "entry_id": 6815970,
+      "name": "Tonali-tarian",
+      "manager": "Dominic Byrne",
+      "total_bench_points": 28,
+      "avg_bench_per_gw": 9.3,
+      "by_gw": [
+        {
+          "gw": 1,
+          "bench_pts": 16
+        },
+        {
+          "gw": 2,
+          "bench_pts": 0
+        },
+        {
+          "gw": 3,
+          "bench_pts": 12
         }
       ]
     },
@@ -579,8 +579,8 @@
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_bench_points": 18,
-      "avg_bench_per_gw": 6.0,
+      "total_bench_points": 22,
+      "avg_bench_per_gw": 7.3,
       "by_gw": [
         {
           "gw": 1,
@@ -592,28 +592,7 @@
         },
         {
           "gw": 3,
-          "bench_pts": 2
-        }
-      ]
-    },
-    {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
-      "total_bench_points": 13,
-      "avg_bench_per_gw": 4.3,
-      "by_gw": [
-        {
-          "gw": 1,
           "bench_pts": 6
-        },
-        {
-          "gw": 2,
-          "bench_pts": 0
-        },
-        {
-          "gw": 3,
-          "bench_pts": 7
         }
       ]
     },
@@ -621,8 +600,8 @@
       "entry_id": 1442119,
       "name": "GVG XI *",
       "manager": "George Georgiou",
-      "total_bench_points": 13,
-      "avg_bench_per_gw": 4.3,
+      "total_bench_points": 14,
+      "avg_bench_per_gw": 4.7,
       "by_gw": [
         {
           "gw": 1,
@@ -634,7 +613,28 @@
         },
         {
           "gw": 3,
-          "bench_pts": 7
+          "bench_pts": 8
+        }
+      ]
+    },
+    {
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
+      "total_bench_points": 10,
+      "avg_bench_per_gw": 3.3,
+      "by_gw": [
+        {
+          "gw": 1,
+          "bench_pts": 6
+        },
+        {
+          "gw": 2,
+          "bench_pts": 0
+        },
+        {
+          "gw": 3,
+          "bench_pts": 4
         }
       ]
     },
@@ -684,8 +684,8 @@
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
       "manager": "Arun Quayum",
-      "total_bench_points": 3,
-      "avg_bench_per_gw": 1.0,
+      "total_bench_points": 1,
+      "avg_bench_per_gw": 0.3,
       "by_gw": [
         {
           "gw": 1,
@@ -697,7 +697,7 @@
         },
         {
           "gw": 3,
-          "bench_pts": 2
+          "bench_pts": 0
         }
       ]
     },
