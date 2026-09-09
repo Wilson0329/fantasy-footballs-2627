@@ -1,6 +1,14 @@
 {
   "episodes": [
     {
+      "gw": 4,
+      "title": "Deep Dive: George",
+      "description": "A special episode \u2014 a deep-dive interview with the league's founder and commissioner, George Georgiou. The man who built Fantasy Footballs on the origins of the league, the infamous PPP system, and the pain of currently propping up the very table he created.",
+      "audio_file": "podcast-gw4.mp3",
+      "published_at": "2026-09-09",
+      "badge": "Interview"
+    },
+    {
       "gw": 3,
       "title": "Fernandes Madness",
       "description": "Bruno bags a hat-trick and the whole league piles on \u2014 none harder than Man United diehard Arun, whose Triple Captain rockets him up the table. Joe's early-weekend summit lasts about five minutes, George is rock bottom, and eleven Triple Captains are still burning holes in pockets before the draft.",
