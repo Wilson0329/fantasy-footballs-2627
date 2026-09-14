@@ -12,8 +12,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_points": 324,
-      "gw_points": 79
+      "total_points": 334,
+      "gw_points": 89
     },
     {
       "rank": 2,
@@ -44,6 +44,24 @@
     },
     {
       "rank": 5,
+      "rank_last": 7,
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
+      "total_points": 289,
+      "gw_points": 81
+    },
+    {
+      "rank": 6,
+      "rank_last": 9,
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
+      "total_points": 280,
+      "gw_points": 76
+    },
+    {
+      "rank": 7,
       "rank_last": 11,
       "entry_id": 6415977,
       "name": "Call the Tzolis",
@@ -52,16 +70,7 @@
       "gw_points": 83
     },
     {
-      "rank": 6,
-      "rank_last": 7,
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
-      "total_points": 279,
-      "gw_points": 71
-    },
-    {
-      "rank": 6,
+      "rank": 8,
       "rank_last": 6,
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
@@ -70,7 +79,7 @@
       "gw_points": 60
     },
     {
-      "rank": 8,
+      "rank": 9,
       "rank_last": 5,
       "entry_id": 3523822,
       "name": "Pain in Dias",
@@ -79,22 +88,13 @@
       "gw_points": 58
     },
     {
-      "rank": 9,
-      "rank_last": 9,
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
-      "total_points": 270,
-      "gw_points": 66
-    },
-    {
       "rank": 10,
       "rank_last": 8,
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "total_points": 261,
-      "gw_points": 61
+      "total_points": 271,
+      "gw_points": 71
     },
     {
       "rank": 11,
@@ -111,8 +111,8 @@
       "entry_id": 1442119,
       "name": "GVG XI *",
       "manager": "George Georgiou",
-      "total_points": 238,
-      "gw_points": 65
+      "total_points": 248,
+      "gw_points": 75
     }
   ],
   "trade_differential": [
@@ -145,16 +145,23 @@
       "trades": []
     },
     {
-      "entry_id": 6415977,
-      "name": "Call the Tzolis",
-      "manager": "Adam Georghiou",
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
       "net_gain": 0,
       "trades": []
     },
     {
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
+      "net_gain": 0,
+      "trades": []
+    },
+    {
+      "entry_id": 6415977,
+      "name": "Call the Tzolis",
+      "manager": "Adam Georghiou",
       "net_gain": 0,
       "trades": []
     },
@@ -169,13 +176,6 @@
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
-      "net_gain": 0,
-      "trades": []
-    },
-    {
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
       "net_gain": 0,
       "trades": []
     },
@@ -231,16 +231,23 @@
       "by_gw": []
     },
     {
-      "entry_id": 6415977,
-      "name": "Call the Tzolis",
-      "manager": "Adam Georghiou",
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
       "total_captain_bonus": 0,
       "by_gw": []
     },
     {
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
+      "total_captain_bonus": 0,
+      "by_gw": []
+    },
+    {
+      "entry_id": 6415977,
+      "name": "Call the Tzolis",
+      "manager": "Adam Georghiou",
       "total_captain_bonus": 0,
       "by_gw": []
     },
@@ -255,13 +262,6 @@
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
-      "total_captain_bonus": 0,
-      "by_gw": []
-    },
-    {
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
       "total_captain_bonus": 0,
       "by_gw": []
     },
@@ -837,6 +837,14 @@
       "hit_rate": 33.3
     },
     {
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
+      "captain_hits": 1,
+      "gws_played": 3,
+      "hit_rate": 33.3
+    },
+    {
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
@@ -856,14 +864,6 @@
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
-      "captain_hits": 1,
-      "gws_played": 3,
-      "hit_rate": 33.3
-    },
-    {
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
       "captain_hits": 1,
       "gws_played": 3,
       "hit_rate": 33.3
