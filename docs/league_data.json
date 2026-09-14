@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-09-13",
+    "last_updated": "2026-09-14",
     "current_gw": 4,
     "season": "2026/27"
   },
@@ -12,8 +12,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_points": 323,
-      "gw_points": 78
+      "total_points": 324,
+      "gw_points": 79
     },
     {
       "rank": 2,
@@ -21,8 +21,8 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_points": 314,
-      "gw_points": 79
+      "total_points": 315,
+      "gw_points": 80
     },
     {
       "rank": 3,
@@ -39,8 +39,8 @@
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
-      "total_points": 292,
-      "gw_points": 71
+      "total_points": 293,
+      "gw_points": 72
     },
     {
       "rank": 5,
@@ -48,17 +48,8 @@
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "total_points": 278,
-      "gw_points": 82
-    },
-    {
-      "rank": 6,
-      "rank_last": 6,
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
-      "total_points": 278,
-      "gw_points": 59
+      "total_points": 279,
+      "gw_points": 83
     },
     {
       "rank": 6,
@@ -66,8 +57,17 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_points": 278,
-      "gw_points": 70
+      "total_points": 279,
+      "gw_points": 71
+    },
+    {
+      "rank": 6,
+      "rank_last": 6,
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
+      "total_points": 279,
+      "gw_points": 60
     },
     {
       "rank": 8,
@@ -75,8 +75,8 @@
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
-      "total_points": 277,
-      "gw_points": 57
+      "total_points": 278,
+      "gw_points": 58
     },
     {
       "rank": 9,
@@ -93,8 +93,8 @@
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "total_points": 260,
-      "gw_points": 60
+      "total_points": 261,
+      "gw_points": 61
     },
     {
       "rank": 11,
@@ -102,8 +102,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_points": 248,
-      "gw_points": 46
+      "total_points": 249,
+      "gw_points": 47
     },
     {
       "rank": 12,
@@ -111,8 +111,8 @@
       "entry_id": 1442119,
       "name": "GVG XI *",
       "manager": "George Georgiou",
-      "total_points": 236,
-      "gw_points": 63
+      "total_points": 238,
+      "gw_points": 65
     }
   ],
   "trade_differential": [
@@ -152,16 +152,16 @@
       "trades": []
     },
     {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
       "net_gain": 0,
       "trades": []
     },
     {
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
       "net_gain": 0,
       "trades": []
     },
@@ -238,16 +238,16 @@
       "by_gw": []
     },
     {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
       "total_captain_bonus": 0,
       "by_gw": []
     },
     {
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
       "total_captain_bonus": 0,
       "by_gw": []
     },
