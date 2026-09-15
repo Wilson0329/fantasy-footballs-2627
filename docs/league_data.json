@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-09-14",
+    "last_updated": "2026-09-15",
     "current_gw": 4,
     "season": "2026/27"
   },
@@ -53,6 +53,15 @@
     },
     {
       "rank": 6,
+      "rank_last": 6,
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
+      "total_points": 285,
+      "gw_points": 66
+    },
+    {
+      "rank": 7,
       "rank_last": 9,
       "entry_id": 5291090,
       "name": "Change Name",
@@ -61,22 +70,13 @@
       "gw_points": 76
     },
     {
-      "rank": 7,
+      "rank": 8,
       "rank_last": 11,
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
       "total_points": 279,
       "gw_points": 83
-    },
-    {
-      "rank": 8,
-      "rank_last": 6,
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
-      "total_points": 279,
-      "gw_points": 60
     },
     {
       "rank": 9,
@@ -102,8 +102,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_points": 249,
-      "gw_points": 47
+      "total_points": 263,
+      "gw_points": 61
     },
     {
       "rank": 12,
@@ -152,6 +152,13 @@
       "trades": []
     },
     {
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
+      "net_gain": 0,
+      "trades": []
+    },
+    {
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
@@ -162,13 +169,6 @@
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "net_gain": 0,
-      "trades": []
-    },
-    {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
       "net_gain": 0,
       "trades": []
     },
@@ -238,6 +238,13 @@
       "by_gw": []
     },
     {
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
+      "total_captain_bonus": 0,
+      "by_gw": []
+    },
+    {
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
@@ -248,13 +255,6 @@
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "total_captain_bonus": 0,
-      "by_gw": []
-    },
-    {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
       "total_captain_bonus": 0,
       "by_gw": []
     },
@@ -670,31 +670,6 @@
       ]
     },
     {
-      "entry_id": 3285103,
-      "name": "Super Park Rateta FC",
-      "manager": "David Pontin",
-      "total_bench_points": 21,
-      "avg_bench_per_gw": 5.2,
-      "by_gw": [
-        {
-          "gw": 1,
-          "bench_pts": 0
-        },
-        {
-          "gw": 2,
-          "bench_pts": 6
-        },
-        {
-          "gw": 3,
-          "bench_pts": 1
-        },
-        {
-          "gw": 4,
-          "bench_pts": 14
-        }
-      ]
-    },
-    {
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
@@ -745,27 +720,27 @@
       ]
     },
     {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
+      "entry_id": 3285103,
+      "name": "Super Park Rateta FC",
+      "manager": "David Pontin",
       "total_bench_points": 7,
       "avg_bench_per_gw": 1.8,
       "by_gw": [
         {
           "gw": 1,
-          "bench_pts": 1
+          "bench_pts": 0
         },
         {
           "gw": 2,
-          "bench_pts": 0
+          "bench_pts": 6
         },
         {
           "gw": 3,
-          "bench_pts": 0
+          "bench_pts": 1
         },
         {
           "gw": 4,
-          "bench_pts": 6
+          "bench_pts": 0
         }
       ]
     },
@@ -791,6 +766,31 @@
         {
           "gw": 4,
           "bench_pts": 1
+        }
+      ]
+    },
+    {
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
+      "total_bench_points": 1,
+      "avg_bench_per_gw": 0.2,
+      "by_gw": [
+        {
+          "gw": 1,
+          "bench_pts": 1
+        },
+        {
+          "gw": 2,
+          "bench_pts": 0
+        },
+        {
+          "gw": 3,
+          "bench_pts": 0
+        },
+        {
+          "gw": 4,
+          "bench_pts": 0
         }
       ]
     }
@@ -837,6 +837,14 @@
       "hit_rate": 33.3
     },
     {
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
+      "captain_hits": 1,
+      "gws_played": 3,
+      "hit_rate": 33.3
+    },
+    {
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
@@ -848,14 +856,6 @@
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "captain_hits": 1,
-      "gws_played": 3,
-      "hit_rate": 33.3
-    },
-    {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
       "captain_hits": 1,
       "gws_played": 3,
       "hit_rate": 33.3
