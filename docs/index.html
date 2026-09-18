@@ -3535,6 +3535,20 @@ async function populateLeagueCaptains(gw) {
   }));
 }
 
+// Cumulative total BEFORE a gameweek, taken from the manager's history. This is
+// reliable across GW rollovers, unlike (standings.total - standings.event_total):
+// at the start of a new GW the league-standings event_total still reports the
+// PREVIOUS gameweek's points until the new one is scored, so that subtraction
+// strips a whole gameweek and the live totals come out low. History's per-GW
+// total_points doesn't lag.
+function cumulativeBeforeGw(entryId, gw) {
+  const hist = _teamHistoryCache[entryId];
+  if (!Array.isArray(hist) || !hist.length) return null;
+  const prior = hist.filter(h => h.event < gw);
+  if (!prior.length) return 0;
+  return prior.reduce((a, b) => (b.event > a.event ? b : a)).total_points;
+}
+
 // Rank-movement chevron (vs last completed GW). Shared by the initial render and
 // the live re-sort so the arrow stays consistent.
 function buildRankMove(delta) {
@@ -3607,14 +3621,16 @@ async function refreshLeagueScores() {
       const gwCell = row.querySelector('.league-gw');
       if (gwCell) gwCell.textContent = String(gwScore);
 
-      // Total = points BEFORE this GW + live GW score. Prefer the live FPL
-      // standings for the base (cumulative total minus this GW's contribution),
-      // since the built JSON can be stale/zero if the daily refresh hasn't run —
-      // which would make the total collapse to just the current GW score.
-      const liveStd = _leagueStandings && _leagueStandings[entryId];
-      const baseTotal = liveStd
-        ? (liveStd.total_points - liveStd.gw_points)
-        : (Number(row.dataset.baseTotal) || 0);
+      // Total = points BEFORE this GW + live GW score. Take the base from the
+      // manager's history (cumulative through the prior GW) — it doesn't lag at
+      // GW rollover the way (standings.total - event_total) does. Fall back to the
+      // standings decomposition, then the built-JSON base, if history is missing.
+      const histBase = cumulativeBeforeGw(entryId, _liveGW);
+      const liveStd  = _leagueStandings && _leagueStandings[entryId];
+      const baseTotal = (histBase != null)
+        ? histBase
+        : (liveStd ? (liveStd.total_points - liveStd.gw_points)
+                   : (Number(row.dataset.baseTotal) || 0));
       const totalCell = row.querySelector('.league-total');
       if (totalCell) totalCell.textContent = String(baseTotal + gwScore);
 
