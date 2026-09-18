@@ -1575,6 +1575,7 @@
 
       /* Group standings: hide W/D/L on small screens */
       .standings-table .hide-mobile { display: none; }
+      .draft-timer-table .hide-mobile { display: none; }
       .standings-table td, .standings-table th { padding: 0.5rem 0.4rem; }
       .standings-table { font-size: 0.78rem; }
 
@@ -2123,13 +2124,13 @@
     }
     .draft-pitch-row {
       display: flex; justify-content: center;
-      gap: 0.2rem; margin-bottom: 0.4rem; flex-wrap: wrap;
+      gap: 0.2rem; margin-bottom: 0.4rem; flex-wrap: nowrap;
     }
     .draft-pitch-row:last-child { margin-bottom: 0; }
     .draft-pitch-card {
       display: flex; flex-direction: column;
       align-items: center; gap: 0.1rem;
-      width: 62px; padding: 0.2rem 0;
+      flex: 0 1 62px; min-width: 0; padding: 0.2rem 0;
     }
     .draft-pitch-shirt {
       width: 36px; height: 38px;
@@ -2148,13 +2149,13 @@
     .draft-pitch-name {
       font-size: 0.58rem; font-weight: 600; color: var(--text);
       text-align: center; line-height: 1.2;
-      max-width: 62px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .draft-pitch-club {
       font-size: 0.52rem; color: var(--muted); text-align: center; line-height: 1;
     }
     .draft-pitch-empty {
-      width: 62px; height: 68px; display: flex; flex-direction: column;
+      flex: 0 1 62px; min-width: 0; height: 68px; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 0.15rem;
       border: 1px dashed rgba(255,255,255,0.12); border-radius: 6px;
       color: rgba(255,255,255,0.18); font-size: 0.58rem;
@@ -2174,6 +2175,22 @@
       letter-spacing: 0.07em; text-transform: uppercase;
       width: 100%; text-align: center; margin-bottom: 0.25rem;
     }
+    /* Draft pick order note + pick timer */
+    .draft-order-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.3rem; }
+    .draft-timer {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 0.85rem 1rem 0.65rem;
+    }
+    .draft-timer-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+    .draft-timer-title { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+    .draft-timer-note { font-size: 0.68rem; color: var(--muted); }
+    .draft-timer-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .draft-timer-table th { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); font-weight: 600; padding: 0.35rem 0.35rem; text-align: center; border-bottom: 1px solid var(--border); }
+    .draft-timer-table td { padding: 0.4rem 0.35rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--text); }
+    .draft-timer-table tbody tr:last-child td { border-bottom: none; }
+    .draft-timer-total { font-weight: 800; color: var(--accent); }
+    .draft-timer-leader td { background: rgba(0,212,170,0.08); }
+    .draft-timer-leader .draft-timer-total { color: var(--win); }
 
     /* ── Draft tab ── */
     .draft-header { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
@@ -5838,6 +5855,43 @@ function buildTradeOrderTab() {
 // Draft Room tab
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ── Draft pick timer: active-hours only ──────────────────────────────────────
+// Counts only time between 09:00 and 18:30 (local) between two moments, so a
+// pick left overnight (people asleep) isn't counted against the picker.
+const DRAFT_ACTIVE_START_MIN = 9 * 60;        // 09:00
+const DRAFT_ACTIVE_END_MIN   = 18 * 60 + 30;  // 18:30
+function draftActiveMsBetween(start, end) {
+  if (!(start instanceof Date) || !(end instanceof Date) || !(end > start)) return 0;
+  let total = 0;
+  const endMs = end.getTime();
+  // Walk each calendar day the interval touches, summing the overlap with that
+  // day's active window.
+  const cursor = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  while (cursor.getTime() <= endMs) {
+    const dayStart = new Date(cursor); dayStart.setHours(0, DRAFT_ACTIVE_START_MIN, 0, 0);
+    const dayEnd   = new Date(cursor); dayEnd.setHours(0, DRAFT_ACTIVE_END_MIN, 0, 0);
+    const from = Math.max(start.getTime(), dayStart.getTime());
+    const to   = Math.min(endMs, dayEnd.getTime());
+    if (to > from) total += (to - from);
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  return total;
+}
+function fmtDuration(ms) {
+  if (ms < 1000) return '0s';
+  const totalSec = Math.round(ms / 1000);
+  const h = Math.floor(totalSec / 3600), m = Math.floor((totalSec % 3600) / 60), s = totalSec % 60;
+  if (h > 0) return `${h}h ${m}m`;
+  if (m > 0) return `${m}m`;
+  return `${s}s`;
+}
+function toDateMaybe(ts) {
+  if (!ts) return null;
+  if (typeof ts.toDate === 'function') return ts.toDate();
+  if (typeof ts.seconds === 'number') return new Date(ts.seconds * 1000);
+  return null;
+}
+
 function buildDraftRoomTab() {
   const TOTAL_MANAGERS = 12;
   const TOTAL_ROUNDS   = 15;
@@ -5870,6 +5924,8 @@ function buildDraftRoomTab() {
   let unsubPicks    = null;
   let unsubSettings = null;
   let currentLeagueId = null;      // tracked so we only reload names when it actually changes
+  let _orderSource  = 'default';   // 'gw5' = locked from GW5 table | 'current' = provisional | 'default'
+  let draftStartedAt = null;       // Date the draft was started (for the pick timer)
 
   function computeCurrentPick() {
     for (let i = 0; i < TOTAL_PICKS; i++) { if (!picks.has(i)) return i; }
@@ -5901,6 +5957,12 @@ function buildDraftRoomTab() {
   mainArea.appendChild(gridWrap);
   mainArea.appendChild(playerPanel);
   wrapper.appendChild(mainArea);
+
+  // Pick timer leaderboard (active-hours only)
+  const timerPanel = el('div', { className: 'draft-timer' });
+  timerPanel.style.display = 'none';
+  wrapper.appendChild(timerPanel);
+
   frag.appendChild(wrapper);
 
   // ── Banner render ──
@@ -5936,6 +5998,13 @@ function buildDraftRoomTab() {
         progressBar.style.width = `${(curr / TOTAL_PICKS * 100).toFixed(1)}%`;
       }
     }
+
+    const orderNote = _orderSource === 'gw5'
+      ? '✓ Pick order locked from the GW5 final table'
+      : _orderSource === 'current'
+        ? '⏳ Provisional order (current standings) — locks to the GW5 table once GW5 is complete'
+        : '';
+    if (orderNote) left.appendChild(el('div', { className: 'draft-order-note' }, orderNote));
 
     banner.appendChild(left);
     banner.appendChild(right);
@@ -6170,6 +6239,16 @@ function buildDraftRoomTab() {
 
   async function loadManagersFromLeague(leagueId) {
     try {
+      // Pick order is the GW5 final league table (seed 1 = GW5 leader picks first).
+      // computeGw5Seeds() returns null until GW5 is complete — until then we fall
+      // back to the current standings order just so names show.
+      const seeds = await computeGw5Seeds().catch(() => null);
+      if (seeds && seeds.length) {
+        managers = seeds.map(s => ({ id: String(s.entry_id), name: s.manager || s.name }));
+        _orderSource = 'gw5';
+        renderBanner(); renderGrid();
+        return;
+      }
       const data    = await fetchFPL(`leagues-classic/${leagueId}/standings/`);
       const results = (data.standings?.results || []).slice(0, 12);
       if (results.length > 0) {
@@ -6177,10 +6256,70 @@ function buildDraftRoomTab() {
           id:   String(r.entry),
           name: r.player_name || r.entry_name
         }));
+        _orderSource = 'current';
         renderBanner();
         renderGrid();
       }
     } catch(e) { console.warn('Could not load managers from FPL:', e); }
+  }
+
+  // ── Pick timer leaderboard ──
+  // For each pick, the "thinking time" is the active-hours (09:00–18:30) elapsed
+  // since the previous pick was made (or the draft start, for pick 1) — attributed
+  // to the manager who made that pick. Overnight / out-of-hours time is excluded.
+  function renderPickTimer() {
+    const ordered = [...picks.values()]
+      .filter(p => typeof p.pickNumber === 'number')
+      .sort((a, b) => a.pickNumber - b.pickNumber);
+    if (!ordered.some(p => toDateMaybe(p.addedAt))) { timerPanel.style.display = 'none'; return; }
+
+    const perManager = {};   // name -> { ms, count, slowest }
+    let prev = draftStartedAt;
+    ordered.forEach(p => {
+      const t = toDateMaybe(p.addedAt);
+      if (t && prev) {
+        const ms  = draftActiveMsBetween(prev, t);
+        const key = p.managerName || `Player ${(p.managerIndex ?? 0) + 1}`;
+        const rec = perManager[key] || (perManager[key] = { ms: 0, count: 0, slowest: 0 });
+        rec.ms += ms; rec.count += 1; rec.slowest = Math.max(rec.slowest, ms);
+      }
+      if (t) prev = t;
+    });
+
+    const rows = Object.entries(perManager)
+      .map(([name, v]) => ({ name, ms: v.ms, count: v.count, slowest: v.slowest, avg: v.count ? v.ms / v.count : 0 }))
+      .sort((a, b) => b.ms - a.ms);
+    if (!rows.length) { timerPanel.style.display = 'none'; return; }
+
+    timerPanel.style.display = '';
+    timerPanel.innerHTML = '';
+    timerPanel.appendChild(el('div', { className: 'draft-timer-head' },
+      el('span', { className: 'draft-timer-title' }, '⏱ Pick Timer'),
+      el('span', { className: 'draft-timer-note' }, 'Active hours only · 9:00–18:30')
+    ));
+    const table = el('table', { className: 'draft-timer-table' },
+      el('thead', {}, el('tr', {},
+        el('th', {}, '#'),
+        el('th', { style: 'text-align:left' }, 'Manager'),
+        el('th', {}, 'Total'),
+        el('th', {}, 'Picks'),
+        el('th', {}, 'Avg'),
+        el('th', { className: 'hide-mobile' }, 'Slowest')
+      ))
+    );
+    const tbody = el('tbody');
+    rows.forEach((r, i) => {
+      tbody.appendChild(el('tr', { className: i === 0 ? 'draft-timer-leader' : '' },
+        el('td', {}, String(i + 1)),
+        el('td', { style: 'text-align:left' }, r.name),
+        el('td', { className: 'draft-timer-total' }, fmtDuration(r.ms)),
+        el('td', {}, String(r.count)),
+        el('td', {}, fmtDuration(r.avg)),
+        el('td', { className: 'hide-mobile' }, fmtDuration(r.slowest))
+      ));
+    });
+    table.appendChild(tbody);
+    timerPanel.appendChild(table);
   }
 
   // ── Full re-render (called by Firestore listener) ──
@@ -6189,6 +6328,7 @@ function buildDraftRoomTab() {
     if (draftStatus === 'active' && curr >= TOTAL_PICKS) draftStatus = 'complete';
     renderBanner();
     renderGrid();
+    renderPickTimer();
     // Only update player panel if not mid-edit
     if (editingPick === null) {
       renderPlayerPanel(draftStatus !== 'pending' && curr < TOTAL_PICKS ? curr : null);
@@ -6200,7 +6340,10 @@ function buildDraftRoomTab() {
     try {
       // Load draft status from settings/draft
       const draftDoc = await db.collection('settings').doc('draft').get();
-      if (draftDoc.exists) draftStatus = draftDoc.data().status || 'pending';
+      if (draftDoc.exists) {
+        draftStatus = draftDoc.data().status || 'pending';
+        draftStartedAt = toDateMaybe(draftDoc.data().startedAt);
+      }
 
       // Load leagueId from settings/site (managed by the Settings tab)
       const siteDoc = await db.collection('settings').doc('site').get();
@@ -6223,8 +6366,10 @@ function buildDraftRoomTab() {
       // Subscribe to draft settings (status changes: pending/active/complete/reset)
       const unsubDraft = db.collection('settings').doc('draft').onSnapshot(async snap => {
         if (!snap.exists) return;
+        draftStartedAt = toDateMaybe(snap.data().startedAt) || draftStartedAt;
         const newStatus = snap.data().status || 'pending';
         if (newStatus !== draftStatus) { draftStatus = newStatus; fullRender(); }
+        else { renderPickTimer(); }
       });
 
       // Subscribe to site settings (league ID — syncs manager names across all browsers)
