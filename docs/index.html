@@ -6338,6 +6338,11 @@ function buildDraftRoomTab() {
   // ── Firestore subscriptions ──
   (async () => {
     try {
+      // Preload the team-code map from bootstrap so squad-pitch kits resolve even
+      // before the player picker has been opened (matches the league/cup pitch,
+      // which always resolve kits from bootstrap).
+      await loadPlayers();
+
       // Load draft status from settings/draft
       const draftDoc = await db.collection('settings').doc('draft').get();
       if (draftDoc.exists) {
