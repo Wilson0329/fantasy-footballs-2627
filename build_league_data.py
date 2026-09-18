@@ -171,7 +171,9 @@ def build_trade_differential(player_names):
         trades = []
         for t in sorted(all_transfers, key=lambda x: x["event"]):
             gw = t["event"]
-            if gw <= 4:
+            # Only count post-draft trades. The draft runs between GW5 and GW6,
+            # so transfers from GW6 onward are the "draft" trades we track.
+            if gw <= 5:
                 continue
             out_id, in_id = t["element_out"], t["element_in"]
             out_pts = player_pts_from_gw(out_id, gw)
@@ -217,7 +219,7 @@ def build_captain_points(bootstrap, current_gw, player_names):
         print(f"  {team['name']}...")
         total_bonus = 0
         by_gw = []
-        for gw in range(4, current_gw + 1):
+        for gw in range(1, current_gw + 1):  # whole season — captains counted from GW1
             if not gw_finished.get(gw, False):
                 continue
             picks = get_picks(team["entry_id"], gw)
