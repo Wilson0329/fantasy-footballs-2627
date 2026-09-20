@@ -5668,6 +5668,18 @@ function buildTradeSchedule() {
 
 // Rank the league by cumulative points at the end of GW5 → seed order (1 = leader).
 // Returns null until GW5 is complete (so the order can't be shown early).
+// Manual GW5 tie-breaks for draft seeding (managers level on GW5 points). The
+// named manager is seeded higher — i.e. drafts earlier. Entry IDs:
+//   Adam Georghiou (6415977) ahead of Arun Quayum   (5194548)
+//   Dominic Byrne  (6815970) ahead of Anthony Savvides (153220)
+const DRAFT_SEED_TIEBREAK = { 6415977: 0, 5194548: 1, 6815970: 0, 153220: 1 };
+// Order comparator: more points first; ties resolved by the manual tie-break
+// above (unlisted managers sort after listed ones, keeping their relative order).
+function draftSeedCompare(aPts, aId, bPts, bId) {
+  if (bPts !== aPts) return bPts - aPts;
+  return (DRAFT_SEED_TIEBREAK[aId] ?? 99) - (DRAFT_SEED_TIEBREAK[bId] ?? 99);
+}
+
 async function computeGw5Seeds() {
   const data = _leagueData;
   if (!data || !data.standings || !data.standings.length) return null;
@@ -5681,7 +5693,7 @@ async function computeGw5Seeds() {
     return { entry_id: s.entry_id, name: s.name, manager: s.manager, pts: g5 ? g5.total_points : null };
   }));
   if (withPts.some(m => m.pts == null)) return null; // history incomplete
-  withPts.sort((a, b) => b.pts - a.pts); // seed 1 = most points (leader)
+  withPts.sort((a, b) => draftSeedCompare(a.pts, a.entry_id, b.pts, b.entry_id)); // seed 1 = leader
   return withPts.map((m, i) => ({ ...m, seed: i + 1 }));
 }
 
@@ -6101,19 +6113,17 @@ function buildDraftRoomTab() {
 
     if (draftStatus === 'pending') {
       // The draft starts in GW5-table order; managers pick their position live in
-      // round one (draft here, or move to a later slot). It can be started on the
-      // provisional order (current standings) for testing before GW5 is final.
+      // round one (draft here, or move to a later slot).
       const ready = _priorityManagers && _priorityManagers.length === TOTAL_MANAGERS;
       if (!ready) {
         left.appendChild(el('div', { className: 'draft-banner-text' }, 'Loading league…'));
       } else {
         left.appendChild(el('div', { className: 'draft-banner-text' },
-          _gw5Final ? 'Ready — starts in GW5-table order' : 'Ready — provisional order (testing)'));
+          'Ready — starts in GW5-table order'));
         left.appendChild(el('div', { className: 'draft-order-note' },
-          'In round 1, each manager can draft from their slot or move to a later one.'
-          + (_gw5Final ? '' : ' Order is provisional (current standings) until GW5 is final.')));
+          'In round 1, each manager can draft from their slot or move to a later one.'));
         const startBtn = el('button', { className: 'draft-start-btn' },
-          _gw5Final ? '▶ Start Draft' : '▶ Start Draft (test)');
+          '▶ Start Draft');
         startBtn.addEventListener('click', async () => {
           startBtn.disabled = true; startBtn.textContent = 'Starting…';
           try {
@@ -6455,7 +6465,10 @@ function buildDraftRoomTab() {
         return;
       }
       const data    = await fetchFPL(`leagues-classic/${leagueId}/standings/`);
-      const results = (data.standings?.results || []).slice(0, 12);
+      // Sort by overall points (GW5 table) with the same manual tie-breaks, so the
+      // order is correct even before GW5 is overnight-finalised.
+      const results = (data.standings?.results || []).slice(0, 12)
+        .sort((a, b) => draftSeedCompare(a.total, a.entry, b.total, b.entry));
       if (results.length > 0) {
         _priorityManagers = results.map(r => ({
           id:   String(r.entry),
