@@ -5609,11 +5609,31 @@ async function computeGw5Seeds() {
   return withPts.map((m, i) => ({ ...m, seed: i + 1 }));
 }
 
+// The monthly trade order rotates off the ACTUAL draft order — i.e. the order
+// managers ended up in after the Draft Room's round-1 position choices — not the
+// raw GW5 table. Read settings/draftOrder; fall back to the GW5 table if the
+// draft hasn't set an order yet.
+async function computeDraftOrderSeeds() {
+  try {
+    const snap  = await db.collection('settings').doc('draftOrder').get();
+    const order = snap.exists ? snap.data().order : null;
+    if (Array.isArray(order) && order.length === 12) {
+      const byId = {};
+      (_leagueData?.standings || []).forEach(s => { byId[String(s.entry_id)] = s; });
+      return order.map((id, i) => {
+        const s = byId[String(id)] || {};
+        return { entry_id: Number(id), name: s.name || `Team ${id}`, manager: s.manager || '', seed: i + 1 };
+      });
+    }
+  } catch (e) { /* fall through to GW5 table */ }
+  return computeGw5Seeds();
+}
+
 function buildTradeOrderTab() {
   const frag = document.createDocumentFragment();
   frag.appendChild(el('div', { className: 'section-title' }, icon('repeat'), ' Monthly Trade Order'));
   frag.appendChild(el('div', { className: 'trade-intro' },
-    'Draft order is set by the GW5 table (leader picks first). Each month, in schedule order, a manager '
+    'The rotation follows the draft order (the positions chosen in the Draft Room). Each month, in schedule order, a manager '
     + 'trades one player out and picks one from the free pool in. Tap the highlighted cell to make the pick.'));
 
   const schedule    = buildTradeSchedule();
@@ -5674,7 +5694,7 @@ function buildTradeOrderTab() {
   function render() {
     wrap.innerHTML = '';
     if (!seeds) wrap.appendChild(buildEmptyPlaceholder(
-      'Names lock in from the GW5 standings — you can still preview the picker below (shown by seed).'));
+      'Names lock in once the draft order is set — you can still preview the picker below (shown by seed).'));
     const curr = trades.size; // enforced order = number of trades made so far
 
     const table = el('table', { className: 'trade-table' });
@@ -5849,7 +5869,7 @@ function buildTradeOrderTab() {
       bs.teams.forEach(t => { teamMap[t.id] = t.short_name; });
       bs.elements.forEach(pl => { playerMap[pl.id] = pl; });
     } catch (e) { /* players may be unavailable */ }
-    seeds = await computeGw5Seeds().catch(() => null);
+    seeds = await computeDraftOrderSeeds().catch(() => null);
     // Load real squads → base ownership map (enables clash detection). Only once live seeds exist.
     if (seeds && bs) {
       const gw = [...bs.events].reverse().find(e => e.finished || e.is_current);
@@ -5954,6 +5974,8 @@ function buildDraftRoomTab() {
   let _gw5Final     = false;       // true once GW5 is complete (real seeds available)
   let draftOrderIds = null;        // live order: array of entryId strings (settings/draftOrder.order)
   let movingOpen    = false;       // "move to a later slot" chooser expanded for the on-clock manager
+  let _prevOrder    = null;        // order before the last move (for one-step undo)
+  let _moveAtPick   = null;        // pick index when the last move happened (undo valid only if no pick since)
   let unsubOrder    = null;        // settings/draftOrder listener
 
   function computeCurrentPick() {
@@ -6065,6 +6087,12 @@ function buildDraftRoomTab() {
       const btn = el('button', { className: 'draft-move-btn' }, '↓ Move to a later slot');
       btn.addEventListener('click', () => { movingOpen = true; renderBanner(); });
       box.appendChild(btn);
+      // Undo the last move — only while no pick has been made since it
+      if (_prevOrder && _moveAtPick === curr) {
+        const undo = el('button', { className: 'draft-move-cancel' }, '↩ Undo last move');
+        undo.addEventListener('click', undoMove);
+        box.appendChild(undo);
+      }
       return box;
     }
     box.appendChild(el('div', { className: 'draft-move-label' }, `Move ${mgrName} to slot:`));
@@ -6085,14 +6113,29 @@ function buildDraftRoomTab() {
   // shifting the managers between them up one. Persists the new order live.
   async function moveToSlot(curr, k) {
     if (!draftOrderIds) return;
+    const prev  = draftOrderIds.slice();
     const order = draftOrderIds.slice();
     const [m] = order.splice(curr, 1);   // remove on-clock manager
     order.splice(k - 1, 0, m);           // reinsert at slot k
     movingOpen = false;
     try {
       await db.collection('settings').doc('draftOrder').set(
-        { order, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+        { order, prevOrder: prev, moveAtPick: curr,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
     } catch (e) { alert('Could not move: ' + e.message); }
+  }
+
+  // Undo the most recent move (restore the pre-move order). Only offered while no
+  // pick has been made since the move (see buildMoveControl).
+  async function undoMove() {
+    if (!_prevOrder) return;
+    try {
+      await db.collection('settings').doc('draftOrder').set(
+        { order: _prevOrder,
+          prevOrder: firebase.firestore.FieldValue.delete(),
+          moveAtPick: firebase.firestore.FieldValue.delete(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    } catch (e) { alert('Could not undo: ' + e.message); }
   }
 
   // ── Grid render (managers = rows, rounds = columns, picks flow top→bottom each round) ──
@@ -6495,6 +6538,9 @@ function buildDraftRoomTab() {
         const d = snap.exists ? snap.data() : {};
         draftOrderIds = (Array.isArray(d.order) && d.order.length === TOTAL_MANAGERS)
           ? d.order.map(String) : null;
+        _prevOrder = (Array.isArray(d.prevOrder) && d.prevOrder.length === TOTAL_MANAGERS)
+          ? d.prevOrder.map(String) : null;
+        _moveAtPick = (typeof d.moveAtPick === 'number') ? d.moveAtPick : null;
         fullRender();
       });
 
