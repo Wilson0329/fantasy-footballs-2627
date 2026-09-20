@@ -3595,17 +3595,59 @@ function resortLeagueTable() {
   });
 }
 
+// Compute FPL auto-substitutions for a live GW.
+// Returns Map<outElement, inElement>: a starter who has finished on 0 minutes
+// (their team's GW match(es) all done) is replaced by the first eligible bench
+// player, taken in bench order, who has played or whose match hasn't finished
+// (GK ↔ GK only). Mirrors the pitch-view logic (buildPitchView) so the league
+// total and the expanded squad view always agree.
+function computeAutoSubMap(starters, bench, minutesMap, finishedTeams, meta) {
+  const pairs = new Map();
+  const availableBench = [...bench];
+  starters.forEach(starter => {
+    const pm = meta(starter.element);
+    if (!pm) return;
+    if (!finishedTeams.has(pm.team)) return;
+    if ((minutesMap[starter.element] || 0) !== 0) return;
+    const isGKStarter = pm.element_type === 1;
+    for (let i = 0; i < availableBench.length; i++) {
+      const bp = availableBench[i];
+      const bpm = meta(bp.element);
+      if (!bpm) continue;
+      if (isGKStarter !== (bpm.element_type === 1)) continue; // GK ↔ GK only
+      const bMins = minutesMap[bp.element] || 0;
+      if (bMins > 0 || !finishedTeams.has(bpm.team)) {
+        pairs.set(starter.element, bp.element);
+        availableBench.splice(i, 1);
+        break;
+      }
+    }
+  });
+  return pairs;
+}
+
 async function refreshLeagueScores() {
   if (!_liveData || !_liveGW) return;
   const liveMap = makeLiveMap(_liveData.elements, buildAddBonusTeams(_gwFixtures));
 
-  // Build player→fixture status map from latest fixture data
+  // Minutes per player + the set of teams whose GW match(es) are done — used to
+  // project auto-substitutions live, ahead of FPL's overnight finalisation.
+  const minutesMap = {};
+  _liveData.elements.forEach(e => { minutesMap[e.id] = (e.stats && e.stats.minutes) || 0; });
+  const finishedTeams = new Set();
+  (_gwFixtures || []).forEach(f => {
+    if (f.finished || f.finished_provisional) { finishedTeams.add(f.team_h); finishedTeams.add(f.team_a); }
+  });
+
+  // Build player→fixture status map + player metadata (team, position) from bootstrap
   let playerFixtureStatus = null;
+  let playerMeta = null;
   if (_gwFixtures) {
     const bs = await getBootstrap().catch(() => null);
     if (bs) {
+      playerMeta = {};
       const playerTeam = {};
-      bs.elements.forEach(e => { playerTeam[e.id] = e.team; });
+      bs.elements.forEach(e => { playerTeam[e.id] = e.team; playerMeta[e.id] = e; });
       // Map team_id → array of fixture statuses (handles DGW)
       const teamFixtures = {};
       _gwFixtures.forEach(f => {
@@ -3624,10 +3666,40 @@ async function refreshLeagueScores() {
     try {
       const picksData = await getPicks(entryId, _liveGW);
       const activePicks = picksData.picks.filter(p => p.multiplier > 0);
+      const chip = picksData.active_chip;
 
       // GW score: sum live points × multiplier (captain 2×, TC 3×, BB 1× all).
-      // This is GROSS — matching FPL's event total in the league table.
-      const gwScore = activePicks.reduce((s, p) => s + (liveMap[p.element] || 0) * p.multiplier, 0);
+      // Base (no auto-subs) — GROSS, matching FPL's raw event total.
+      let gwScore = activePicks.reduce((s, p) => s + (liveMap[p.element] || 0) * p.multiplier, 0);
+
+      // Projected auto-subs — apply bench players that would come on for
+      // starters who finished on 0 minutes, ahead of FPL's overnight run.
+      // Skipped for Bench Boost (all 15 already count, so no subs happen).
+      if (playerMeta && chip !== 'bboost') {
+        const starters = picksData.picks.filter(p => p.position <= 11).sort((a, b) => a.position - b.position);
+        const bench    = picksData.picks.filter(p => p.position > 11).sort((a, b) => a.position - b.position);
+        const pairs = computeAutoSubMap(starters, bench, minutesMap, finishedTeams, id => playerMeta[id]);
+        if (pairs.size) {
+          // Effective captain: if the captain didn't play, the armband passes to
+          // the vice — but only if the vice is (or is still) playing.
+          const capPick  = picksData.picks.find(p => p.is_captain);
+          const vicePick = picksData.picks.find(p => p.is_vice_captain);
+          const capMult  = capPick ? (capPick.multiplier > 1 ? capPick.multiplier : 2) : 2;
+          let captainEl = capPick ? capPick.element : null;
+          if (capPick && pairs.has(capPick.element)) {
+            captainEl = (vicePick && !pairs.has(vicePick.element)) ? vicePick.element : null;
+          }
+          let score = 0;
+          starters.forEach(p => {
+            if (pairs.has(p.element)) return; // subbed out — doesn't count
+            score += (liveMap[p.element] || 0) * (p.element === captainEl ? capMult : 1);
+          });
+          pairs.forEach(inEl => {
+            score += (liveMap[inEl] || 0) * (inEl === captainEl ? capMult : 1);
+          });
+          gwScore = score;
+        }
+      }
       const gwCell = row.querySelector('.league-gw');
       if (gwCell) gwCell.textContent = String(gwScore);
       // Transfer hit taken this GW (points deducted). FPL nets this off the TOTAL
