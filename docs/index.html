@@ -2191,6 +2191,26 @@
     .draft-timer-total { font-weight: 800; color: var(--accent); }
     .draft-timer-leader td { background: rgba(0,212,170,0.08); }
     .draft-timer-leader .draft-timer-total { color: var(--win); }
+    /* Draft-position selection */
+    .draft-order-select { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.1rem 1.1rem; }
+    .draft-os-title { font-weight: 800; font-size: 1.05rem; color: var(--text); }
+    .draft-os-intro { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin: 0.35rem 0 0.9rem; }
+    .draft-os-list { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
+    .draft-os-row { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.6rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface2); }
+    .draft-os-row.on-clock { border-color: var(--accent2); background: rgba(233,0,82,0.06); box-shadow: inset 0 0 0 1px var(--accent2); }
+    .draft-os-row.claimed { opacity: 0.72; }
+    .draft-os-seed { font-weight: 800; color: var(--muted); min-width: 1.4rem; text-align: center; font-size: 0.8rem; }
+    .draft-os-name { flex: 1; font-weight: 600; font-size: 0.88rem; color: var(--text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .draft-os-slot { font-size: 0.78rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+    .draft-os-row.on-clock .draft-os-slot { color: var(--accent2); }
+    .draft-os-clock { font-weight: 700; font-size: 0.9rem; color: var(--text); margin-bottom: 0.5rem; }
+    .draft-os-slots { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.4rem; margin-bottom: 0.6rem; }
+    .draft-os-slot-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.05rem; padding: 0.45rem 0.2rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-weight: 800; font-size: 0.95rem; cursor: pointer; min-width: 0; }
+    .draft-os-slot-btn:not(.taken):hover { border-color: var(--accent2); background: rgba(233,0,82,0.06); }
+    .draft-os-slot-btn.taken { background: var(--surface2); color: var(--muted); cursor: not-allowed; font-weight: 600; }
+    .draft-os-taker { font-size: 0.5rem; font-weight: 600; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+    .draft-os-done { font-weight: 700; color: var(--win); margin-bottom: 0.7rem; }
+    .draft-os-reset { display: block; margin-top: 0.9rem; background: none; border: none; color: var(--muted); font-size: 0.75rem; text-decoration: underline; cursor: pointer; }
 
     /* ── Draft tab ── */
     .draft-header { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
@@ -5942,6 +5962,11 @@ function buildDraftRoomTab() {
   let currentLeagueId = null;      // tracked so we only reload names when it actually changes
   let _orderSource  = 'default';   // 'gw5' = locked from GW5 table | 'current' = provisional | 'default'
   let draftStartedAt = null;       // Date the draft was started (for the pick timer)
+  let _priorityManagers = null;    // managers in GW5-table order (priority for choosing slots)
+  let _gw5Final     = false;       // true once GW5 is complete (real seeds available)
+  let orderSlots    = {};          // { entryId(str): chosen slot 1-12 }
+  let orderLocked   = false;       // draft order finalised → draft can start
+  let unsubOrder    = null;        // settings/draftOrder listener
 
   function computeCurrentPick() {
     for (let i = 0; i < TOTAL_PICKS; i++) { if (!picks.has(i)) return i; }
@@ -5955,6 +5980,11 @@ function buildDraftRoomTab() {
   // Banner
   const banner = el('div', { className: 'draft-room-banner' });
   wrapper.appendChild(banner);
+
+  // Draft-position selection panel (shown after GW5, before the order is locked)
+  const selectionPanel = el('div', { className: 'draft-order-select' });
+  selectionPanel.style.display = 'none';
+  wrapper.appendChild(selectionPanel);
 
   // Progress bar
   const progressWrap = el('div', { className: 'draft-progress-bar-wrap' });
@@ -5988,18 +6018,26 @@ function buildDraftRoomTab() {
     const right = el('div', { className: 'draft-banner-right' });
 
     if (draftStatus === 'pending') {
-      left.appendChild(el('div', { className: 'draft-banner-text' }, 'Draft not yet started'));
-      const startBtn = el('button', { className: 'draft-start-btn' }, '▶ Start Draft');
-      startBtn.addEventListener('click', async () => {
-        startBtn.disabled = true; startBtn.textContent = 'Starting…';
-        try {
-          await db.collection('settings').doc('draft').set(
-            { status: 'active', startedAt: firebase.firestore.FieldValue.serverTimestamp() },
-            { merge: true }
-          );
-        } catch(e) { alert('Error: ' + e.message); startBtn.disabled = false; startBtn.textContent = '▶ Start Draft'; }
-      });
-      right.appendChild(startBtn);
+      // The draft can only start once the order is finalised (GW5 done, positions
+      // chosen and locked). Before that we're either waiting for GW5 or choosing.
+      if (!_gw5Final) {
+        left.appendChild(el('div', { className: 'draft-banner-text' }, 'Draft positions are chosen once GW5 is complete'));
+      } else if (!orderLocked) {
+        left.appendChild(el('div', { className: 'draft-banner-text' }, 'Choosing draft positions…'));
+      } else {
+        left.appendChild(el('div', { className: 'draft-banner-text' }, 'Draft order locked — ready to go'));
+        const startBtn = el('button', { className: 'draft-start-btn' }, '▶ Start Draft');
+        startBtn.addEventListener('click', async () => {
+          startBtn.disabled = true; startBtn.textContent = 'Starting…';
+          try {
+            await db.collection('settings').doc('draft').set(
+              { status: 'active', startedAt: firebase.firestore.FieldValue.serverTimestamp() },
+              { merge: true }
+            );
+          } catch(e) { alert('Error: ' + e.message); startBtn.disabled = false; startBtn.textContent = '▶ Start Draft'; }
+        });
+        right.appendChild(startBtn);
+      }
     } else {
       const curr = computeCurrentPick();
       if (curr >= TOTAL_PICKS) {
@@ -6015,10 +6053,10 @@ function buildDraftRoomTab() {
       }
     }
 
-    const orderNote = _orderSource === 'gw5'
-      ? '✓ Pick order locked from the GW5 final table'
-      : _orderSource === 'current'
-        ? '⏳ Provisional order (current standings) — locks to the GW5 table once GW5 is complete'
+    const orderNote = orderLocked
+      ? '✓ Draft order locked in (managers chose their slots in GW5-table order)'
+      : (!_gw5Final && _orderSource === 'current')
+        ? '⏳ Showing current standings — draft positions are chosen once GW5 is final'
         : '';
     if (orderNote) left.appendChild(el('div', { className: 'draft-order-note' }, orderNote));
 
@@ -6260,21 +6298,24 @@ function buildDraftRoomTab() {
       // back to the current standings order just so names show.
       const seeds = await computeGw5Seeds().catch(() => null);
       if (seeds && seeds.length) {
-        managers = seeds.map(s => ({ id: String(s.entry_id), name: s.manager || s.name }));
+        _priorityManagers = seeds.map(s => ({ id: String(s.entry_id), name: s.manager || s.name }));
+        _gw5Final = true;
         _orderSource = 'gw5';
-        renderBanner(); renderGrid();
+        resolveDraftManagers();
+        fullRender();
         return;
       }
       const data    = await fetchFPL(`leagues-classic/${leagueId}/standings/`);
       const results = (data.standings?.results || []).slice(0, 12);
       if (results.length > 0) {
-        managers = results.map(r => ({
+        _priorityManagers = results.map(r => ({
           id:   String(r.entry),
           name: r.player_name || r.entry_name
         }));
+        _gw5Final = false;
         _orderSource = 'current';
-        renderBanner();
-        renderGrid();
+        resolveDraftManagers();
+        fullRender();
       }
     } catch(e) { console.warn('Could not load managers from FPL:', e); }
   }
@@ -6338,11 +6379,116 @@ function buildDraftRoomTab() {
     timerPanel.appendChild(table);
   }
 
+  // ── Draft-position selection ──
+  // GW5 table sets the priority order; each manager, in that order, claims a draft
+  // slot (1 = picks first). Managers can take any open slot (6th can choose 12th).
+  // Once all 12 are claimed and locked, the draft snakes through the chosen order.
+  function orderComplete() {
+    return _priorityManagers && _priorityManagers.length === 12 &&
+           _priorityManagers.every(m => orderSlots[m.id] != null);
+  }
+  // Sets `managers` to the chosen order once locked, else the priority order.
+  function resolveDraftManagers() {
+    const base = _priorityManagers;
+    if (!base || !base.length) return;
+    if (orderLocked && orderComplete()) {
+      managers = base.slice().sort((a, b) => orderSlots[a.id] - orderSlots[b.id]);
+    } else {
+      managers = base.slice();
+    }
+  }
+
+  async function claimSlot(entryId, slot) {
+    try {
+      await db.collection('settings').doc('draftOrder').set({
+        slots: { ...orderSlots, [String(entryId)]: slot },
+        locked: false,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true });
+    } catch (e) { alert('Could not claim slot: ' + e.message); }
+  }
+  async function lockOrder() {
+    try { await db.collection('settings').doc('draftOrder').set({ locked: true }, { merge: true }); }
+    catch (e) { alert('Could not lock order: ' + e.message); }
+  }
+  async function resetOrder() {
+    if (!confirm('Reset all chosen draft positions? This clears every slot.')) return;
+    try {
+      await db.collection('settings').doc('draftOrder').set(
+        { slots: {}, locked: false, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    } catch (e) { alert('Could not reset: ' + e.message); }
+  }
+
+  function renderPositionSelection() {
+    const priority = _priorityManagers || [];
+    selectionPanel.innerHTML = '';
+    selectionPanel.appendChild(el('div', { className: 'draft-os-title' }, '🎯 Choose Draft Positions'));
+    selectionPanel.appendChild(el('div', { className: 'draft-os-intro' },
+      'The GW5 table sets who chooses first. In that order, each manager claims a draft slot — 1 picks first overall. Take any open slot (you can move yourself down if you fancy a snake-turn pick).'));
+
+    // On the clock = first manager in priority order without a slot (strict order)
+    const onClock = priority.find(m => orderSlots[m.id] == null) || null;
+    const takenBySlot = {};
+    priority.forEach(m => { if (orderSlots[m.id] != null) takenBySlot[orderSlots[m.id]] = m; });
+
+    const list = el('div', { className: 'draft-os-list' });
+    priority.forEach((m, i) => {
+      const slot = orderSlots[m.id];
+      const isClock = onClock && m.id === onClock.id;
+      const row = el('div', { className: 'draft-os-row' + (isClock ? ' on-clock' : '') + (slot != null ? ' claimed' : '') });
+      row.appendChild(el('span', { className: 'draft-os-seed' }, `${i + 1}`));
+      row.appendChild(el('span', { className: 'draft-os-name' }, m.name));
+      row.appendChild(el('span', { className: 'draft-os-slot' },
+        slot != null ? `Slot ${slot}` : (isClock ? 'On the clock' : 'Waiting')));
+      list.appendChild(row);
+    });
+    selectionPanel.appendChild(list);
+
+    if (onClock) {
+      selectionPanel.appendChild(el('div', { className: 'draft-os-clock' }, `${onClock.name} — pick a slot:`));
+      const slotBtns = el('div', { className: 'draft-os-slots' });
+      for (let s = 1; s <= 12; s++) {
+        const taker = takenBySlot[s];
+        const btn = el('button', { className: 'draft-os-slot-btn' + (taker ? ' taken' : '') }, String(s));
+        if (taker) {
+          btn.setAttribute('disabled', 'true');
+          btn.title = `Taken by ${taker.name}`;
+          btn.appendChild(el('span', { className: 'draft-os-taker' }, taker.name.split(' ')[0]));
+        } else {
+          btn.title = `Claim slot ${s} for ${onClock.name}`;
+          btn.addEventListener('click', () => claimSlot(onClock.id, s));
+        }
+        slotBtns.appendChild(btn);
+      }
+      selectionPanel.appendChild(slotBtns);
+    } else {
+      selectionPanel.appendChild(el('div', { className: 'draft-os-done' }, '✓ All positions chosen — lock it in to start the draft.'));
+      const lockBtn = el('button', { className: 'draft-start-btn' }, '🔒 Lock draft order');
+      lockBtn.addEventListener('click', lockOrder);
+      selectionPanel.appendChild(lockBtn);
+    }
+
+    const reset = el('button', { className: 'draft-os-reset' }, 'Reset positions');
+    reset.addEventListener('click', resetOrder);
+    selectionPanel.appendChild(reset);
+  }
+
   // ── Full re-render (called by Firestore listener) ──
   function fullRender() {
     const curr = computeCurrentPick();
     if (draftStatus === 'active' && curr >= TOTAL_PICKS) draftStatus = 'complete';
+    resolveDraftManagers();
+
+    // Position-selection phase: GW5 done, draft still pending, order not locked
+    const selecting = draftStatus === 'pending' && _gw5Final && !orderLocked;
+    selectionPanel.style.display = selecting ? '' : 'none';
+    progressWrap.style.display   = selecting ? 'none' : '';
+    mainArea.style.display       = selecting ? 'none' : '';
+    if (selecting) timerPanel.style.display = 'none';
+
     renderBanner();
+    if (selecting) { renderPositionSelection(); return; }
+
     renderGrid();
     renderPickTimer();
     // Only update player panel if not mid-edit
@@ -6404,6 +6550,14 @@ function buildDraftRoomTab() {
         }
       });
 
+      // Subscribe to the chosen draft-position order (live across all browsers)
+      unsubOrder = db.collection('settings').doc('draftOrder').onSnapshot(snap => {
+        const d = snap.exists ? snap.data() : {};
+        orderSlots  = d.slots || {};
+        orderLocked = !!d.locked;
+        fullRender();
+      });
+
       unsubSettings = () => { unsubDraft(); unsubSite(); };
 
     } catch(e) {
@@ -6416,6 +6570,7 @@ function buildDraftRoomTab() {
   wrapper._cleanup = () => {
     if (unsubPicks)    unsubPicks();
     if (unsubSettings) unsubSettings();
+    if (unsubOrder)    unsubOrder();
   };
 
   return frag;
