@@ -1940,8 +1940,11 @@
     }
     @media (max-width: 920px) {
       .draft-room-main { grid-template-columns: 1fr; }
-      /* On mobile the picker sits below the grid — don't stick to top */
+      /* On mobile the picker sits below the grid — don't stick to top. Cap the
+         list height so filtering/searching doesn't reflow the whole page (which
+         made it jump to the top on every keystroke). */
       .draft-player-panel { position: static; max-height: none; }
+      .draft-player-panel .picker-player-list { max-height: 60vh; }
       /* Compact cells on small screens */
       .draft-rnd-header-col { min-width: 46px; width: 46px; }
       .draft-pick-cell { width: 46px; min-width: 46px; max-width: 46px; height: 40px; }
@@ -2045,6 +2048,13 @@
       color: var(--text); font-size: 16px; outline: none; /* 16px prevents iOS zoom */
     }
     .picker-search:focus { border-color: var(--accent2); }
+    .picker-club-select {
+      width: calc(100% - 1.5rem); margin: 0 0.75rem 0.5rem; flex-shrink: 0;
+      padding: 0.42rem 0.55rem; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 8px;
+      color: var(--text); font-size: 16px; outline: none; /* 16px prevents iOS zoom */
+    }
+    .picker-club-select:focus { border-color: var(--accent2); }
     .picker-player-list {
       overflow-y: auto; padding: 0 0.75rem 0.75rem;
       display: flex; flex-direction: column; gap: 2px; flex: 1;
@@ -2232,6 +2242,14 @@
     }
     .draft-search:focus { border-color: var(--accent2); }
     .draft-search::placeholder { color: var(--muted); }
+    .draft-club-row { display: flex; }
+    .draft-club-select {
+      width: 100%; max-width: 320px; padding: 0.5rem 0.7rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-size: 0.83rem;
+      outline: none; transition: border-color 0.15s; cursor: pointer;
+    }
+    .draft-club-select:focus { border-color: var(--accent2); }
     .draft-content { min-height: 200px; }
     .draft-loading { display: flex; align-items: center; gap: 0.6rem; color: var(--muted); padding: 2rem 0; font-size: 0.9rem; }
     .draft-count { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.75rem; }
@@ -5366,6 +5384,7 @@ function buildDraftTab(leagueData) {
   // ── Mutable state ──
   let currentView = 'available'; // 'available' | 'squads' | 'all'
   let currentPos  = 'all';       // 'all' | 'GK' | 'DEF' | 'MID' | 'FWD'
+  let currentClub = 'all';       // teamId (as string) or 'all'
   let searchQuery = '';
 
   // Hoisted so event listeners can call it before async data resolves (no-op until data loads)
@@ -5409,6 +5428,14 @@ function buildDraftTab(leagueData) {
   });
   header.appendChild(posRow);
 
+  // Club filter (options populated once bootstrap loads)
+  const clubRow = el('div', { className: 'draft-club-row' });
+  const clubSelect = el('select', { className: 'draft-club-select' });
+  clubSelect.appendChild(el('option', { value: 'all' }, 'All clubs'));
+  clubSelect.addEventListener('change', () => { currentClub = clubSelect.value; renderContent(); });
+  clubRow.appendChild(clubSelect);
+  header.appendChild(clubRow);
+
   // Search input
   const searchWrap = el('div', { className: 'draft-search-wrap' });
   const searchInput = el('input', { type: 'text', className: 'draft-search', placeholder: 'Search player or club…' });
@@ -5441,31 +5468,61 @@ function buildDraftTab(leagueData) {
       const playerMap = {};
       bs.elements.forEach(p => { playerMap[p.id] = p; });
 
-      // Determine which GW squads to pull from
-      const latestGW = [...bs.events].reverse().find(e => e.finished || e.is_current)?.id || 1;
+      // Populate the club filter dropdown now that team names are known
+      bs.teams.slice().sort((a, b) => a.short_name.localeCompare(b.short_name))
+        .forEach(t => clubSelect.appendChild(el('option', { value: String(t.id) }, t.short_name)));
+      clubSelect.value = currentClub;
 
-      // Fetch all 12 squads in parallel
+      // Ownership is DRAFT-based (who drafted whom in the Draft Room), not the
+      // managers' current FPL squads. Read the draft picks from Firestore.
       const standings = leagueData?.standings || [];
-      const squadPicks = {}; // entry_id → picks[]
-      await Promise.all(standings.map(async s => {
-        try {
-          const data = await getPicks(s.entry_id, latestGW);
-          squadPicks[s.entry_id] = data.picks || [];
-        } catch { squadPicks[s.entry_id] = []; }
-      }));
+      let draftPicks = [];
+      try {
+        const snap = await db.collection('picks').get();
+        draftPicks = snap.docs.map(d => d.data());
+      } catch (e) { draftPicks = []; }
 
-      // Build owner map: element id → { manager, name, entry_id }
+      // Build owner map: element id → { manager }
       const ownerMap = {};
-      standings.forEach(s => {
-        (squadPicks[s.entry_id] || []).forEach(pick => {
-          ownerMap[pick.element] = { manager: s.manager, name: s.name, entry_id: s.entry_id };
-        });
+      draftPicks.forEach(pk => {
+        if (pk.fplPlayerId != null) ownerMap[pk.fplPlayerId] = { manager: pk.managerName };
       });
+
+      // Manager list in draft-slot order, for the squads view. Prefer the saved
+      // draft order (settings/draftOrder) mapped to names; fall back to the order
+      // managers appear in the picks.
+      let draftManagers = [];
+      try {
+        const orderSnap = await db.collection('settings').doc('draftOrder').get();
+        const order = orderSnap.exists ? orderSnap.data().order : null;
+        const byId  = {}; standings.forEach(s => { byId[String(s.entry_id)] = s; });
+        const nameByIdx = {}; draftPicks.forEach(pk => { if (pk.managerIndex != null) nameByIdx[pk.managerIndex] = pk.managerName; });
+        if (Array.isArray(order) && order.length) {
+          draftManagers = order.map((id, i) => ({
+            index: i,
+            manager: (byId[String(id)]?.manager) || nameByIdx[i] || `Player ${i + 1}`
+          }));
+        }
+      } catch (e) { /* fall through */ }
+      if (!draftManagers.length) {
+        const seen = {};
+        draftPicks.forEach(pk => {
+          if (pk.managerIndex != null && !seen[pk.managerIndex]) {
+            seen[pk.managerIndex] = true;
+            draftManagers.push({ index: pk.managerIndex, manager: pk.managerName });
+          }
+        });
+        draftManagers.sort((a, b) => a.index - b.index);
+      }
+      // element id → managerIndex, for grouping the squads view
+      const pickIdxByPlayer = {};
+      draftPicks.forEach(pk => { if (pk.fplPlayerId != null) pickIdxByPlayer[pk.fplPlayerId] = pk.managerIndex; });
 
       // ── Helpers ──
       function applyFilters(players) {
         return players.filter(p => {
           if (currentPos !== 'all' && posMap[p.element_type] !== currentPos) return false;
+          if (currentClub !== 'all' && String(p.team) !== String(currentClub)) return false;
           if (searchQuery) {
             const name = (p.web_name || '').toLowerCase();
             const club = (teamMap[p.team] || '').toLowerCase();
@@ -5501,7 +5558,7 @@ function buildDraftTab(leagueData) {
         );
         if (withOwner) {
           row.appendChild(el('div', { className: 'draft-owner-badge' },
-            el('span', { className: 'draft-owner-name', title: owner ? `${owner.name} (${owner.manager})` : '' },
+            el('span', { className: 'draft-owner-name', title: owner ? owner.manager : '' },
               owner ? owner.manager : '—'
             )
           ));
@@ -5517,31 +5574,36 @@ function buildDraftTab(leagueData) {
         posRow.style.display   = currentView === 'squads' ? 'none' : '';
 
         if (currentView === 'squads') {
-          // ── Squads view ──
+          // ── Squads view (draft-based: each manager's drafted players) ──
+          const filterActive = !!searchQuery || currentClub !== 'all';
+          // Squad view honours club + search (pos control is hidden here).
+          const matchesFilters = (p) => {
+            if (currentClub !== 'all' && String(p.team) !== String(currentClub)) return false;
+            if (searchQuery) {
+              const n = (p.web_name || '').toLowerCase();
+              const c = (teamMap[p.team] || '').toLowerCase();
+              if (!n.includes(searchQuery) && !c.includes(searchQuery)) return false;
+            }
+            return true;
+          };
           const grid = el('div', { className: 'draft-squad-grid' });
-          standings.forEach(s => {
-            const picks = squadPicks[s.entry_id] || [];
+          if (!draftManagers.length) {
+            grid.appendChild(el('div', { className: 'draft-empty' }, 'No draft picks yet.'));
+          }
+          draftManagers.forEach(m => {
+            const squad = bs.elements.filter(p => pickIdxByPlayer[p.id] === m.index);
             const card  = el('div', { className: 'draft-squad-card' });
             card.appendChild(el('div', { className: 'draft-squad-header' },
-              el('div', { className: 'draft-squad-team' },    s.name),
-              el('div', { className: 'draft-squad-manager' }, s.manager)
+              el('div', { className: 'draft-squad-team' },    m.manager),
+              el('div', { className: 'draft-squad-manager' }, `${squad.length} pick${squad.length !== 1 ? 's' : ''}`)
             ));
 
+            let sectionCount = 0;
             [1, 2, 3, 4].forEach(typeId => {
-              const posLabel   = posMap[typeId];
-              const posPlayers = picks
-                .map(pk => playerMap[pk.element])
-                .filter(p => p && p.element_type === typeId);
-              if (posPlayers.length === 0) return;
-
-              // Apply search filter within squad view
-              const visible = searchQuery
-                ? posPlayers.filter(p =>
-                    (p.web_name || '').toLowerCase().includes(searchQuery) ||
-                    (teamMap[p.team] || '').toLowerCase().includes(searchQuery)
-                  )
-                : posPlayers;
+              const posLabel = posMap[typeId];
+              const visible  = squad.filter(p => p.element_type === typeId && matchesFilters(p));
               if (visible.length === 0) return;
+              sectionCount++;
 
               const section = el('div', { className: 'draft-squad-section' });
               section.appendChild(el('div', { className: `draft-squad-pos-label pos-label-${posLabel.toLowerCase()}` }, posLabel));
@@ -5555,17 +5617,19 @@ function buildDraftTab(leagueData) {
               card.appendChild(section);
             });
 
+            // Hide managers with no matching players while a filter is active.
+            if (sectionCount === 0 && filterActive) return;
             grid.appendChild(card);
           });
           contentArea.appendChild(grid);
 
         } else if (currentView === 'available') {
-          // ── Available players view ──
+          // ── Available (undrafted) players view ──
           const available = bs.elements.filter(p => !ownerMap[p.id] && p.status !== 'u');
           const filtered  = applyFilters(available).sort((a, b) => b.total_points - a.total_points);
 
           contentArea.appendChild(el('div', { className: 'draft-count' },
-            `${filtered.length} available player${filtered.length !== 1 ? 's' : ''} · GW${latestGW} squads`
+            `${filtered.length} undrafted player${filtered.length !== 1 ? 's' : ''}`
           ));
 
           const list = el('div', { className: 'draft-player-list' });
@@ -5590,7 +5654,7 @@ function buildDraftTab(leagueData) {
           const ownedCount = filtered.filter(p => ownerMap[p.id]).length;
 
           contentArea.appendChild(el('div', { className: 'draft-count' },
-            `${filtered.length} players · ${ownedCount} owned · ${filtered.length - ownedCount} available · GW${latestGW} squads`
+            `${filtered.length} players · ${ownedCount} drafted · ${filtered.length - ownedCount} available`
           ));
 
           const list = el('div', { className: 'draft-player-list' });
@@ -5739,7 +5803,11 @@ function buildTradeOrderTab() {
   const trades = new Map();         // `${month}_${pickIdx}` -> trade doc
   const baseOwnerMap = new Map();   // playerId -> { entryId, managerName } from real squads (empty pre-season)
 
-  const nameForSeed  = (seed) => (seeds && seeds[seed - 1]) ? seeds[seed - 1].name : `Seed ${seed}`;
+  // Show the manager's (player's) name on the board, not the FPL team name.
+  const nameForSeed  = (seed) => {
+    const s = seeds && seeds[seed - 1];
+    return s ? (s.manager || s.name) : `Seed ${seed}`;
+  };
   const entryForSeed = (seed) => (seeds && seeds[seed - 1]) ? seeds[seed - 1].entry_id : null;
   const toPlayerObj  = (pl) => ({ id: pl.id, name: pl.web_name, club: teamMap[pl.team] || '', pos: POS[pl.element_type] || '' });
   const cellGlobal   = (monthKey, pickIdx) => monthKeys.indexOf(monthKey) * 12 + pickIdx;
@@ -5965,7 +6033,7 @@ function buildTradeOrderTab() {
         await Promise.all(seeds.map(async sd => {
           try {
             const d = await getPicks(sd.entry_id, gw.id);
-            (d.picks || []).forEach(pk => baseOwnerMap.set(pk.element, { entryId: sd.entry_id, managerName: sd.name }));
+            (d.picks || []).forEach(pk => baseOwnerMap.set(pk.element, { entryId: sd.entry_id, managerName: sd.manager || sd.name }));
           } catch (e) { /* skip */ }
         }));
       }
@@ -6050,7 +6118,9 @@ function buildDraftRoomTab() {
   let draftStatus   = 'pending';   // 'pending' | 'active' | 'complete'
   let editingPick   = null;        // pick number being edited, or null
   let posFilter     = 'all';
+  let clubFilter    = 'all'; // teamId (as string) or 'all'
   let searchQuery   = '';
+  let _pickerSearchT = null; // debounce timer for the picker search box
   let allPlayers    = null;
   let teamMap       = {};   // teamId → shortName
   let clubCodeMap   = {};   // shortName → teamCode (for kit images)
@@ -6336,9 +6406,23 @@ function buildDraftRoomTab() {
     });
     playerPanel.appendChild(posRow);
 
-    // Search
+    // Club filter — a dropdown of all clubs (kept simple for the picker)
+    const clubSelect = el('select', { className: 'picker-club-select' });
+    clubSelect.appendChild(el('option', { value: 'all' }, 'All clubs'));
+    Object.entries(teamMap)
+      .sort((a, b) => a[1].localeCompare(b[1]))
+      .forEach(([tid, short]) => clubSelect.appendChild(el('option', { value: tid }, short)));
+    clubSelect.value = clubFilter;
+    clubSelect.addEventListener('change', () => { clubFilter = clubSelect.value; renderPlayerList(forPick); });
+    playerPanel.appendChild(clubSelect);
+
+    // Search — debounced so the list doesn't thrash (and jump) on every keystroke
     const searchBox = el('input', { type: 'text', className: 'picker-search', placeholder: 'Search player or club…', value: searchQuery });
-    searchBox.addEventListener('input', () => { searchQuery = searchBox.value.toLowerCase().trim(); renderPlayerList(forPick); });
+    searchBox.addEventListener('input', () => {
+      searchQuery = searchBox.value.toLowerCase().trim();
+      clearTimeout(_pickerSearchT);
+      _pickerSearchT = setTimeout(() => renderPlayerList(forPick), 140);
+    });
     playerPanel.appendChild(searchBox);
 
     const listEl = el('div', { className: 'picker-player-list', id: 'picker-list' });
@@ -6362,6 +6446,7 @@ function buildDraftRoomTab() {
     let filtered = allPlayers.filter(p => {
       if (p.status === 'u') return false;
       if (posFilter !== 'all' && POS_MAP[p.element_type] !== posFilter) return false;
+      if (clubFilter !== 'all' && String(p.team) !== String(clubFilter)) return false;
       if (searchQuery) {
         const n = (p.web_name || '').toLowerCase();
         const c = (teamMap[p.team] || '').toLowerCase();
@@ -6369,7 +6454,8 @@ function buildDraftRoomTab() {
       }
       return true;
     });
-    filtered.sort((a, b) => b.total_points - a.total_points);
+    // Ordered by value (price), then points as a tie-break.
+    filtered.sort((a, b) => (b.now_cost - a.now_cost) || (b.total_points - a.total_points));
 
     if (filtered.length === 0) {
       listEl.appendChild(el('div', { className: 'picker-empty' }, 'No players match.')); return;
