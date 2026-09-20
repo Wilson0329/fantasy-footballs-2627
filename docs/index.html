@@ -3625,10 +3625,14 @@ async function refreshLeagueScores() {
       const picksData = await getPicks(entryId, _liveGW);
       const activePicks = picksData.picks.filter(p => p.multiplier > 0);
 
-      // GW score: sum live points × multiplier (captain 2×, TC 3×, BB 1× all)
+      // GW score: sum live points × multiplier (captain 2×, TC 3×, BB 1× all).
+      // This is GROSS — matching FPL's event total in the league table.
       const gwScore = activePicks.reduce((s, p) => s + (liveMap[p.element] || 0) * p.multiplier, 0);
       const gwCell = row.querySelector('.league-gw');
       if (gwCell) gwCell.textContent = String(gwScore);
+      // Transfer hit taken this GW (points deducted). FPL nets this off the TOTAL
+      // (not the GW column), so subtract it from the total below to match FPL.
+      const hit = (picksData.entry_history && picksData.entry_history.event_transfers_cost) || 0;
 
       // Total = points BEFORE this GW + live GW score. Take the base from the
       // manager's history (cumulative through the prior GW) — it doesn't lag at
@@ -3641,7 +3645,7 @@ async function refreshLeagueScores() {
         : (liveStd ? (liveStd.total_points - liveStd.gw_points)
                    : (Number(row.dataset.baseTotal) || 0));
       const totalCell = row.querySelector('.league-total');
-      if (totalCell) totalCell.textContent = String(baseTotal + gwScore);
+      if (totalCell) totalCell.textContent = String(baseTotal + gwScore - hit);
 
       // Playing / to start — rendered inline under manager name
       if (playerFixtureStatus) {
