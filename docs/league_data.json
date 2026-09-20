@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-09-19",
+    "last_updated": "2026-09-20",
     "current_gw": 5,
     "season": "2026/27"
   },
@@ -66,8 +66,8 @@
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "total_points": 304,
-      "gw_points": 33
+      "total_points": 305,
+      "gw_points": 34
     },
     {
       "rank": 8,
@@ -102,8 +102,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_points": 276,
-      "gw_points": 17
+      "total_points": 275,
+      "gw_points": 16
     },
     {
       "rank": 12,
@@ -918,8 +918,8 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_bench_points": 61,
-      "avg_bench_per_gw": 12.2,
+      "total_bench_points": 77,
+      "avg_bench_per_gw": 15.4,
       "by_gw": [
         {
           "gw": 1,
@@ -939,7 +939,7 @@
         },
         {
           "gw": 5,
-          "bench_pts": 0
+          "bench_pts": 16
         }
       ]
     },
@@ -947,8 +947,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_bench_points": 60,
-      "avg_bench_per_gw": 12.0,
+      "total_bench_points": 70,
+      "avg_bench_per_gw": 14.0,
       "by_gw": [
         {
           "gw": 1,
@@ -968,7 +968,7 @@
         },
         {
           "gw": 5,
-          "bench_pts": 0
+          "bench_pts": 10
         }
       ]
     },
@@ -976,8 +976,8 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_bench_points": 44,
-      "avg_bench_per_gw": 8.8,
+      "total_bench_points": 47,
+      "avg_bench_per_gw": 9.4,
       "by_gw": [
         {
           "gw": 1,
@@ -997,7 +997,7 @@
         },
         {
           "gw": 5,
-          "bench_pts": 0
+          "bench_pts": 3
         }
       ]
     },
@@ -1005,8 +1005,8 @@
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "total_bench_points": 43,
-      "avg_bench_per_gw": 8.6,
+      "total_bench_points": 46,
+      "avg_bench_per_gw": 9.2,
       "by_gw": [
         {
           "gw": 1,
@@ -1026,7 +1026,65 @@
         },
         {
           "gw": 5,
+          "bench_pts": 3
+        }
+      ]
+    },
+    {
+      "entry_id": 6815970,
+      "name": "Tonali-tarian",
+      "manager": "Dominic Byrne",
+      "total_bench_points": 46,
+      "avg_bench_per_gw": 9.2,
+      "by_gw": [
+        {
+          "gw": 1,
+          "bench_pts": 16
+        },
+        {
+          "gw": 2,
           "bench_pts": 0
+        },
+        {
+          "gw": 3,
+          "bench_pts": 12
+        },
+        {
+          "gw": 4,
+          "bench_pts": 9
+        },
+        {
+          "gw": 5,
+          "bench_pts": 9
+        }
+      ]
+    },
+    {
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "total_bench_points": 46,
+      "avg_bench_per_gw": 9.2,
+      "by_gw": [
+        {
+          "gw": 1,
+          "bench_pts": 0
+        },
+        {
+          "gw": 2,
+          "bench_pts": 6
+        },
+        {
+          "gw": 3,
+          "bench_pts": 8
+        },
+        {
+          "gw": 4,
+          "bench_pts": 23
+        },
+        {
+          "gw": 5,
+          "bench_pts": 9
         }
       ]
     },
@@ -1060,69 +1118,11 @@
       ]
     },
     {
-      "entry_id": 6815970,
-      "name": "Tonali-tarian",
-      "manager": "Dominic Byrne",
-      "total_bench_points": 37,
-      "avg_bench_per_gw": 7.4,
-      "by_gw": [
-        {
-          "gw": 1,
-          "bench_pts": 16
-        },
-        {
-          "gw": 2,
-          "bench_pts": 0
-        },
-        {
-          "gw": 3,
-          "bench_pts": 12
-        },
-        {
-          "gw": 4,
-          "bench_pts": 9
-        },
-        {
-          "gw": 5,
-          "bench_pts": 0
-        }
-      ]
-    },
-    {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "total_bench_points": 37,
-      "avg_bench_per_gw": 7.4,
-      "by_gw": [
-        {
-          "gw": 1,
-          "bench_pts": 0
-        },
-        {
-          "gw": 2,
-          "bench_pts": 6
-        },
-        {
-          "gw": 3,
-          "bench_pts": 8
-        },
-        {
-          "gw": 4,
-          "bench_pts": 23
-        },
-        {
-          "gw": 5,
-          "bench_pts": 0
-        }
-      ]
-    },
-    {
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
-      "total_bench_points": 12,
-      "avg_bench_per_gw": 2.4,
+      "total_bench_points": 25,
+      "avg_bench_per_gw": 5.0,
       "by_gw": [
         {
           "gw": 1,
@@ -1142,7 +1142,7 @@
         },
         {
           "gw": 5,
-          "bench_pts": 0
+          "bench_pts": 13
         }
       ]
     },
@@ -1179,8 +1179,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_bench_points": 7,
-      "avg_bench_per_gw": 1.4,
+      "total_bench_points": 9,
+      "avg_bench_per_gw": 1.8,
       "by_gw": [
         {
           "gw": 1,
@@ -1200,7 +1200,7 @@
         },
         {
           "gw": 5,
-          "bench_pts": 0
+          "bench_pts": 2
         }
       ]
     },
