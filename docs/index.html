@@ -6002,19 +6002,24 @@ function buildDraftRoomTab() {
     const right = el('div', { className: 'draft-banner-right' });
 
     if (draftStatus === 'pending') {
-      // The draft starts in GW5-table order. Managers pick their position live in
-      // round one (draft here, or move to a later slot), so there's no separate
-      // step — we just need GW5 to be final so the starting order is real.
-      if (!_gw5Final) {
-        left.appendChild(el('div', { className: 'draft-banner-text' }, 'Draft starts once GW5 is complete'));
+      // The draft starts in GW5-table order; managers pick their position live in
+      // round one (draft here, or move to a later slot). It can be started on the
+      // provisional order (current standings) for testing before GW5 is final.
+      const ready = _priorityManagers && _priorityManagers.length === TOTAL_MANAGERS;
+      if (!ready) {
+        left.appendChild(el('div', { className: 'draft-banner-text' }, 'Loading league…'));
       } else {
-        left.appendChild(el('div', { className: 'draft-banner-text' }, 'Ready — starts in GW5-table order'));
-        left.appendChild(el('div', { className: 'draft-order-note' }, 'In round 1, each manager can draft from their slot or move to a later one.'));
-        const startBtn = el('button', { className: 'draft-start-btn' }, '▶ Start Draft');
+        left.appendChild(el('div', { className: 'draft-banner-text' },
+          _gw5Final ? 'Ready — starts in GW5-table order' : 'Ready — provisional order (testing)'));
+        left.appendChild(el('div', { className: 'draft-order-note' },
+          'In round 1, each manager can draft from their slot or move to a later one.'
+          + (_gw5Final ? '' : ' Order is provisional (current standings) until GW5 is final.')));
+        const startBtn = el('button', { className: 'draft-start-btn' },
+          _gw5Final ? '▶ Start Draft' : '▶ Start Draft (test)');
         startBtn.addEventListener('click', async () => {
           startBtn.disabled = true; startBtn.textContent = 'Starting…';
           try {
-            // Seed the live order from the GW5 table, then go active.
+            // Seed the live order from the current priority order, then go active.
             await db.collection('settings').doc('draftOrder').set(
               { order: (_priorityManagers || []).map(m => m.id),
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
@@ -6843,6 +6848,7 @@ function buildSettingsTab() {
         const batch = db.batch();
         snapshot.forEach(doc => batch.delete(doc.ref));
         batch.set(db.collection('settings').doc('draft'), { status: 'pending' }, { merge: true });
+        batch.delete(db.collection('settings').doc('draftOrder'));  // clear chosen order too
         await batch.commit();
         resetDraftBtn.textContent = '✓ Draft reset';
         setTimeout(() => { resetDraftBtn.disabled = false; resetDraftBtn.textContent = '⚠ Clear all picks & restart draft'; }, 3000);
