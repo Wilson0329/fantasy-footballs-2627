@@ -2066,12 +2066,20 @@
       background: var(--bg); border: 1px solid transparent;
       cursor: pointer; transition: background 0.1s, border-color 0.1s;
     }
-    .picker-player-row:hover:not(.taken) { background: var(--surface2); border-color: var(--border); }
-    .picker-player-row.taken { opacity: 0.28; cursor: default; }
-    .picker-taken-badge {
-      font-size: 0.62rem; color: var(--muted);
-      background: var(--surface2); padding: 2px 5px; border-radius: 4px;
+    .picker-player-row:hover { background: var(--surface2); border-color: var(--border); }
+    /* Taken players are intentionally NOT distinguished here — picking one shows
+       a toast (.picker-toast) instead, so the room can't see who's gone. */
+    .picker-toast {
+      position: fixed; left: 50%; top: 16%; transform: translateX(-50%) translateY(-8px);
+      z-index: 1200; max-width: 88vw;
+      background: var(--surface); color: var(--text);
+      border: 1px solid var(--red, #ef4444); border-left-width: 4px;
+      border-radius: 10px; padding: 0.7rem 1rem;
+      font-size: 0.85rem; font-weight: 600; line-height: 1.35;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      opacity: 0; pointer-events: none; transition: opacity 0.18s, transform 0.18s;
     }
+    .picker-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; cursor: pointer; }
     .picker-clear-bar {
       display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;
       padding: 0.5rem 0.75rem; background: rgba(239,68,68,0.06);
@@ -6460,13 +6468,26 @@ function buildDraftRoomTab() {
     }
   }
 
+  // Transient toast for picker messages (e.g. "already selected"). A single
+  // reused node, tap-to-dismiss, auto-hides after a few seconds.
+  let _pickerToastT = null;
+  function showPickerMessage(text) {
+    let toast = document.getElementById('picker-toast');
+    if (!toast) {
+      toast = el('div', { id: 'picker-toast', className: 'picker-toast' });
+      toast.addEventListener('click', () => toast.classList.remove('show'));
+      document.body.appendChild(toast);
+    }
+    toast.textContent = '⚠ ' + text;
+    toast.classList.add('show');
+    clearTimeout(_pickerToastT);
+    _pickerToastT = setTimeout(() => { toast.classList.remove('show'); }, 2800);
+  }
+
   function renderPlayerList(forPick) {
     const listEl = playerPanel.querySelector('#picker-list');
     if (!listEl || !allPlayers) return;
     listEl.innerHTML = '';
-
-    const pickedIds = new Set();
-    picks.forEach((p, pNum) => { if (pNum !== forPick) pickedIds.add(p.fplPlayerId); });
 
     let filtered = allPlayers.filter(p => {
       if (p.status === 'u') return false;
@@ -6486,12 +6507,20 @@ function buildDraftRoomTab() {
       listEl.appendChild(el('div', { className: 'picker-empty' }, 'No players match.')); return;
     }
 
+    // Is this player already taken by another pick? Checked LIVE at click time
+    // (picks can change between renders). We deliberately do NOT grey taken
+    // players out — every row looks identical so it isn't obvious to the room who
+    // has already gone. Trying to pick a taken player just shows a message.
+    const isTaken = (playerId) => {
+      for (const [pNum, pk] of picks) { if (pNum !== forPick && pk.fplPlayerId === playerId) return true; }
+      return false;
+    };
+
     const shown = filtered.slice(0, 120);
     shown.forEach(p => {
       const pos    = POS_MAP[p.element_type] || '?';
       const club   = teamMap[p.team] || '?';
-      const taken  = pickedIds.has(p.id);
-      const row    = el('div', { className: `picker-player-row${taken ? ' taken' : ''}` });
+      const row    = el('div', { className: 'picker-player-row' });
       row.appendChild(el('span', { className: `draft-pos-badge pos-${pos.toLowerCase()}` }, pos));
       row.appendChild(el('div', { className: 'draft-player-info' },
         el('span', { className: 'draft-player-name' }, p.web_name),
@@ -6501,8 +6530,10 @@ function buildDraftRoomTab() {
         el('span', { className: 'draft-stat', title: 'Total pts' }, String(p.total_points)),
         el('span', { className: 'draft-stat-price' }, `£${(p.now_cost / 10).toFixed(1)}m`)
       ));
-      if (taken) row.appendChild(el('span', { className: 'picker-taken-badge' }, 'Taken'));
-      else row.addEventListener('click', () => confirmPick(forPick, p));
+      row.addEventListener('click', () => {
+        if (isTaken(p.id)) { showPickerMessage(`${p.web_name} has already been selected.`); return; }
+        confirmPick(forPick, p);
+      });
       listEl.appendChild(row);
     });
     if (filtered.length > 120) {
