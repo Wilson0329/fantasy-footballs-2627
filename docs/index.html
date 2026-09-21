@@ -2072,6 +2072,18 @@
       font-size: 0.62rem; color: var(--muted);
       background: var(--surface2); padding: 2px 5px; border-radius: 4px;
     }
+    .picker-clear-bar {
+      display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;
+      padding: 0.5rem 0.75rem; background: rgba(239,68,68,0.06);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .picker-clear-btn {
+      padding: 0.32rem 0.7rem; border-radius: 8px; font-size: 0.74rem; font-weight: 700;
+      background: none; border: 1px solid var(--red, #ef4444); color: var(--red, #ef4444);
+      cursor: pointer; flex-shrink: 0;
+    }
+    .picker-clear-btn:hover { background: var(--red, #ef4444); color: #fff; }
+    .picker-clear-note { font-size: 0.68rem; color: var(--muted); line-height: 1.3; }
     .picker-loading, .picker-empty { padding: 1.5rem; text-align: center; color: var(--muted); font-size: 0.82rem; }
     .picker-more { padding: 0.5rem; text-align: center; color: var(--muted); font-size: 0.72rem; }
     .picker-panel-idle { padding: 1.5rem; text-align: center; color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
@@ -6391,6 +6403,19 @@ function buildDraftRoomTab() {
     }
     playerPanel.appendChild(hdr);
 
+    // Clear-pick control — only when editing an already-made pick. Removes the
+    // pick and hands the slot back to this manager (fixes an accidental pick).
+    if (isEdit) {
+      const existing = picks.get(forPick);
+      const clearBar = el('div', { className: 'picker-clear-bar' });
+      const clearBtn = el('button', { className: 'picker-clear-btn' }, '🗑 Clear this pick');
+      clearBtn.addEventListener('click', () => clearPick(forPick));
+      clearBar.appendChild(clearBtn);
+      clearBar.appendChild(el('span', { className: 'picker-clear-note' },
+        `Removes ${existing?.playerName || 'this pick'} — ${mgr} picks again.`));
+      playerPanel.appendChild(clearBar);
+    }
+
     // Position filter
     const posRow = el('div', { className: 'picker-pos-filter' });
     ['All', 'GK', 'DEF', 'MID', 'FWD'].forEach(pos => {
@@ -6535,6 +6560,24 @@ function buildDraftRoomTab() {
       movingOpen = false;   // turn's over — collapse any open move chooser
       // onSnapshot will re-render
     } catch(e) { alert('Could not save pick: ' + e.message); }
+  }
+
+  // Clear a pick — deletes the pick doc so the slot empties and the clock
+  // returns to that manager (computeCurrentPick lands back on it). The pick timer
+  // is derived from the live pick docs, so removing this one drops its recorded
+  // time automatically; the re-pick's own timestamp is then used instead.
+  async function clearPick(pickNum) {
+    const existing = picks.get(pickNum);
+    if (!existing) return;
+    const mIdx    = managerForPick(pickNum);
+    const mgrName = managers[mIdx]?.name || `Player ${mIdx + 1}`;
+    if (!confirm(`Clear ${existing.playerName || 'this pick'}? The pick goes back to ${mgrName}.`)) return;
+    try {
+      await db.collection('picks').doc(String(pickNum)).delete();
+      editingPick = null;
+      movingOpen  = false;
+      // onSnapshot re-renders: the slot is empty and this manager is on the clock.
+    } catch(e) { alert('Could not clear pick: ' + e.message); }
   }
 
   async function loadManagersFromLeague(leagueId) {
