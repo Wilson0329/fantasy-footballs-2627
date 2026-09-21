@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-09-20",
+    "last_updated": "2026-09-21",
     "current_gw": 5,
     "season": "2026/27"
   },
@@ -12,17 +12,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_points": 374,
-      "gw_points": 40
-    },
-    {
-      "rank": 2,
-      "rank_last": 2,
-      "entry_id": 8444994,
-      "name": "Silverware Foxes *",
-      "manager": "Charles Smith",
-      "total_points": 358,
-      "gw_points": 43
+      "total_points": 381,
+      "gw_points": 47
     },
     {
       "rank": 2,
@@ -30,8 +21,17 @@
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
+      "total_points": 360,
+      "gw_points": 62
+    },
+    {
+      "rank": 3,
+      "rank_last": 2,
+      "entry_id": 8444994,
+      "name": "Silverware Foxes *",
+      "manager": "Charles Smith",
       "total_points": 358,
-      "gw_points": 60
+      "gw_points": 43
     },
     {
       "rank": 4,
@@ -84,8 +84,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_points": 322,
-      "gw_points": 63
+      "total_points": 324,
+      "gw_points": 65
     },
     {
       "rank": 10,
@@ -124,16 +124,16 @@
       "trades": []
     },
     {
-      "entry_id": 8444994,
-      "name": "Silverware Foxes *",
-      "manager": "Charles Smith",
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
       "net_gain": 0,
       "trades": []
     },
     {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
+      "entry_id": 8444994,
+      "name": "Silverware Foxes *",
+      "manager": "Charles Smith",
       "net_gain": 0,
       "trades": []
     },
@@ -947,8 +947,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_bench_points": 74,
-      "avg_bench_per_gw": 14.8,
+      "total_bench_points": 67,
+      "avg_bench_per_gw": 13.4,
       "by_gw": [
         {
           "gw": 1,
@@ -968,7 +968,7 @@
         },
         {
           "gw": 5,
-          "bench_pts": 14
+          "bench_pts": 7
         }
       ]
     },
@@ -1063,8 +1063,8 @@
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "total_bench_points": 46,
-      "avg_bench_per_gw": 9.2,
+      "total_bench_points": 44,
+      "avg_bench_per_gw": 8.8,
       "by_gw": [
         {
           "gw": 1,
@@ -1084,7 +1084,7 @@
         },
         {
           "gw": 5,
-          "bench_pts": 3
+          "bench_pts": 1
         }
       ]
     },
@@ -1179,8 +1179,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_bench_points": 11,
-      "avg_bench_per_gw": 2.2,
+      "total_bench_points": 9,
+      "avg_bench_per_gw": 1.8,
       "by_gw": [
         {
           "gw": 1,
@@ -1200,7 +1200,7 @@
         },
         {
           "gw": 5,
-          "bench_pts": 4
+          "bench_pts": 2
         }
       ]
     },
@@ -1297,17 +1297,17 @@
       "hit_rate": 50.0
     },
     {
-      "entry_id": 8444994,
-      "name": "Silverware Foxes *",
-      "manager": "Charles Smith",
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
       "captain_hits": 1,
       "gws_played": 4,
       "hit_rate": 25.0
     },
     {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
+      "entry_id": 8444994,
+      "name": "Silverware Foxes *",
+      "manager": "Charles Smith",
       "captain_hits": 1,
       "gws_played": 4,
       "hit_rate": 25.0
