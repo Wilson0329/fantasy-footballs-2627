@@ -5196,7 +5196,8 @@ function buildChampionsTab() {
         el('div', { className: `honour-rank ${rankClass}` }, String(rank)),
         el('div', {},
           el('div', { className: 'honour-manager' }, person.manager),
-          el('div', { className: 'honour-team' }, person.team)
+          // Manager names only — no team names. Alumni keep their status label.
+          person.alumni ? el('div', { className: 'honour-team' }, 'Alumni') : null
         ),
         el('div', { className: `honour-total ${rankClass}` }, String(total))
       ),
@@ -5266,7 +5267,7 @@ function buildHistoryTab() {
     el('div', { className: 'founder-content' },
       el('div', { className: 'founder-eyebrow' }, 'League Founder \xb7 Commissioner \xb7 Visionary'),
       el('div', { className: 'founder-name' }, 'George Georgiou'),
-      el('div', { className: 'founder-title' }, 'GVG XI \xb7 Est. ' + FOUNDING_YEAR),
+      el('div', { className: 'founder-title' }, 'Est. ' + FOUNDING_YEAR),
       el('div', { className: 'founder-quotes' },
         el('blockquote', { className: 'founder-quote' },
           "I founded this league in " + FOUNDING_YEAR + " with one simple vision: a fair, competitive " +
