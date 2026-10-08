@@ -1,6 +1,14 @@
 {
   "episodes": [
     {
+      "gw": 6,
+      "title": "The Verdict",
+      "description": "Man City are found guilty of 114 charges, but some of our squads deserve a heavier sentence. The draft room awards (Joe: slowest drafter AND rule-breaker), Arun's one United player, Dave's 'ballers only' manifesto, and our long-range verdict: who wins it, who goes down, and why Arun's poll got it spectacularly wrong.",
+      "audio_file": "podcast-gw6.m4a",
+      "published_at": "2026-10-08",
+      "badge": "Draft Review"
+    },
+    {
       "gw": 4,
       "title": "Deep Dive: George",
       "description": "A special episode \u2014 the league's founder and commissioner George Georgiou gazes into his crystal ball with his predictions for the 2026/27 season. Who lifts the title, who takes the cup, and who joins him in the relegation scrap \u2014 bold calls from the man currently bottom of the table.",
