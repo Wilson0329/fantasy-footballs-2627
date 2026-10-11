@@ -1,13 +1,22 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-10-10",
+    "last_updated": "2026-10-11",
     "current_gw": 6,
     "season": "2026/27"
   },
   "standings": [
     {
       "rank": 1,
+      "rank_last": 3,
+      "entry_id": 8444994,
+      "name": "Silverware Foxes *",
+      "manager": "Charles Smith",
+      "total_points": 392,
+      "gw_points": 34
+    },
+    {
+      "rank": 2,
       "rank_last": 1,
       "entry_id": 5171746,
       "name": "Soucek Sadness",
@@ -16,22 +25,13 @@
       "gw_points": 10
     },
     {
-      "rank": 1,
-      "rank_last": 3,
-      "entry_id": 8444994,
-      "name": "Silverware Foxes *",
-      "manager": "Charles Smith",
-      "total_points": 391,
-      "gw_points": 33
-    },
-    {
       "rank": 3,
       "rank_last": 2,
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "total_points": 379,
-      "gw_points": 19
+      "total_points": 388,
+      "gw_points": 28
     },
     {
       "rank": 4,
@@ -39,8 +39,8 @@
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
-      "total_points": 372,
-      "gw_points": 37
+      "total_points": 377,
+      "gw_points": 42
     },
     {
       "rank": 5,
@@ -66,8 +66,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_points": 362,
-      "gw_points": 38
+      "total_points": 364,
+      "gw_points": 40
     },
     {
       "rank": 8,
@@ -75,26 +75,26 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_points": 358,
-      "gw_points": 10
+      "total_points": 361,
+      "gw_points": 13
     },
     {
       "rank": 9,
-      "rank_last": 10,
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "total_points": 352,
-      "gw_points": 31
-    },
-    {
-      "rank": 10,
       "rank_last": 8,
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_points": 350,
-      "gw_points": 23
+      "total_points": 358,
+      "gw_points": 31
+    },
+    {
+      "rank": 10,
+      "rank_last": 10,
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "total_points": 353,
+      "gw_points": 32
     },
     {
       "rank": 11,
@@ -102,8 +102,8 @@
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "total_points": 341,
-      "gw_points": 24
+      "total_points": 343,
+      "gw_points": 26
     },
     {
       "rank": 12,
@@ -111,16 +111,232 @@
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
-      "total_points": 328,
-      "gw_points": 11
+      "total_points": 330,
+      "gw_points": 13
     }
   ],
   "trade_differential": [
     {
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
+      "net_gain": 11,
+      "trades": [
+        {
+          "gw": 6,
+          "time": "2026-09-29T11:29:05.640632Z",
+          "player_out": {
+            "id": 411,
+            "name": "Haaland",
+            "pts_since": 0
+          },
+          "player_in": {
+            "id": 640,
+            "name": "Flemming",
+            "pts_while_held": 1,
+            "still_in_squad": true
+          },
+          "differential": 1
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-29T11:29:05.640266Z",
+          "player_out": {
+            "id": 346,
+            "name": "Calvert-Lewin",
+            "pts_since": 2
+          },
+          "player_in": {
+            "id": 81,
+            "name": "Rodr\u00edguez",
+            "pts_while_held": 1,
+            "still_in_squad": true
+          },
+          "differential": -1
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-29T11:29:05.640032Z",
+          "player_out": {
+            "id": 379,
+            "name": "Isak",
+            "pts_since": 0
+          },
+          "player_in": {
+            "id": 79,
+            "name": "Evanilson",
+            "pts_while_held": 7,
+            "still_in_squad": true
+          },
+          "differential": 7
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-29T11:29:05.639783Z",
+          "player_out": {
+            "id": 290,
+            "name": "Slater",
+            "pts_since": 0
+          },
+          "player_in": {
+            "id": 13,
+            "name": "Rice",
+            "pts_while_held": 7,
+            "still_in_squad": true
+          },
+          "differential": 7
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-29T11:29:05.639528Z",
+          "player_out": {
+            "id": 237,
+            "name": "Ndiaye",
+            "pts_since": 0
+          },
+          "player_in": {
+            "id": 239,
+            "name": "Garner",
+            "pts_while_held": 1,
+            "still_in_squad": true
+          },
+          "differential": 1
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-29T11:29:05.639268Z",
+          "player_out": {
+            "id": 427,
+            "name": "Mbeumo",
+            "pts_since": 8
+          },
+          "player_in": {
+            "id": 98,
+            "name": "Janelt",
+            "pts_while_held": 3,
+            "still_in_squad": true
+          },
+          "differential": -5
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-29T11:29:05.638933Z",
+          "player_out": {
+            "id": 15,
+            "name": "\u00d8degaard",
+            "pts_since": 1
+          },
+          "player_in": {
+            "id": 338,
+            "name": "Ampadu",
+            "pts_while_held": 1,
+            "still_in_squad": true
+          },
+          "differential": 0
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-29T11:29:05.638626Z",
+          "player_out": {
+            "id": 173,
+            "name": "Thomas",
+            "pts_since": 0
+          },
+          "player_in": {
+            "id": 113,
+            "name": "F.Kad\u0131o\u011flu",
+            "pts_while_held": 9,
+            "still_in_squad": true
+          },
+          "differential": 9
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-29T11:29:05.638381Z",
+          "player_out": {
+            "id": 304,
+            "name": "O'Shea",
+            "pts_since": 11
+          },
+          "player_in": {
+            "id": 532,
+            "name": "Ballard",
+            "pts_while_held": 0,
+            "still_in_squad": true
+          },
+          "differential": -11
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-29T11:29:05.638121Z",
+          "player_out": {
+            "id": 330,
+            "name": "Bogle",
+            "pts_since": 1
+          },
+          "player_in": {
+            "id": 533,
+            "name": "Mukiele",
+            "pts_while_held": 3,
+            "still_in_squad": true
+          },
+          "differential": 2
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-29T11:29:05.637803Z",
+          "player_out": {
+            "id": 418,
+            "name": "Maguire",
+            "pts_since": 2
+          },
+          "player_in": {
+            "id": 116,
+            "name": "Dunk",
+            "pts_while_held": 1,
+            "still_in_squad": true
+          },
+          "differential": -1
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-29T11:29:05.637446Z",
+          "player_out": {
+            "id": 4,
+            "name": "Gabriel",
+            "pts_since": 2
+          },
+          "player_in": {
+            "id": 229,
+            "name": "Tarkowski",
+            "pts_while_held": 4,
+            "still_in_squad": true
+          },
+          "differential": 2
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-29T11:29:05.637097Z",
+          "player_out": {
+            "id": 58,
+            "name": "Forster",
+            "pts_since": 0
+          },
+          "player_in": {
+            "id": 2,
+            "name": "Arrizabalaga",
+            "pts_while_held": 0,
+            "still_in_squad": true
+          },
+          "differential": 0
+        }
+      ]
+    },
+    {
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "net_gain": 10,
+      "net_gain": 9,
       "trades": [
         {
           "gw": 6,
@@ -133,10 +349,10 @@
           "player_in": {
             "id": 167,
             "name": "Delap",
-            "pts_while_held": 0,
+            "pts_while_held": 1,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": 1
         },
         {
           "gw": 6,
@@ -288,7 +504,7 @@
           "player_out": {
             "id": 473,
             "name": "Aina",
-            "pts_since": 0
+            "pts_since": 2
           },
           "player_in": {
             "id": 390,
@@ -296,7 +512,7 @@
             "pts_while_held": 0,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": -2
         },
         {
           "gw": 6,
@@ -349,394 +565,10 @@
       ]
     },
     {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
-      "net_gain": 6,
-      "trades": [
-        {
-          "gw": 6,
-          "time": "2026-09-29T11:29:05.640632Z",
-          "player_out": {
-            "id": 411,
-            "name": "Haaland",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 640,
-            "name": "Flemming",
-            "pts_while_held": 1,
-            "still_in_squad": true
-          },
-          "differential": 1
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-29T11:29:05.640266Z",
-          "player_out": {
-            "id": 346,
-            "name": "Calvert-Lewin",
-            "pts_since": 2
-          },
-          "player_in": {
-            "id": 81,
-            "name": "Rodr\u00edguez",
-            "pts_while_held": 1,
-            "still_in_squad": true
-          },
-          "differential": -1
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-29T11:29:05.640032Z",
-          "player_out": {
-            "id": 379,
-            "name": "Isak",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 79,
-            "name": "Evanilson",
-            "pts_while_held": 7,
-            "still_in_squad": true
-          },
-          "differential": 7
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-29T11:29:05.639783Z",
-          "player_out": {
-            "id": 290,
-            "name": "Slater",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 13,
-            "name": "Rice",
-            "pts_while_held": 7,
-            "still_in_squad": true
-          },
-          "differential": 7
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-29T11:29:05.639528Z",
-          "player_out": {
-            "id": 237,
-            "name": "Ndiaye",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 239,
-            "name": "Garner",
-            "pts_while_held": 0,
-            "still_in_squad": true
-          },
-          "differential": 0
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-29T11:29:05.639268Z",
-          "player_out": {
-            "id": 427,
-            "name": "Mbeumo",
-            "pts_since": 8
-          },
-          "player_in": {
-            "id": 98,
-            "name": "Janelt",
-            "pts_while_held": 3,
-            "still_in_squad": true
-          },
-          "differential": -5
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-29T11:29:05.638933Z",
-          "player_out": {
-            "id": 15,
-            "name": "\u00d8degaard",
-            "pts_since": 1
-          },
-          "player_in": {
-            "id": 338,
-            "name": "Ampadu",
-            "pts_while_held": 1,
-            "still_in_squad": true
-          },
-          "differential": 0
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-29T11:29:05.638626Z",
-          "player_out": {
-            "id": 173,
-            "name": "Thomas",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 113,
-            "name": "F.Kad\u0131o\u011flu",
-            "pts_while_held": 9,
-            "still_in_squad": true
-          },
-          "differential": 9
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-29T11:29:05.638381Z",
-          "player_out": {
-            "id": 304,
-            "name": "O'Shea",
-            "pts_since": 11
-          },
-          "player_in": {
-            "id": 532,
-            "name": "Ballard",
-            "pts_while_held": 0,
-            "still_in_squad": true
-          },
-          "differential": -11
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-29T11:29:05.638121Z",
-          "player_out": {
-            "id": 330,
-            "name": "Bogle",
-            "pts_since": 1
-          },
-          "player_in": {
-            "id": 533,
-            "name": "Mukiele",
-            "pts_while_held": 3,
-            "still_in_squad": true
-          },
-          "differential": 2
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-29T11:29:05.637803Z",
-          "player_out": {
-            "id": 418,
-            "name": "Maguire",
-            "pts_since": 2
-          },
-          "player_in": {
-            "id": 116,
-            "name": "Dunk",
-            "pts_while_held": 1,
-            "still_in_squad": true
-          },
-          "differential": -1
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-29T11:29:05.637446Z",
-          "player_out": {
-            "id": 4,
-            "name": "Gabriel",
-            "pts_since": 2
-          },
-          "player_in": {
-            "id": 229,
-            "name": "Tarkowski",
-            "pts_while_held": 0,
-            "still_in_squad": true
-          },
-          "differential": -2
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-29T11:29:05.637097Z",
-          "player_out": {
-            "id": 58,
-            "name": "Forster",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 2,
-            "name": "Arrizabalaga",
-            "pts_while_held": 0,
-            "still_in_squad": true
-          },
-          "differential": 0
-        }
-      ]
-    },
-    {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "net_gain": -3,
-      "trades": [
-        {
-          "gw": 6,
-          "time": "2026-09-28T21:07:19.282766Z",
-          "player_out": {
-            "id": 411,
-            "name": "Haaland",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 380,
-            "name": "Ekitik\u00e9",
-            "pts_while_held": 0,
-            "still_in_squad": true
-          },
-          "differential": 0
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-28T21:07:19.282315Z",
-          "player_out": {
-            "id": 379,
-            "name": "Isak",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 222,
-            "name": "Strand Larsen",
-            "pts_while_held": 0,
-            "still_in_squad": true
-          },
-          "differential": 0
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-28T21:07:19.281833Z",
-          "player_out": {
-            "id": 453,
-            "name": "Barnes",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 68,
-            "name": "Tavernier",
-            "pts_while_held": 1,
-            "still_in_squad": true
-          },
-          "differential": 1
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-28T21:07:19.281403Z",
-          "player_out": {
-            "id": 399,
-            "name": "Cherki",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 512,
-            "name": "Kudus",
-            "pts_while_held": 3,
-            "still_in_squad": true
-          },
-          "differential": 3
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-28T21:07:19.280936Z",
-          "player_out": {
-            "id": 397,
-            "name": "Semenyo",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 237,
-            "name": "Ndiaye",
-            "pts_while_held": 0,
-            "still_in_squad": true
-          },
-          "differential": 0
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-28T21:07:19.280465Z",
-          "player_out": {
-            "id": 417,
-            "name": "Dalot",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 6,
-            "name": "Saliba",
-            "pts_while_held": 0,
-            "still_in_squad": true
-          },
-          "differential": 0
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-28T21:07:19.280217Z",
-          "player_out": {
-            "id": 201,
-            "name": "Mu\u00f1oz",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 114,
-            "name": "Boscagli",
-            "pts_while_held": 5,
-            "still_in_squad": true
-          },
-          "differential": 5
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-28T21:07:19.279930Z",
-          "player_out": {
-            "id": 112,
-            "name": "Van Hecke",
-            "pts_since": 1
-          },
-          "player_in": {
-            "id": 503,
-            "name": "Van de Ven",
-            "pts_while_held": 1,
-            "still_in_squad": true
-          },
-          "differential": 0
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-28T21:07:19.279653Z",
-          "player_out": {
-            "id": 496,
-            "name": "Kinsky",
-            "pts_since": 3
-          },
-          "player_in": {
-            "id": 587,
-            "name": "Rulli",
-            "pts_while_held": 0,
-            "still_in_squad": true
-          },
-          "differential": -3
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-28T21:07:19.279299Z",
-          "player_out": {
-            "id": 109,
-            "name": "Verbruggen",
-            "pts_since": 9
-          },
-          "player_in": {
-            "id": 384,
-            "name": "Donnarumma",
-            "pts_while_held": 0,
-            "still_in_squad": true
-          },
-          "differential": -9
-        }
-      ]
-    },
-    {
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "net_gain": -6,
+      "net_gain": -5,
       "trades": [
         {
           "gw": 6,
@@ -941,10 +773,10 @@
           "player_in": {
             "id": 295,
             "name": "McBurnie",
-            "pts_while_held": 0,
+            "pts_while_held": 1,
             "still_in_squad": true
           },
-          "differential": -12
+          "differential": -11
         },
         {
           "gw": 6,
@@ -965,22 +797,22 @@
       ]
     },
     {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
-      "net_gain": -10,
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "net_gain": -5,
       "trades": [
         {
           "gw": 6,
-          "time": "2026-09-29T14:41:48.028556Z",
+          "time": "2026-09-28T21:07:19.282766Z",
           "player_out": {
             "id": 411,
             "name": "Haaland",
             "pts_since": 0
           },
           "player_in": {
-            "id": 194,
-            "name": "Thomas-Asante",
+            "id": 380,
+            "name": "Ekitik\u00e9",
             "pts_while_held": 0,
             "still_in_squad": true
           },
@@ -988,159 +820,15 @@
         },
         {
           "gw": 6,
-          "time": "2026-09-28T16:10:05.616371Z",
+          "time": "2026-09-28T21:07:19.282315Z",
           "player_out": {
-            "id": 497,
-            "name": "Dubravka",
+            "id": 379,
+            "name": "Isak",
             "pts_since": 0
           },
           "player_in": {
-            "id": 496,
-            "name": "Kinsky",
-            "pts_while_held": 3,
-            "still_in_squad": true
-          },
-          "differential": 3
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-28T10:31:25.812314Z",
-          "player_out": {
-            "id": 496,
-            "name": "Kinsky",
-            "pts_since": 3
-          },
-          "player_in": {
-            "id": 597,
-            "name": "Suzuki",
-            "pts_while_held": 2,
-            "still_in_squad": true
-          },
-          "differential": -1
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-27T16:15:10.265268Z",
-          "player_out": {
-            "id": 249,
-            "name": "Barry",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 552,
-            "name": "Brobbey",
-            "pts_while_held": 0,
-            "still_in_squad": true
-          },
-          "differential": 0
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-27T16:15:10.264997Z",
-          "player_out": {
-            "id": 542,
-            "name": "E.Le F\u00e9e",
-            "pts_since": 2
-          },
-          "player_in": {
-            "id": 121,
-            "name": "Mitoma",
-            "pts_while_held": 0,
-            "still_in_squad": true
-          },
-          "differential": -2
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-27T16:15:10.264746Z",
-          "player_out": {
-            "id": 427,
-            "name": "Mbeumo",
-            "pts_since": 8
-          },
-          "player_in": {
-            "id": 260,
-            "name": "Wilson",
-            "pts_while_held": 1,
-            "still_in_squad": true
-          },
-          "differential": -7
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-27T16:15:10.264316Z",
-          "player_out": {
-            "id": 426,
-            "name": "B.Fernandes",
-            "pts_since": 1
-          },
-          "player_in": {
-            "id": 400,
-            "name": "Doku",
-            "pts_while_held": 0,
-            "still_in_squad": true
-          },
-          "differential": -1
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-27T16:15:10.264068Z",
-          "player_out": {
-            "id": 242,
-            "name": "George",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 264,
-            "name": "Bobb",
-            "pts_while_held": 3,
-            "still_in_squad": true
-          },
-          "differential": 3
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-27T16:15:10.263824Z",
-          "player_out": {
-            "id": 15,
-            "name": "\u00d8degaard",
-            "pts_since": 1
-          },
-          "player_in": {
-            "id": 53,
-            "name": "Manzambi",
-            "pts_while_held": 5,
-            "still_in_squad": true
-          },
-          "differential": 4
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-27T16:15:10.263495Z",
-          "player_out": {
-            "id": 473,
-            "name": "Aina",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 504,
-            "name": "Vuskovic",
-            "pts_while_held": 8,
-            "still_in_squad": true
-          },
-          "differential": 8
-        },
-        {
-          "gw": 6,
-          "time": "2026-09-27T16:15:10.263245Z",
-          "player_out": {
-            "id": 472,
-            "name": "Murillo",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 5,
-            "name": "J.Timber",
+            "id": 222,
+            "name": "Strand Larsen",
             "pts_while_held": 1,
             "still_in_squad": true
           },
@@ -1148,15 +836,47 @@
         },
         {
           "gw": 6,
-          "time": "2026-09-27T16:15:10.262981Z",
+          "time": "2026-09-28T21:07:19.281833Z",
           "player_out": {
-            "id": 233,
-            "name": "Mykolenko",
+            "id": 453,
+            "name": "Barnes",
             "pts_since": 0
           },
           "player_in": {
-            "id": 417,
-            "name": "Dalot",
+            "id": 68,
+            "name": "Tavernier",
+            "pts_while_held": 1,
+            "still_in_squad": true
+          },
+          "differential": 1
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-28T21:07:19.281403Z",
+          "player_out": {
+            "id": 399,
+            "name": "Cherki",
+            "pts_since": 0
+          },
+          "player_in": {
+            "id": 512,
+            "name": "Kudus",
+            "pts_while_held": 3,
+            "still_in_squad": true
+          },
+          "differential": 3
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-28T21:07:19.280936Z",
+          "player_out": {
+            "id": 397,
+            "name": "Semenyo",
+            "pts_since": 0
+          },
+          "player_in": {
+            "id": 237,
+            "name": "Ndiaye",
             "pts_while_held": 0,
             "still_in_squad": true
           },
@@ -1164,31 +884,79 @@
         },
         {
           "gw": 6,
-          "time": "2026-09-27T16:15:10.262728Z",
+          "time": "2026-09-28T21:07:19.280465Z",
           "player_out": {
-            "id": 113,
-            "name": "F.Kad\u0131o\u011flu",
-            "pts_since": 9
+            "id": 417,
+            "name": "Dalot",
+            "pts_since": 0
           },
           "player_in": {
-            "id": 391,
-            "name": "Gvardiol",
+            "id": 6,
+            "name": "Saliba",
             "pts_while_held": 0,
             "still_in_squad": true
           },
-          "differential": -9
+          "differential": 0
         },
         {
           "gw": 6,
-          "time": "2026-09-27T16:15:10.262400Z",
+          "time": "2026-09-28T21:07:19.280217Z",
           "player_out": {
-            "id": 8,
-            "name": "Calafiori",
+            "id": 201,
+            "name": "Mu\u00f1oz",
+            "pts_since": 1
+          },
+          "player_in": {
+            "id": 114,
+            "name": "Boscagli",
+            "pts_while_held": 5,
+            "still_in_squad": true
+          },
+          "differential": 4
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-28T21:07:19.279930Z",
+          "player_out": {
+            "id": 112,
+            "name": "Van Hecke",
+            "pts_since": 3
+          },
+          "player_in": {
+            "id": 503,
+            "name": "Van de Ven",
+            "pts_while_held": 1,
+            "still_in_squad": true
+          },
+          "differential": -2
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-28T21:07:19.279653Z",
+          "player_out": {
+            "id": 496,
+            "name": "Kinsky",
+            "pts_since": 3
+          },
+          "player_in": {
+            "id": 587,
+            "name": "Rulli",
+            "pts_while_held": 0,
+            "still_in_squad": true
+          },
+          "differential": -3
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-28T21:07:19.279299Z",
+          "player_out": {
+            "id": 109,
+            "name": "Verbruggen",
             "pts_since": 9
           },
           "player_in": {
-            "id": 499,
-            "name": "Pedro Porro",
+            "id": 384,
+            "name": "Donnarumma",
             "pts_while_held": 0,
             "still_in_squad": true
           },
@@ -1325,10 +1093,10 @@
           "player_in": {
             "id": 588,
             "name": "Khalaili",
-            "pts_while_held": 0,
+            "pts_while_held": 1,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": 1
         },
         {
           "gw": 6,
@@ -1336,7 +1104,7 @@
           "player_out": {
             "id": 201,
             "name": "Mu\u00f1oz",
-            "pts_since": 0
+            "pts_since": 1
           },
           "player_in": {
             "id": 566,
@@ -1344,7 +1112,7 @@
             "pts_while_held": 0,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": -1
         },
         {
           "gw": 6,
@@ -1373,10 +1141,10 @@
           "player_in": {
             "id": 230,
             "name": "Branthwaite",
-            "pts_while_held": 0,
+            "pts_while_held": 1,
             "still_in_squad": true
           },
-          "differential": -9
+          "differential": -8
         },
         {
           "gw": 6,
@@ -1384,7 +1152,7 @@
           "player_out": {
             "id": 467,
             "name": "Sels",
-            "pts_since": 0
+            "pts_since": 1
           },
           "player_in": {
             "id": 351,
@@ -1392,7 +1160,7 @@
             "pts_while_held": 0,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": -1
         },
         {
           "gw": 6,
@@ -1416,7 +1184,7 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "net_gain": -13,
+      "net_gain": -14,
       "trades": [
         {
           "gw": 6,
@@ -1509,10 +1277,10 @@
           "player_in": {
             "id": 236,
             "name": "Dewsbury-Hall",
-            "pts_while_held": 0,
+            "pts_while_held": 1,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": 1
         },
         {
           "gw": 6,
@@ -1568,7 +1336,7 @@
           "player_out": {
             "id": 112,
             "name": "Van Hecke",
-            "pts_since": 1
+            "pts_since": 3
           },
           "player_in": {
             "id": 60,
@@ -1576,7 +1344,7 @@
             "pts_while_held": 2,
             "still_in_squad": true
           },
-          "differential": 1
+          "differential": -1
         },
         {
           "gw": 6,
@@ -1625,6 +1393,238 @@
             "still_in_squad": true
           },
           "differential": 2
+        }
+      ]
+    },
+    {
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
+      "net_gain": -14,
+      "trades": [
+        {
+          "gw": 6,
+          "time": "2026-09-29T14:41:48.028556Z",
+          "player_out": {
+            "id": 411,
+            "name": "Haaland",
+            "pts_since": 0
+          },
+          "player_in": {
+            "id": 194,
+            "name": "Thomas-Asante",
+            "pts_while_held": 0,
+            "still_in_squad": true
+          },
+          "differential": 0
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-28T16:10:05.616371Z",
+          "player_out": {
+            "id": 497,
+            "name": "Dubravka",
+            "pts_since": 0
+          },
+          "player_in": {
+            "id": 496,
+            "name": "Kinsky",
+            "pts_while_held": 3,
+            "still_in_squad": true
+          },
+          "differential": 3
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-28T10:31:25.812314Z",
+          "player_out": {
+            "id": 496,
+            "name": "Kinsky",
+            "pts_since": 3
+          },
+          "player_in": {
+            "id": 597,
+            "name": "Suzuki",
+            "pts_while_held": 2,
+            "still_in_squad": true
+          },
+          "differential": -1
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-27T16:15:10.265268Z",
+          "player_out": {
+            "id": 249,
+            "name": "Barry",
+            "pts_since": 1
+          },
+          "player_in": {
+            "id": 552,
+            "name": "Brobbey",
+            "pts_while_held": 0,
+            "still_in_squad": true
+          },
+          "differential": -1
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-27T16:15:10.264997Z",
+          "player_out": {
+            "id": 542,
+            "name": "E.Le F\u00e9e",
+            "pts_since": 2
+          },
+          "player_in": {
+            "id": 121,
+            "name": "Mitoma",
+            "pts_while_held": 0,
+            "still_in_squad": true
+          },
+          "differential": -2
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-27T16:15:10.264746Z",
+          "player_out": {
+            "id": 427,
+            "name": "Mbeumo",
+            "pts_since": 8
+          },
+          "player_in": {
+            "id": 260,
+            "name": "Wilson",
+            "pts_while_held": 1,
+            "still_in_squad": true
+          },
+          "differential": -7
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-27T16:15:10.264316Z",
+          "player_out": {
+            "id": 426,
+            "name": "B.Fernandes",
+            "pts_since": 1
+          },
+          "player_in": {
+            "id": 400,
+            "name": "Doku",
+            "pts_while_held": 0,
+            "still_in_squad": true
+          },
+          "differential": -1
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-27T16:15:10.264068Z",
+          "player_out": {
+            "id": 242,
+            "name": "George",
+            "pts_since": 0
+          },
+          "player_in": {
+            "id": 264,
+            "name": "Bobb",
+            "pts_while_held": 3,
+            "still_in_squad": true
+          },
+          "differential": 3
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-27T16:15:10.263824Z",
+          "player_out": {
+            "id": 15,
+            "name": "\u00d8degaard",
+            "pts_since": 1
+          },
+          "player_in": {
+            "id": 53,
+            "name": "Manzambi",
+            "pts_while_held": 5,
+            "still_in_squad": true
+          },
+          "differential": 4
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-27T16:15:10.263495Z",
+          "player_out": {
+            "id": 473,
+            "name": "Aina",
+            "pts_since": 2
+          },
+          "player_in": {
+            "id": 504,
+            "name": "Vuskovic",
+            "pts_while_held": 8,
+            "still_in_squad": true
+          },
+          "differential": 6
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-27T16:15:10.263245Z",
+          "player_out": {
+            "id": 472,
+            "name": "Murillo",
+            "pts_since": 1
+          },
+          "player_in": {
+            "id": 5,
+            "name": "J.Timber",
+            "pts_while_held": 1,
+            "still_in_squad": true
+          },
+          "differential": 0
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-27T16:15:10.262981Z",
+          "player_out": {
+            "id": 233,
+            "name": "Mykolenko",
+            "pts_since": 0
+          },
+          "player_in": {
+            "id": 417,
+            "name": "Dalot",
+            "pts_while_held": 0,
+            "still_in_squad": true
+          },
+          "differential": 0
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-27T16:15:10.262728Z",
+          "player_out": {
+            "id": 113,
+            "name": "F.Kad\u0131o\u011flu",
+            "pts_since": 9
+          },
+          "player_in": {
+            "id": 391,
+            "name": "Gvardiol",
+            "pts_while_held": 0,
+            "still_in_squad": true
+          },
+          "differential": -9
+        },
+        {
+          "gw": 6,
+          "time": "2026-09-27T16:15:10.262400Z",
+          "player_out": {
+            "id": 8,
+            "name": "Calafiori",
+            "pts_since": 9
+          },
+          "player_in": {
+            "id": 499,
+            "name": "Pedro Porro",
+            "pts_while_held": 0,
+            "still_in_squad": true
+          },
+          "differential": -9
         }
       ]
     },
@@ -1709,10 +1709,10 @@
           "player_in": {
             "id": 649,
             "name": "Maitland-Niles",
-            "pts_while_held": 0,
+            "pts_while_held": 1,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": 1
         },
         {
           "gw": 6,
@@ -1800,7 +1800,7 @@
           "player_out": {
             "id": 167,
             "name": "Delap",
-            "pts_since": 0
+            "pts_since": 1
           },
           "player_in": {
             "id": 491,
@@ -1808,7 +1808,7 @@
             "pts_while_held": 0,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": -1
         },
         {
           "gw": 6,
@@ -1832,7 +1832,7 @@
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "net_gain": -30,
+      "net_gain": -27,
       "trades": [
         {
           "gw": 6,
@@ -1872,7 +1872,7 @@
           "player_out": {
             "id": 480,
             "name": "Gibbs-White",
-            "pts_since": 0
+            "pts_since": 3
           },
           "player_in": {
             "id": 428,
@@ -1880,7 +1880,7 @@
             "pts_while_held": 10,
             "still_in_squad": true
           },
-          "differential": 10
+          "differential": 7
         },
         {
           "gw": 6,
@@ -1893,10 +1893,10 @@
           "player_in": {
             "id": 238,
             "name": "Grealish",
-            "pts_while_held": 0,
+            "pts_while_held": 4,
             "still_in_squad": true
           },
-          "differential": -6
+          "differential": -2
         },
         {
           "gw": 6,
@@ -2000,15 +2000,15 @@
           "player_out": {
             "id": 229,
             "name": "Tarkowski",
-            "pts_since": 0
+            "pts_since": 4
           },
           "player_in": {
             "id": 204,
             "name": "Mitchell",
-            "pts_while_held": 0,
+            "pts_while_held": 1,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": -3
         },
         {
           "gw": 6,
@@ -2021,10 +2021,10 @@
           "player_in": {
             "id": 572,
             "name": "Tzolakis",
-            "pts_while_held": 0,
+            "pts_while_held": 1,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": 1
         },
         {
           "gw": 6,
@@ -2037,10 +2037,10 @@
           "player_in": {
             "id": 226,
             "name": "Pickford",
-            "pts_while_held": 0,
+            "pts_while_held": 4,
             "still_in_squad": true
           },
-          "differential": -3
+          "differential": 1
         }
       ]
     },
@@ -2048,7 +2048,7 @@
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "net_gain": -37,
+      "net_gain": -35,
       "trades": [
         {
           "gw": 6,
@@ -2189,10 +2189,10 @@
           "player_in": {
             "id": 472,
             "name": "Murillo",
-            "pts_while_held": 0,
+            "pts_while_held": 1,
             "still_in_squad": true
           },
-          "differential": -3
+          "differential": -2
         },
         {
           "gw": 6,
@@ -2285,10 +2285,10 @@
           "player_in": {
             "id": 467,
             "name": "Sels",
-            "pts_while_held": 0,
+            "pts_while_held": 1,
             "still_in_squad": true
           },
-          "differential": -9
+          "differential": -8
         }
       ]
     },
@@ -2296,7 +2296,7 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "net_gain": -44,
+      "net_gain": -48,
       "trades": [
         {
           "gw": 6,
@@ -2304,7 +2304,7 @@
           "player_out": {
             "id": 480,
             "name": "Gibbs-White",
-            "pts_since": 0
+            "pts_since": 3
           },
           "player_in": {
             "id": 70,
@@ -2312,7 +2312,7 @@
             "pts_while_held": 0,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": -3
         },
         {
           "gw": 6,
@@ -2480,7 +2480,7 @@
           "player_out": {
             "id": 277,
             "name": "Egan",
-            "pts_since": 0
+            "pts_since": 1
           },
           "player_in": {
             "id": 388,
@@ -2488,7 +2488,7 @@
             "pts_while_held": 0,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": -1
         },
         {
           "gw": 6,
@@ -2528,7 +2528,7 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "net_gain": -56,
+      "net_gain": -54,
       "trades": [
         {
           "gw": 6,
@@ -2541,10 +2541,10 @@
           "player_in": {
             "id": 249,
             "name": "Barry",
-            "pts_while_held": 0,
+            "pts_while_held": 1,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": 1
         },
         {
           "gw": 6,
@@ -2680,7 +2680,7 @@
           "player_out": {
             "id": 201,
             "name": "Mu\u00f1oz",
-            "pts_since": 0
+            "pts_since": 1
           },
           "player_in": {
             "id": 471,
@@ -2688,7 +2688,7 @@
             "pts_while_held": 0,
             "still_in_squad": true
           },
-          "differential": 0
+          "differential": -1
         },
         {
           "gw": 6,
@@ -2717,10 +2717,10 @@
           "player_in": {
             "id": 112,
             "name": "Van Hecke",
-            "pts_while_held": 1,
+            "pts_while_held": 3,
             "still_in_squad": true
           },
-          "differential": -3
+          "differential": -1
         },
         {
           "gw": 6,
@@ -4069,17 +4069,17 @@
       "hit_rate": 20.0
     },
     {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
       "captain_hits": 1,
       "gws_played": 5,
       "hit_rate": 20.0
     },
     {
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
       "captain_hits": 1,
       "gws_played": 5,
       "hit_rate": 20.0
