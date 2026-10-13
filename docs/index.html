@@ -4462,7 +4462,7 @@ function buildTransferTimeline(tradeDiff) {
   const card = el('div', { className: 'stats-card' });
   card.appendChild(el('div', { className: 'stats-card-header' },
     el('h3', {}, icon('clock'), ' Transfer Timeline'),
-    el('p', {}, 'All transfers across all managers, grouped by gameweek in reverse chronological order.')
+    el('p', {}, 'All post-draft trades across all managers, grouped by gameweek in reverse chronological order.')
   ));
 
   // Flatten all trades
@@ -4471,7 +4471,7 @@ function buildTransferTimeline(tradeDiff) {
   );
 
   if (allTrades.length === 0) {
-    card.appendChild(el('div', { style: 'padding:1rem;color:var(--muted);font-size:0.78rem;text-align:center' }, 'No transfers yet.'));
+    card.appendChild(el('div', { style: 'padding:1rem;color:var(--muted);font-size:0.78rem;text-align:center' }, 'No post-draft trades yet.'));
     return card;
   }
 
@@ -4807,7 +4807,7 @@ function buildTradeDiffTable(tradeDiff) {
   const card = el('div', { className: 'stats-card' });
   card.appendChild(el('div', { className: 'stats-card-header' },
     el('h3', {}, icon('repeat-2'), ' Transfer Differential'),
-    el('p', {}, 'Net points gained/lost vs the player sold, calculated from the gameweek of each transfer onwards.')
+    el('p', {}, 'Post-draft trades only (GW6 onwards — loading your drafted squad doesn\'t count). Net points gained/lost vs the player sold, from the gameweek of each trade onwards.')
   ));
 
   const thead = el('thead', {},
