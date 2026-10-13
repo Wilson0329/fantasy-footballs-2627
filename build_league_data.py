@@ -162,20 +162,80 @@ def player_pts_in_gw(player_id, gw):
 
 # ─── Trade differential ───────────────────────────────────────────────────────
 
+# The draft happens between GW5 and GW6. Managers then load their drafted 15 into
+# FPL, which FPL records as ~15 GW6 "transfers" (pre-draft player out, drafted
+# player in). Those are the draft, not trades, so the stats start from each
+# manager's drafted squad and only count genuine post-draft trades.
+DRAFT_FIRST_GW = 6
+FIRESTORE_REST = ("https://firestore.googleapis.com/v1/projects/fantasy-footballs-2627"
+                  "/databases/(default)/documents")
+# Public Firebase web key — the same one the site ships in docs/index.html. Reads
+# are open in firestore.rules, so the cron needs no service-account secret.
+FIREBASE_WEB_KEY = "AIzaSyDwTn1d0kZ4ZGkkcxtQBxtF6-1IFTMgSlE"
+
+
+def _fs_get(path, **params):
+    resp = SESSION.get(f"{FIRESTORE_REST}/{path}", params={"key": FIREBASE_WEB_KEY, **params}, timeout=15)
+    resp.raise_for_status()
+    return resp.json()
+
+
+def load_draft_squads():
+    """entry_id -> set of drafted player ids, from the Draft Room (Firestore
+    `picks` + `settings/draftOrder`). Returns {} if unavailable or if the draft
+    doesn't belong to this league (e.g. an archive rebuild of another season)."""
+    try:
+        order = _fs_get("settings/draftOrder")["fields"]["order"]["arrayValue"]["values"]
+        slot_entry = {i: int(v["stringValue"]) for i, v in enumerate(order)}
+        docs, token = [], None
+        while True:
+            page = _fs_get("picks", pageSize=300, **({"pageToken": token} if token else {}))
+            docs += page.get("documents", [])
+            token = page.get("nextPageToken")
+            if not token:
+                break
+        squads = {}
+        for d in docs:
+            f = d["fields"]
+            entry = slot_entry.get(int(f["managerIndex"]["integerValue"]))
+            if entry is not None:
+                squads.setdefault(entry, set()).add(int(f["fplPlayerId"]["integerValue"]))
+    except Exception as e:  # network/shape problems → caller falls back
+        print(f"  Couldn't load draft squads from Firestore ({e}).")
+        return {}
+    if not {t["entry_id"] for t in TEAMS} <= set(squads):
+        print("  Firestore draft doesn't match this league — ignoring it.")
+        return {}
+    return squads
+
+
 def build_trade_differential(player_names):
     print("\nBuilding trade differential...")
+    draft_squads = load_draft_squads()
     result = []
     for team in TEAMS:
         print(f"  {team['name']}...")
+        drafted = draft_squads.get(team["entry_id"])
+        if not drafted:
+            # Fallback: the squad fielded in the first post-draft gameweek.
+            try:
+                drafted = {p["element"] for p in get_picks(team["entry_id"], DRAFT_FIRST_GW)["picks"]}
+            except Exception:
+                drafted = set()
+        owned = set(drafted)
         all_transfers = fetch(f"/entry/{team['entry_id']}/transfers/")
         trades = []
-        for t in sorted(all_transfers, key=lambda x: x["event"]):
+        for t in sorted(all_transfers, key=lambda x: (x["event"], x["time"])):
             gw = t["event"]
-            # Only count post-draft trades. The draft runs between GW5 and GW6,
-            # so transfers from GW6 onward are the "draft" trades we track.
-            if gw <= 5:
-                continue
             out_id, in_id = t["element_out"], t["element_in"]
+            if gw < DRAFT_FIRST_GW:
+                continue
+            # Draft-squad setup, not a trade: bringing in one of your own draft
+            # picks, or moving out a player who isn't in the post-draft squad.
+            if in_id in drafted or out_id not in owned:
+                continue
+            owned.discard(out_id)
+            owned.add(in_id)
             out_pts = player_pts_from_gw(out_id, gw)
             later_sales = [t2["event"] for t2 in all_transfers
                            if t2["element_out"] == in_id and t2["event"] > gw]
