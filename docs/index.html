@@ -1745,6 +1745,27 @@
     .trade-warn-title svg { width: 15px; height: 15px; }
     .trade-warn-item { font-size: 0.78rem; color: var(--text); margin-top: 0.3rem; }
     .trade-warn-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.4rem; }
+    .trade-table td { position: relative; }
+    .trade-table td.has-slot-btn { padding-right: 22px; }
+    .trade-via { font-size: 0.62rem; color: var(--gold, #b8860b); font-weight: 700; margin-top: 1px; }
+    .trade-slot-btn { position: absolute; top: 2px; right: 2px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); border-radius: 6px; font-size: 0.7rem; line-height: 1; padding: 2px 4px; cursor: pointer; opacity: 0.75; }
+    .trade-slot-btn:hover { opacity: 1; color: var(--text); border-color: var(--accent); }
+    .trade-ask { margin: 0 1.1rem 0.6rem; padding: 0.75rem 0.9rem; background: rgba(245,158,11,0.10); border: 1px solid rgba(245,158,11,0.45); border-radius: 10px; }
+    .trade-ask-title { font-weight: 800; color: #b45309; font-size: 0.84rem; display: flex; align-items: center; gap: 0.35rem; }
+    .trade-ask-title svg { width: 15px; height: 15px; }
+    .trade-ask-text { font-size: 0.78rem; color: var(--text); margin-top: 0.3rem; line-height: 1.4; }
+    .trade-ask-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.55rem; }
+    .trade-ask-yes { background: #f59e0b; color: #3a2a00; border: none; border-radius: 999px; padding: 0.4rem 0.9rem; font-weight: 800; font-size: 0.78rem; cursor: pointer; }
+    .trade-ask-no { background: none; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 0.4rem 0.9rem; font-weight: 600; font-size: 0.78rem; cursor: pointer; }
+    .slot-editor { max-width: 460px; }
+    .slot-editor-body { padding: 0.4rem 1.1rem 1.1rem; overflow-y: auto; }
+    .slot-editor-label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 0.8rem 0 0.4rem; }
+    .slot-editor-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .slot-opt { background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 999px; padding: 0.38rem 0.8rem; font-size: 0.78rem; cursor: pointer; }
+    .slot-opt:hover { border-color: var(--accent); }
+    .slot-opt.current { background: rgba(0,212,170,0.15); border-color: var(--accent); color: var(--accent); cursor: default; font-weight: 700; }
+    .slot-reset { margin-top: 0.9rem; background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 0.4rem 0.8rem; font-size: 0.76rem; cursor: pointer; }
+    .slot-editor-status { font-size: 0.74rem; color: var(--muted); margin-top: 0.6rem; min-height: 1em; }
 
     /* ── News tab ── */
     .news-meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
@@ -5800,7 +5821,8 @@ function buildTradeOrderTab() {
   frag.appendChild(el('div', { className: 'section-title' }, icon('repeat'), ' Monthly Trade Order'));
   frag.appendChild(el('div', { className: 'trade-intro' },
     'The rotation follows the draft order (the positions chosen in the Draft Room). Each month, in schedule order, a manager '
-    + 'trades one player out and picks one from the free pool in. Tap the highlighted cell to make the pick.'));
+    + 'trades one player out and picks one from the free pool in. Tap the highlighted cell to make the pick. '
+    + 'Picks can be traded too: tap ⇄ on any pick to hand it to another manager or swap places.'));
 
   const schedule    = buildTradeSchedule();
   const monthKeys   = TRADE_MONTHS.map(m => m.key);          // ['nov'..'may']
@@ -5824,6 +5846,25 @@ function buildTradeOrderTab() {
   };
   const entryForSeed = (seed) => (seeds && seeds[seed - 1]) ? seeds[seed - 1].entry_id : null;
   const toPlayerObj  = (pl) => ({ id: pl.id, name: pl.web_name, club: teamMap[pl.team] || '', pos: POS[pl.element_type] || '' });
+
+  // Pick trades: managers sometimes include a future trade pick in negotiations, or
+  // swap places. settings/tradeSlots.overrides maps `${month}_${pickIdx}` → entryId of
+  // whoever now holds that pick; anything not overridden follows the schedule.
+  let slotOverrides = {};
+  const nameForEntry = (id) => {
+    const s = seeds && seeds.find(x => String(x.entry_id) === String(id));
+    return s ? (s.manager || s.name) : `Team ${id}`;
+  };
+  // Who trades in a cell: the stored trade's manager if it's done, else an
+  // override, else the scheduled seed.
+  function traderFor(monthKey, pickIdx, seed) {
+    const t = trades.get(`${monthKey}_${pickIdx}`);
+    if (t && t.entryId != null) return { entryId: t.entryId, name: t.managerName || nameForEntry(t.entryId), swapped: false };
+    const ov = slotOverrides[`${monthKey}_${pickIdx}`];
+    if (ov != null && String(ov) !== String(entryForSeed(seed)))
+      return { entryId: Number(ov), name: nameForEntry(ov), swapped: true, origName: nameForSeed(seed) };
+    return { entryId: entryForSeed(seed), name: nameForSeed(seed), swapped: false };
+  }
   const cellGlobal   = (monthKey, pickIdx) => monthKeys.indexOf(monthKey) * 12 + pickIdx;
 
   // Ownership can only be validated once real squads are loaded. Pre-season it's empty,
@@ -5837,25 +5878,33 @@ function buildTradeOrderTab() {
       .filter(([k]) => k !== excludeKey)
       .sort((a, b) => cellGlobal(a[1].month, a[1].pickIndex) - cellGlobal(b[1].month, b[1].pickIndex))
       .forEach(([, t]) => {
-        if (t.out && t.out.id != null) owner.delete(t.out.id);
+        if (t.out && t.out.id != null) {
+          // Manager-to-manager trade = swap: the player traded out joins the other squad.
+          if (t.inFrom) owner.set(t.out.id, { entryId: t.inFrom.entryId, managerName: t.inFrom.managerName });
+          else owner.delete(t.out.id);
+        }
         if (t.in && t.in.id != null) owner.set(t.in.id, { entryId: t.entryId, managerName: t.managerName });
       });
     return owner;
   }
   // Returns a list of clash messages (empty = clean). No-op until real squads exist.
-  function validateTrade(seed, outSel, inSel, excludeKey) {
+  function validateTrade(trader, outSel, inSel, excludeKey, inFrom) {
     if (!hasOwnershipData()) return [];
     const issues = [];
     const owner = effectiveOwnership(excludeKey);
-    const myEntry = entryForSeed(seed);
+    const myEntry = trader.entryId;
     if (outSel) {
       const o = owner.get(outSel.id);
       if (!o) issues.push(`${outSel.name} isn't in anyone's squad — can't trade them out.`);
-      else if (myEntry != null && o.entryId !== myEntry) issues.push(`${outSel.name} is in ${o.managerName}'s squad, not ${nameForSeed(seed)}'s.`);
+      else if (myEntry != null && o.entryId !== myEntry) issues.push(`${outSel.name} is in ${o.managerName}'s squad, not ${trader.name}'s.`);
     }
     if (inSel) {
       const o = owner.get(inSel.id);
-      if (o) issues.push(`${inSel.name} is already owned by ${o.managerName} — not a free-pool player.`);
+      // Already confirmed as an agreed trade with that manager → not a clash.
+      if (o && !(inFrom && String(inFrom.entryId) === String(o.entryId)))
+        issues.push(o.entryId === myEntry
+          ? `${inSel.name} is already in ${trader.name}'s squad.`
+          : `${inSel.name} is already owned by ${o.managerName} — not a free-pool player.`);
     }
     return issues;
   }
@@ -5884,20 +5933,35 @@ function buildTradeOrderTab() {
         const isActive = !trade && cellGlobal(col.key, pickIdx) === curr;
         const td = el('td', { className: col.key === nowMonthKey ? 'trade-col-now' : '' });
 
+        const trader = traderFor(col.key, pickIdx, seed);
+        // ⇄ hands an untraded pick to another manager or swaps it (needs real names).
+        const slotBtn = () => {
+          const b = el('button', { className: 'trade-slot-btn', title: 'Change who has this pick' }, '⇄');
+          b.addEventListener('click', (e) => { e.stopPropagation(); openSlotEditor(col, pickIdx); });
+          td.classList.add('has-slot-btn');
+          return b;
+        };
+        const via = () => trader.swapped ? el('div', { className: 'trade-via' }, `${trader.origName}'s pick`) : null;
+
         if (trade) {
           td.classList.add('trade-done');
           td.appendChild(el('div', { className: 'trade-in-name' }, trade.in && trade.in.name || '?'));
           if (trade.out && trade.out.name) td.appendChild(el('div', { className: 'trade-out-note' }, '⇄ ' + trade.out.name));
-          td.title = `${nameForSeed(seed)} — in: ${trade.in && trade.in.name}, out: ${trade.out && trade.out.name}`;
+          if (trade.inFrom) td.appendChild(el('div', { className: 'trade-via' }, `from ${trade.inFrom.managerName}`));
+          td.title = `${trader.name} — in: ${trade.in && trade.in.name}${trade.inFrom ? ` (from ${trade.inFrom.managerName})` : ''}, out: ${trade.out && trade.out.name}`;
           td.addEventListener('click', () => openTradePicker(col, pickIdx, seed, trade));
         } else if (isActive) {
           td.classList.add('trade-active');
-          td.appendChild(el('div', { className: 'trade-mgr' }, nameForSeed(seed)));
+          td.appendChild(el('div', { className: 'trade-mgr' }, trader.name));
+          const v = via(); if (v) td.appendChild(v);
           td.appendChild(el('div', { className: 'trade-cta' }, 'Tap to pick'));
+          if (seeds) td.appendChild(slotBtn());
           td.addEventListener('click', () => openTradePicker(col, pickIdx, seed, null));
         } else {
           td.classList.add('trade-locked');
-          td.appendChild(el('div', { className: 'trade-mgr' }, nameForSeed(seed)));
+          td.appendChild(el('div', { className: 'trade-mgr' }, trader.name));
+          const v = via(); if (v) td.appendChild(v);
+          if (seeds) td.appendChild(slotBtn());
         }
         tr.appendChild(td);
       });
@@ -5906,6 +5970,74 @@ function buildTradeOrderTab() {
     const scroll = el('div', { className: 'trade-table-scroll' });
     scroll.appendChild(table);
     wrap.appendChild(scroll);
+  }
+
+  // ── Pick swap editor: hand a pick to another manager, swap places, or reset ──
+  async function saveOverrides(next) {
+    await db.collection('settings').doc('tradeSlots').set(
+      { overrides: next, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+  }
+  function openSlotEditor(col, pickIdx) {
+    const key = `${col.key}_${pickIdx}`;
+    const seed = col.order[pickIdx];
+    const cur = traderFor(col.key, pickIdx, seed);
+    const overlay = el('div', { className: 'trade-picker-overlay open' });
+    const modal = el('div', { className: 'trade-picker slot-editor' });
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    const close = () => overlay.remove();
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    const closeBtn = el('button', { className: 'trade-picker-close' }, '✕');
+    closeBtn.addEventListener('click', close);
+    modal.appendChild(el('div', { className: 'trade-picker-head' },
+      el('div', { className: 'trade-picker-title' }, `${col.label} · Pick ${pickIdx + 1} — ${cur.name}`
+        + (cur.swapped ? ` (${cur.origName}'s pick)` : '')), closeBtn));
+    const body = el('div', { className: 'slot-editor-body' });
+    modal.appendChild(body);
+    const status = el('div', { className: 'slot-editor-status' });
+
+    // Write a change, normalising so an override equal to the schedule is removed.
+    async function apply(changes, label) {
+      const next = { ...slotOverrides };
+      Object.entries(changes).forEach(([k, entry]) => {
+        const [m, i] = k.split('_');
+        const sched = entryForSeed(schedule.find(c => c.key === m).order[Number(i)]);
+        if (entry == null || String(entry) === String(sched)) delete next[k];
+        else next[k] = String(entry);
+      });
+      status.textContent = 'Saving…';
+      try { await saveOverrides(next); close(); }
+      catch (e) { status.textContent = 'Save failed: ' + e.message; }
+    }
+
+    body.appendChild(el('div', { className: 'slot-editor-label' }, 'Give this pick to'));
+    const grid = el('div', { className: 'slot-editor-grid' });
+    (seeds || []).forEach(sd => {
+      const isCur = String(sd.entry_id) === String(cur.entryId);
+      const b = el('button', { className: `slot-opt${isCur ? ' current' : ''}` }, sd.manager || sd.name);
+      if (!isCur) b.addEventListener('click', () => apply({ [key]: sd.entry_id }));
+      grid.appendChild(b);
+    });
+    body.appendChild(grid);
+
+    const others = col.order.map((sd, i) => i).filter(i => i !== pickIdx && !trades.has(`${col.key}_${i}`));
+    if (others.length) {
+      body.appendChild(el('div', { className: 'slot-editor-label' }, `Swap places with (${col.label})`));
+      const list = el('div', { className: 'slot-editor-grid' });
+      others.forEach(i => {
+        const t = traderFor(col.key, i, col.order[i]);
+        const b = el('button', { className: 'slot-opt' }, `Pick ${i + 1} · ${t.name}`);
+        b.addEventListener('click', () => apply({ [key]: t.entryId, [`${col.key}_${i}`]: cur.entryId }));
+        list.appendChild(b);
+      });
+      body.appendChild(list);
+    }
+    if (cur.swapped) {
+      const reset = el('button', { className: 'slot-reset' }, `Reset to schedule (${cur.origName})`);
+      reset.addEventListener('click', () => apply({ [key]: null }));
+      body.appendChild(reset);
+    }
+    body.appendChild(status);
   }
 
   // ── A searchable player selector column ──
@@ -5947,16 +6079,18 @@ function buildTradeOrderTab() {
     const close = () => overlay.remove();
     overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
 
+    const trader = traderFor(col.key, pickIdx, seed);
     const closeBtn = el('button', { className: 'trade-picker-close' }, '✕');
     closeBtn.addEventListener('click', close);
     modal.appendChild(el('div', { className: 'trade-picker-head' },
-      el('div', { className: 'trade-picker-title' }, `${nameForSeed(seed)} · ${col.label} trade`), closeBtn));
+      el('div', { className: 'trade-picker-title' }, `${trader.name} · ${col.label} trade`), closeBtn));
 
     let outSel = existing && existing.out || null;
     let inSel  = existing && existing.in || null;
+    let inFrom = existing && existing.inFrom || null;   // set when signing from another squad
 
     // OUT list = the manager's real squad if we can load it, else the full pool (demo / pre-season)
-    const entryId = entryForSeed(seed);
+    const entryId = trader.entryId;
     let outPlayers = null;
     if (entryId && bs) {
       try {
@@ -5969,7 +6103,7 @@ function buildTradeOrderTab() {
 
     const body = el('div', { className: 'trade-picker-body' });
     const outCol = buildSelector('Trade OUT (from squad)', outPlayers, () => outSel, (pl) => { outSel = toPlayerObj(pl); refresh(); });
-    const inCol  = buildSelector('Trade IN (free pool)',   pool,       () => inSel,  (pl) => { inSel  = toPlayerObj(pl); refresh(); });
+    const inCol  = buildSelector('Trade IN',               pool,       () => inSel,  pickIn);
     body.appendChild(outCol.el); body.appendChild(inCol.el);
     modal.appendChild(body);
 
@@ -5979,6 +6113,34 @@ function buildTradeOrderTab() {
 
     const summary = el('div', { className: 'trade-picker-summary' });
     const warn = el('div', { className: 'trade-warn', style: 'display:none' });
+    const ask  = el('div', { className: 'trade-ask', style: 'display:none' });
+
+    // Trading IN a player who's in another manager's squad is allowed (managers trade
+    // with each other) — but confirm it's intended before selecting him.
+    function pickIn(pl) {
+      const o = hasOwnershipData() ? effectiveOwnership(excludeKey).get(pl.id) : null;
+      if (!o || String(o.entryId) === String(entryId)) {
+        inSel = toPlayerObj(pl); inFrom = null; ask.style.display = 'none'; refresh(); return;
+      }
+      ask.innerHTML = '';
+      ask.appendChild(el('div', { className: 'trade-ask-title' }, icon('alert-triangle'),
+        ` ${pl.web_name} is in ${o.managerName}'s squad`));
+      ask.appendChild(el('div', { className: 'trade-ask-text' },
+        `He isn't a free-pool player. Managers can trade with each other — has ${trader.name} agreed this with `
+        + `${o.managerName}? The player traded out goes to ${o.managerName}.`));
+      const yes = el('button', { className: 'trade-ask-yes' }, `Yes — trade with ${o.managerName}`);
+      const no  = el('button', { className: 'trade-ask-no' }, 'No, pick someone else');
+      yes.addEventListener('click', () => {
+        inSel = toPlayerObj(pl);
+        inFrom = { entryId: o.entryId, managerName: o.managerName };
+        ask.style.display = 'none'; refresh();
+      });
+      no.addEventListener('click', () => { ask.style.display = 'none'; });
+      ask.appendChild(el('div', { className: 'trade-ask-actions' }, yes, no));
+      ask.style.display = 'block';
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+      ask.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
     const confirm = el('button', { className: 'trade-confirm-btn' }, defaultLabel);
 
     async function saveTrade(wasOverridden) {
@@ -5986,8 +6148,8 @@ function buildTradeOrderTab() {
       try {
         await db.collection('trades').doc(`${col.key}_${pickIdx}`).set({
           month: col.key, pickIndex: pickIdx, seed,
-          entryId: entryId || null, managerName: nameForSeed(seed),
-          out: outSel, in: inSel, override: !!wasOverridden,
+          entryId: entryId || null, managerName: trader.name,
+          out: outSel, in: inSel, inFrom: inFrom || null, override: !!wasOverridden,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
         close();
@@ -5996,7 +6158,7 @@ function buildTradeOrderTab() {
 
     confirm.addEventListener('click', () => {
       if (!outSel || !inSel) return;
-      const issues = validateTrade(seed, outSel, inSel, excludeKey);
+      const issues = validateTrade(trader, outSel, inSel, excludeKey, inFrom);
       if (issues.length && !overriding) {
         warn.innerHTML = '';
         warn.appendChild(el('div', { className: 'trade-warn-title' }, icon('alert-triangle'), ' Possible clash'));
@@ -6013,6 +6175,7 @@ function buildTradeOrderTab() {
       saveTrade(overriding && issues.length > 0);
     });
 
+    modal.appendChild(ask);
     modal.appendChild(warn);
     modal.appendChild(el('div', { className: 'trade-picker-foot' }, summary, confirm));
 
@@ -6025,7 +6188,8 @@ function buildTradeOrderTab() {
       summary.innerHTML = '';
       summary.appendChild(el('span', { className: 'trade-sum out' }, outSel ? outSel.name : 'select OUT'));
       summary.appendChild(el('span', { className: 'trade-sum-arrow' }, '⇄'));
-      summary.appendChild(el('span', { className: 'trade-sum in' }, inSel ? inSel.name : 'select IN'));
+      summary.appendChild(el('span', { className: 'trade-sum in' },
+        inSel ? inSel.name + (inFrom ? ` (from ${inFrom.managerName})` : '') : 'select IN'));
       confirm.disabled = !(outSel && inSel);
       outCol.redraw(); inCol.redraw();
     }
@@ -6058,7 +6222,11 @@ function buildTradeOrderTab() {
         snap.forEach(doc => { const d = doc.data(); if (d && d.month != null && d.pickIndex != null) trades.set(`${d.month}_${d.pickIndex}`, d); });
         render();
       }, () => render());
-      _tradeCleanup = () => { try { unsub(); } catch (e) {} };
+      const unsubSlots = db.collection('settings').doc('tradeSlots').onSnapshot(snap => {
+        slotOverrides = (snap.exists && snap.data().overrides) || {};
+        render();
+      }, () => {});
+      _tradeCleanup = () => { try { unsub(); } catch (e) {} try { unsubSlots(); } catch (e) {} };
     } catch (e) { /* offline */ }
     render();
   })();
