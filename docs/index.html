@@ -3636,12 +3636,19 @@ function resortLeagueTable() {
 // Compute FPL auto-substitutions for a live GW.
 // Returns Map<outElement, inElement>: a starter who has finished on 0 minutes
 // (their team's GW match(es) all done) is replaced by the first eligible bench
-// player, taken in bench order, who has played or whose match hasn't finished
-// (GK ↔ GK only). Mirrors the pitch-view logic (buildPitchView) so the league
-// total and the expanded squad view always agree.
+// player, taken in bench order, who has played or whose match hasn't finished.
+// GK ↔ GK only, and — as in FPL — an outfield sub is only made if the XI stays a
+// valid formation (3-5 DEF, 2-5 MID, 1-3 FWD); a bench player who would break it
+// is skipped and the next one in bench order is tried. Shared by the league total
+// (refreshLeagueScores) and the pitch view (buildPitchView) so they always agree.
+const FORMATION_MIN = { 2: 3, 3: 2, 4: 1 };
+const FORMATION_MAX = { 2: 5, 3: 5, 4: 3 };
 function computeAutoSubMap(starters, bench, minutesMap, finishedTeams, meta) {
   const pairs = new Map();
   const availableBench = [...bench];
+  // Position counts of the effective XI, updated as each sub is made.
+  const counts = { 1: 0, 2: 0, 3: 0, 4: 0 };
+  starters.forEach(s => { const m = meta(s.element); if (m) counts[m.element_type]++; });
   starters.forEach(starter => {
     const pm = meta(starter.element);
     if (!pm) return;
@@ -3654,11 +3661,16 @@ function computeAutoSubMap(starters, bench, minutesMap, finishedTeams, meta) {
       if (!bpm) continue;
       if (isGKStarter !== (bpm.element_type === 1)) continue; // GK ↔ GK only
       const bMins = minutesMap[bp.element] || 0;
-      if (bMins > 0 || !finishedTeams.has(bpm.team)) {
-        pairs.set(starter.element, bp.element);
-        availableBench.splice(i, 1);
-        break;
+      if (!(bMins > 0 || !finishedTeams.has(bpm.team))) continue; // didn't play
+      const outT = pm.element_type, inT = bpm.element_type;
+      if (outT !== inT) {
+        const next = { ...counts }; next[outT]--; next[inT]++;
+        if (next[outT] < (FORMATION_MIN[outT] || 1) || next[inT] > (FORMATION_MAX[inT] || 1)) continue;
+        counts[outT]--; counts[inT]++;
       }
+      pairs.set(starter.element, bp.element);
+      availableBench.splice(i, 1);
+      break;
     }
   });
   return pairs;
@@ -3951,27 +3963,8 @@ async function buildPitchView(entryId, gw, container, isLive) {
           finishedTeams.add(f.team_h); finishedTeams.add(f.team_a);
         }
       });
-      let availableBench = [...bench];
-      starters.forEach(starter => {
-        const pm = playerMap[starter.element];
-        if (!pm) return;
-        if (!finishedTeams.has(pm.team)) return;
-        if ((minutesMap[starter.element] || 0) !== 0) return;
-        const isGKStarter = pm.element_type === 1;
-        for (let i = 0; i < availableBench.length; i++) {
-          const bp = availableBench[i];
-          const bpm = playerMap[bp.element];
-          if (!bpm) continue;
-          if (isGKStarter !== (bpm.element_type === 1)) continue; // GK ↔ GK only
-          const bMins = minutesMap[bp.element] || 0;
-          if (bMins > 0 || !finishedTeams.has(bpm.team)) {
-            autoSubPairs.set(starter.element, bp.element);
-            autoSubReverse.set(bp.element, starter.element);
-            availableBench.splice(i, 1);
-            break;
-          }
-        }
-      });
+      computeAutoSubMap(starters, bench, minutesMap, finishedTeams, id => playerMap[id])
+        .forEach((inEl, outEl) => { autoSubPairs.set(outEl, inEl); autoSubReverse.set(inEl, outEl); });
     }
 
     // Build pitch rows — visually swap auto-subbed players onto the pitch.
