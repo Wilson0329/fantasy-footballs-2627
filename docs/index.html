@@ -2015,6 +2015,8 @@
     }
     .draft-pick-cell.filled { background: var(--surface2); cursor: pointer; }
     .draft-pick-cell.filled:hover { background: rgba(55,0,60,0.12); }
+    .draft-pick-cell.filled.locked { cursor: default; }
+    .draft-pick-cell.filled.locked:hover { background: var(--surface2); }
     .draft-pick-cell.current {
       background: rgba(0,212,170,0.1); box-shadow: inset 0 0 0 2px var(--accent);
       animation: dr-pulse 1.6s ease-in-out infinite;
@@ -6298,6 +6300,7 @@ function buildDraftRoomTab() {
   let managers      = Array.from({ length: 12 }, (_, i) => ({ id: `p${i}`, name: `Player ${i + 1}` }));
   let picks         = new Map();   // pickNumber → pick object
   let draftStatus   = 'pending';   // 'pending' | 'active' | 'complete'
+  let draftLocked   = false;       // settings/draft.locked — finished board is read-only (unlock in Settings)
   let editingPick   = null;        // pick number being edited, or null
   let posFilter     = 'all';
   let clubFilter    = 'all'; // teamId (as string) or 'all'
@@ -6394,7 +6397,8 @@ function buildDraftRoomTab() {
     } else {
       const curr = computeCurrentPick();
       if (curr >= TOTAL_PICKS) {
-        left.appendChild(el('div', { className: 'draft-banner-text done' }, '🏆 Draft Complete — all 180 picks made'));
+        left.appendChild(el('div', { className: 'draft-banner-text done' },
+          '🏆 Draft Complete — all 180 picks made' + (draftLocked ? ' · 🔒 Locked' : '')));
       } else {
         const round  = Math.floor(curr / TOTAL_MANAGERS) + 1;
         const mIdx   = managerForPick(curr);
@@ -6528,7 +6532,8 @@ function buildDraftRoomTab() {
           cell.appendChild(el('span', { className: 'pick-player-name' }, pick.playerName || ''));
           cell.appendChild(el('span', { className: 'pick-player-club' }, pick.playerClub || ''));
           cell.title = `${pick.playerName} (${pick.playerClub}) — R${r + 1}, ${m.name}`;
-          cell.addEventListener('click', () => openPicker(pNum));
+          if (!draftLocked) cell.addEventListener('click', () => openPicker(pNum));
+          else cell.classList.add('locked');
         } else if (isCurr) {
           cell.appendChild(el('div', { className: 'pick-current-dot' }, '●'));
         }
@@ -6549,7 +6554,9 @@ function buildDraftRoomTab() {
   function renderPlayerPanel(forPick) {
     playerPanel.innerHTML = '';
     if (forPick === null || forPick === undefined) {
-      playerPanel.appendChild(el('div', { className: 'picker-panel-idle' }, 'Tap a cell in the grid above to make or edit a pick.'));
+      playerPanel.appendChild(el('div', { className: 'picker-panel-idle' }, draftLocked
+        ? '🔒 The draft is complete and the board is locked, so the original drafted squads are preserved. Unlock it in Settings if a correction is needed.'
+        : 'Tap a cell in the grid above to make or edit a pick.'));
       return;
     }
     const curr   = computeCurrentPick();
@@ -6717,6 +6724,7 @@ function buildDraftRoomTab() {
   }
 
   function openPicker(pickNum) {
+    if (draftLocked) return;
     editingPick = pickNum;
     renderGrid();
     renderPlayerPanel(pickNum);
@@ -6749,6 +6757,12 @@ function buildDraftRoomTab() {
         price:        player.now_cost,
         addedAt:      firebase.firestore.FieldValue.serverTimestamp()
       });
+      // Final pick in → mark the draft complete and lock the board so the original
+      // drafted squads can't be changed by accident (unlock in Settings to correct).
+      const filled = picks.size + (picks.has(pickNum) ? 0 : 1);
+      if (filled >= TOTAL_PICKS) {
+        await db.collection('settings').doc('draft').set({ status: 'complete', locked: true }, { merge: true });
+      }
       editingPick = null;
       movingOpen = false;   // turn's over — collapse any open move chooser
       // onSnapshot will re-render
@@ -6760,6 +6774,7 @@ function buildDraftRoomTab() {
   // is derived from the live pick docs, so removing this one drops its recorded
   // time automatically; the re-pick's own timestamp is then used instead.
   async function clearPick(pickNum) {
+    if (draftLocked) return;
     const existing = picks.get(pickNum);
     if (!existing) return;
     const mIdx    = managerForPick(pickNum);
@@ -6903,6 +6918,7 @@ function buildDraftRoomTab() {
       const draftDoc = await db.collection('settings').doc('draft').get();
       if (draftDoc.exists) {
         draftStatus = draftDoc.data().status || 'pending';
+        draftLocked = !!draftDoc.data().locked;
         draftStartedAt = toDateMaybe(draftDoc.data().startedAt);
       }
 
@@ -6929,7 +6945,12 @@ function buildDraftRoomTab() {
         if (!snap.exists) return;
         draftStartedAt = toDateMaybe(snap.data().startedAt) || draftStartedAt;
         const newStatus = snap.data().status || 'pending';
-        if (newStatus !== draftStatus) { draftStatus = newStatus; fullRender(); }
+        const newLocked = !!snap.data().locked;
+        if (newStatus !== draftStatus || newLocked !== draftLocked) {
+          draftStatus = newStatus; draftLocked = newLocked;
+          if (draftLocked) editingPick = null;   // close any open edit on lock
+          fullRender();
+        }
         else { renderPickTimer(); }
       });
 
@@ -7288,34 +7309,78 @@ function buildSettingsTab() {
     cupGwSection.appendChild(openCupBtn);
     form.appendChild(cupGwSection);
 
-    // Draft Room reset
+    // Draft Room — lock + reset
     const draftSection = el('div', { className: 'settings-field', style: 'margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)' });
     draftSection.appendChild(el('label', { className: 'settings-field-label' }, 'Draft Room'));
-    draftSection.appendChild(el('div', { className: 'settings-field-hint', style: 'margin-bottom:0.75rem' },
-      'Reset the draft to clear all picks and start over. This cannot be undone.'));
+    draftSection.appendChild(el('div', { className: 'settings-field-hint', style: 'margin-bottom:0.6rem' },
+      'Once the draft is complete the board is locked so the original drafted squads are preserved '
+      + '(they\'re also archived in the repo for the end-of-season comparison). Unlock only to correct a pick, then lock it again.'));
+    const draftLockStatus = el('div', { className: 'settings-field-hint', style: 'margin-bottom:0.5rem;font-weight:700' }, 'Lock status: …');
+    const draftLockBtn = el('button', { className: 'gw-add-btn' }, '…');
+    draftSection.appendChild(draftLockStatus);
+    draftSection.appendChild(draftLockBtn);
+
+    const resetHint = el('div', { className: 'settings-field-hint', style: 'margin:1rem 0 0.5rem' },
+      'Reset the draft to clear all picks and start over. This cannot be undone. Type RESET to enable.');
+    const resetInput = el('input', { type: 'text', className: 'settings-input', placeholder: 'Type RESET', style: 'max-width:160px;margin-right:0.5rem' });
     const resetDraftBtn = el('button', {
       className: 'draft-modal-cancel',
       style: 'color:var(--red,#ef4444);border-color:var(--red,#ef4444)'
     }, '⚠ Clear all picks & restart draft');
+    draftSection.appendChild(resetHint);
+    draftSection.appendChild(el('div', { style: 'display:flex;align-items:center;flex-wrap:wrap;gap:0.4rem' }, resetInput, resetDraftBtn));
+
+    let settingsDraftLocked = false;
+    function syncDraftControls() {
+      draftLockStatus.textContent = settingsDraftLocked ? 'Lock status: 🔒 Locked (read-only)' : 'Lock status: 🔓 Unlocked (picks can be edited)';
+      draftLockBtn.textContent = settingsDraftLocked ? '🔓 Unlock draft board (for corrections)' : '🔒 Lock draft board';
+      resetDraftBtn.disabled = settingsDraftLocked || resetInput.value.trim() !== 'RESET';
+      resetHint.textContent = settingsDraftLocked
+        ? 'Reset is disabled while the draft board is locked. Unlock it first.'
+        : 'Reset the draft to clear all picks and start over. This cannot be undone. Type RESET to enable.';
+    }
+    db.collection('settings').doc('draft').get()
+      .then(snap => { settingsDraftLocked = !!(snap.exists && snap.data().locked); syncDraftControls(); })
+      .catch(() => syncDraftControls());
+    resetInput.addEventListener('input', syncDraftControls);
+    draftLockBtn.addEventListener('click', async () => {
+      const next = !settingsDraftLocked;
+      draftLockBtn.disabled = true;
+      try {
+        // Locking marks the draft complete; unlocking returns it to active so a
+        // cleared pick puts that manager back on the clock.
+        await db.collection('settings').doc('draft').set(
+          { locked: next, status: next ? 'complete' : 'active' }, { merge: true });
+        settingsDraftLocked = next;
+      } catch (e) {
+        errorMsg.textContent = `Couldn't update the draft lock: ${e.message}`;
+        errorMsg.style.display = 'block';
+      }
+      draftLockBtn.disabled = false;
+      syncDraftControls();
+    });
+
     resetDraftBtn.addEventListener('click', async () => {
-      if (!confirm('This will delete ALL draft picks and reset the draft to pending. Are you sure?')) return;
+      if (settingsDraftLocked || resetInput.value.trim() !== 'RESET') return;
       resetDraftBtn.disabled = true; resetDraftBtn.textContent = 'Resetting…';
       try {
         const snapshot = await db.collection('picks').get();
         const batch = db.batch();
         snapshot.forEach(doc => batch.delete(doc.ref));
-        batch.set(db.collection('settings').doc('draft'), { status: 'pending' }, { merge: true });
+        batch.set(db.collection('settings').doc('draft'), { status: 'pending', locked: false }, { merge: true });
         batch.delete(db.collection('settings').doc('draftOrder'));  // clear chosen order too
         await batch.commit();
         resetDraftBtn.textContent = '✓ Draft reset';
-        setTimeout(() => { resetDraftBtn.disabled = false; resetDraftBtn.textContent = '⚠ Clear all picks & restart draft'; }, 3000);
+        resetInput.value = '';
+        setTimeout(() => { resetDraftBtn.textContent = '⚠ Clear all picks & restart draft'; syncDraftControls(); }, 3000);
       } catch(e) {
         errorMsg.textContent = `Reset failed: ${e.message}`;
         errorMsg.style.display = 'block';
-        resetDraftBtn.disabled = false; resetDraftBtn.textContent = '⚠ Clear all picks & restart draft';
+        resetDraftBtn.textContent = '⚠ Clear all picks & restart draft';
+        syncDraftControls();
       }
     });
-    draftSection.appendChild(resetDraftBtn);
+    syncDraftControls();
     form.appendChild(draftSection);
 
     // Monthly trades reset
