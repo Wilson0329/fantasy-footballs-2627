@@ -5,7 +5,8 @@ on:
   # league/cup builds pass --league-id so they need no secrets. Two off-peak,
   # non-round-minute slots a day for reliability — GitHub often drops runs that
   # land on the exact hour. 06:41 UTC catches finalised data after the overnight
-  # bonus processing; 17:11 UTC is the evening-before-a-gameweek podcast slot.
+  # bonus processing; 17:11 UTC refreshes again after the day's matches.
+  # (The podcast is produced locally and is not part of this workflow.)
   schedule:
     - cron: '41 6 * * *'
     - cron: '11 17 * * *'
@@ -16,7 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      issues: write
 
     steps:
       - uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests firebase-admin google-genai
+        run: pip install requests firebase-admin
 
       # League + cup builds pass the league id directly so they run WITHOUT
       # Firestore/FIREBASE_SERVICE_ACCOUNT. Standings stay empty (front-end shows
@@ -39,34 +39,11 @@ jobs:
         run: python3 build_cup_data.py --league-id 271949 --season "2026/27" --output docs/cup_data.json
         continue-on-error: true
 
-      - name: Prepare podcast brief (evening before a gameweek only)
-        run: python3 build_podcast_data.py
-        continue-on-error: true
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-
-      - name: Open reminder issue if a new brief was created
-        run: |
-          NEW=$(git status --porcelain briefs/ 2>/dev/null | grep -E '\.md$' || true)
-          if [ -n "$NEW" ]; then
-            GW=$(ls briefs/gw*.md | sed -E 's/.*gw([0-9]+)\.md/\1/' | sort -n | tail -1)
-            gh issue create \
-              --title "🎙️ GW$GW podcast brief ready" \
-              --body "The brief for GW$GW is at \`briefs/gw$GW.md\`. Generate the NotebookLM Audio Overview from it, download the audio, then run \`python3 publish_episode.py --gw $GW --audio /path/to/audio.mp3\` and push to publish the episode." \
-              || echo "issue create failed (continuing)"
-          else
-            echo "No new brief this run."
-          fi
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/league_data.json docs/cup_data.json
-          git add briefs 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No changes — skipping commit"
           else
