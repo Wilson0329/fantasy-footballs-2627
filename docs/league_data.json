@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-10-18",
+    "last_updated": "2026-10-19",
     "current_gw": 7,
     "season": "2026/27"
   },
@@ -35,6 +35,15 @@
     },
     {
       "rank": 4,
+      "rank_last": 5,
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
+      "total_points": 431,
+      "gw_points": 49
+    },
+    {
+      "rank": 5,
       "rank_last": 8,
       "entry_id": 6415977,
       "name": "Call the Tzolis",
@@ -43,25 +52,16 @@
       "gw_points": 61
     },
     {
-      "rank": 5,
-      "rank_last": 5,
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
-      "total_points": 429,
-      "gw_points": 47
-    },
-    {
       "rank": 6,
       "rank_last": 10,
       "entry_id": 1442119,
       "name": "GVG XI *",
       "manager": "George Georgiou",
-      "total_points": 415,
-      "gw_points": 47
+      "total_points": 414,
+      "gw_points": 46
     },
     {
-      "rank": 7,
+      "rank": 6,
       "rank_last": 6,
       "entry_id": 1552043,
       "name": "Respect The CV ****",
@@ -138,16 +138,16 @@
       "trades": []
     },
     {
-      "entry_id": 6415977,
-      "name": "Call the Tzolis",
-      "manager": "Adam Georghiou",
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
       "net_gain": 0,
       "trades": []
     },
     {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
+      "entry_id": 6415977,
+      "name": "Call the Tzolis",
+      "manager": "Adam Georghiou",
       "net_gain": 0,
       "trades": []
     },
@@ -1625,17 +1625,17 @@
       "hit_rate": 16.7
     },
     {
-      "entry_id": 6415977,
-      "name": "Call the Tzolis",
-      "manager": "Adam Georghiou",
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
       "captain_hits": 1,
       "gws_played": 6,
       "hit_rate": 16.7
     },
     {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
+      "entry_id": 6415977,
+      "name": "Call the Tzolis",
+      "manager": "Adam Georghiou",
       "captain_hits": 1,
       "gws_played": 6,
       "hit_rate": 16.7
