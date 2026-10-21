@@ -62,21 +62,21 @@
     },
     {
       "rank": 7,
-      "rank_last": 6,
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
-      "total_points": 418,
-      "gw_points": 41
-    },
-    {
-      "rank": 7,
       "rank_last": 3,
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
       "total_points": 418,
       "gw_points": 24
+    },
+    {
+      "rank": 7,
+      "rank_last": 6,
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
+      "total_points": 418,
+      "gw_points": 41
     },
     {
       "rank": 9,
@@ -159,16 +159,16 @@
       "trades": []
     },
     {
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
       "net_gain": 0,
       "trades": []
     },
     {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
       "net_gain": 0,
       "trades": []
     },
