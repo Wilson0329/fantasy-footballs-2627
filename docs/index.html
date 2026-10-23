@@ -163,6 +163,14 @@
       flex-shrink: 0;
     }
     .tab-btn:hover { color: var(--text); }
+    .tab-btn[data-tab="podcast"] { position: relative; }
+    .podcast-new-dot {
+      position: absolute; top: 0.5rem; right: 0.55rem;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #ef4444; box-shadow: 0 0 0 2px #fff;
+      animation: podcastDotPulse 2s ease-in-out infinite;
+    }
+    @keyframes podcastDotPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
     .tab-btn.active { color: var(--purple); border-bottom-color: var(--green); border-bottom-width: 3px; }
 
     /* ── Draft dropdown ── */
@@ -7502,6 +7510,44 @@ async function checkAdminCode(code) {
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ── "New episode" dot on the Podcast tab ──
+// Remembers (per browser) the newest episode the visitor has seen; shows a dot on
+// the Podcast tab when a newer one is published, and clears it when they open the
+// tab. First-time visitors only see it for an episode from the last 10 days.
+const PODCAST_SEEN_KEY = 'ff_podcast_seen_gw';
+function latestPodcastEpisode() {
+  const eps = (_podcastData && _podcastData.episodes) || [];
+  return eps.reduce((best, e) => (!best || (e.gw || 0) > (best.gw || 0)) ? e : best, null);
+}
+function updatePodcastDot() {
+  const btn = document.querySelector('.tab-btn[data-tab="podcast"]');
+  if (!btn) return;
+  const ep = latestPodcastEpisode();
+  let seen = null;
+  try { const v = localStorage.getItem(PODCAST_SEEN_KEY); if (v !== null) seen = Number(v); } catch (e) {}
+  let isNew = false;
+  if (ep) {
+    if (seen === null) {
+      const d = Date.parse(ep.published_at);
+      isNew = !isNaN(d) && (Date.now() - d) < 10 * 864e5;
+    } else {
+      isNew = (ep.gw || 0) > seen;
+    }
+  }
+  let dot = btn.querySelector('.podcast-new-dot');
+  if (isNew && !dot) {
+    btn.appendChild(el('span', { className: 'podcast-new-dot', title: 'New episode', 'aria-label': 'New episode' }));
+  } else if (!isNew && dot) {
+    dot.remove();
+  }
+}
+function markPodcastSeen() {
+  const ep = latestPodcastEpisode();
+  if (!ep) return;
+  try { localStorage.setItem(PODCAST_SEEN_KEY, String(ep.gw || 0)); } catch (e) {}
+  updatePodcastDot();
+}
+
 function switchTab(tabName) {
   // Cleanup Firestore listeners when leaving tabs
   if (_tradeCleanup) { _tradeCleanup(); _tradeCleanup = null; }
@@ -7555,6 +7601,7 @@ function switchTab(tabName) {
     app.appendChild(buildHistoryTab());
   } else if (tabName === 'podcast') {
     app.appendChild(buildPodcastTab(_podcastData));
+    markPodcastSeen();
   } else if (tabName === 'draft') {
     if (_leagueData) app.appendChild(buildDraftTab(_leagueData));
     else app.appendChild(el('div', { className: 'not-available' }, 'League data not yet available — this tab will populate once the 26/27 season begins.'));
@@ -7902,6 +7949,7 @@ Promise.all([
   const _validTabs = ['league', 'cup', 'podcast', 'draft', 'draft-room', 'trade-order', 'stats', 'history', 'settings'];
   let _startTab = 'league';
   try { const t = localStorage.getItem('ff_active_tab'); if (t && _validTabs.includes(t)) _startTab = t; } catch (e) {}
+  updatePodcastDot();
   switchTab(_startTab);
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }).catch(err => {
