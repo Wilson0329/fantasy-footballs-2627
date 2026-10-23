@@ -627,6 +627,7 @@
     /* GW selector bar */
     .gw-selector-bar {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 0.6rem;
       margin-bottom: 0.75rem;
@@ -1633,6 +1634,18 @@
       margin: 0 auto 1rem;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .live-freshness { display: inline-flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+    .fresh-age { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+    .fresh-dot { width: 7px; height: 7px; border-radius: 50%; background: #94a3b8; flex-shrink: 0; }
+    .fresh-dot.fresh { background: #22c55e; }
+    .fresh-dot.stale { background: #f59e0b; }
+    .fresh-dot.pulse { animation: freshPulse 0.9s ease-out; }
+    @keyframes freshPulse { 0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); } 100% { box-shadow: 0 0 0 8px rgba(34,197,94,0); } }
+    .live-refresh-btn { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.28rem 0.65rem; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.74rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .live-refresh-btn:hover:not(:disabled) { border-color: var(--accent); }
+    .live-refresh-btn:disabled { opacity: 0.55; cursor: default; }
+    .live-refresh-btn svg { width: 12px; height: 12px; }
+    .live-refresh-btn.loading svg { animation: spin 0.8s linear infinite; }
     .error-msg { text-align: center; padding: 3rem 2rem; color: var(--red); }
     .not-available { text-align: center; padding: 3rem 2rem; color: var(--muted); font-size: 0.9rem; }
     .archive-banner {
@@ -3451,18 +3464,18 @@ async function getBootstrap() {
   return _bootstrap;
 }
 
-async function getLive(gw) {
-  // Always bust cache for live endpoint
-  const url = `${WORKER_URL}/event/${gw}/live/?t=${Math.floor(Date.now()/60000)}`;
+async function getLive(gw, fresh = false) {
+  // Always bust cache for live endpoint (per-minute bucket; `fresh` forces a new pull)
+  const url = `${WORKER_URL}/event/${gw}/live/?t=${fresh ? Date.now() : Math.floor(Date.now()/60000)}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Live fetch failed: ${res.status}`);
   return res.json();
 }
 
 let _gwFixtures = null;
-async function getGWFixtures(gw) {
+async function getGWFixtures(gw, fresh = false) {
   // Bust cache each call during live GW — fixture started/finished changes during the day
-  const url = `${WORKER_URL}/fixtures/?event=${gw}&t=${Math.floor(Date.now()/60000)}`;
+  const url = `${WORKER_URL}/fixtures/?event=${gw}&t=${fresh ? Date.now() : Math.floor(Date.now()/60000)}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Fixtures fetch failed: ${res.status}`);
   _gwFixtures = await res.json();
@@ -3471,8 +3484,12 @@ async function getGWFixtures(gw) {
 
 async function getPicks(entryId, gw) {
   const key = `entry/${entryId}/event/${gw}/picks/`;
-  // Bust cache per minute for picks too
-  if (_fplCache[key] && _fplCache[key]._ts > Date.now() - 120000) return _fplCache[key];
+  // Picks can't change once the gameweek's deadline has passed, so keep them for the
+  // session; re-requesting all 12 every 2 minutes during a live GW was the bulk of our
+  // upstream traffic. Only a GW still before its deadline uses the short cache.
+  const ev = _bootstrap && (_bootstrap.events || []).find(e => e.id === gw);
+  const locked = !!(ev && ev.deadline_time && Date.parse(ev.deadline_time) < Date.now());
+  if (_fplCache[key] && (locked || _fplCache[key]._ts > Date.now() - 120000)) return _fplCache[key];
   const url = `${WORKER_URL}/${key}?t=${Math.floor(Date.now()/120000)}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Picks fetch failed: ${res.status}`);
@@ -3551,18 +3568,141 @@ async function getLeagueStandings() {
   return map;
 }
 
+// ── Live score freshness + manual refresh ──────────────────────────────────
+// "Updated just now / Nm ago" is the time since we last successfully pulled live
+// points (via the proxy, which may itself cache for up to 60s; FPL's own
+// recalculation time isn't readable from the browser). Upstream budget per browser:
+// a fetch round is 2 requests (live points + fixtures); auto-poll is one round a
+// minute, and manual refreshes are capped by a 15s cooldown and at most 2 rounds in
+// any rolling minute, so ~4 requests/min. Picks are cached for the GW (see getPicks).
+const LIVE_FRESH_MS = 60000;
+const LIVE_REFRESH_COOLDOWN_MS = 15000;
+const LIVE_MAX_ROUNDS_PER_MIN = 2;
+let _liveLastFetchTs = 0, _liveRoundTimes = [], _liveLastManualTs = 0;
+let _liveRefreshing = false, _liveRefreshFailed = false, _liveSig = null;
+let _freshnessUI = null, _freshnessTimer = null;
+
+function liveSignature(live, fixtures) {
+  const pts = (live?.elements || []).reduce((s, e) => s + (e.stats?.total_points || 0) * 97 + (e.stats?.minutes || 0), 0);
+  const fx = (fixtures || []).reduce((s, f) => s + (f.minutes || 0) + (f.finished ? 1000 : 0) + (f.team_h_score || 0) * 7 + (f.team_a_score || 0) * 13, 0);
+  return `${pts}:${fx}`;
+}
+
+// Record a successful pull (used by the initial page load as well as each round).
+function markLiveFetched(live, fixtures) {
+  const sig = liveSignature(live, fixtures);
+  const changed = _liveSig !== null && sig !== _liveSig;
+  _liveSig = sig;
+  _liveLastFetchTs = Date.now();
+  _liveRefreshFailed = false;
+  return changed;
+}
+
+// One fetch round. Only repaints the table/pitches if the live GW is the one on screen
+// (viewing an older GW from the selector must not get live numbers written into it).
+async function liveFetchRound(gw, fresh = false) {
+  const now = Date.now();
+  _liveRoundTimes = _liveRoundTimes.filter(t => now - t < 60000);
+  _liveRoundTimes.push(now);
+  const [live, fixtures] = await Promise.all([getLive(gw, fresh), getGWFixtures(gw, fresh)]);
+  if (_liveGW !== gw) return false;
+  _liveData = live;
+  _gwFixtures = fixtures;
+  const changed = markLiveFetched(live, fixtures);
+  updateLastPolled();
+  refreshOpenPitchViews();
+  refreshLeagueScores();
+  pulseFreshness();
+  renderFreshness();
+  return changed;
+}
+
+function scheduleLivePoll(gw) {
+  if (_liveInterval) clearInterval(_liveInterval);
+  _liveInterval = setInterval(() => { liveFetchRound(gw).catch(() => { /* ignore poll errors */ }); }, 60000);
+}
+
 function startLivePoll(gw) {
   if (_liveInterval) return;
   _liveGW = gw;
   window.amplitude?.track('Live Gameweek Started', { gameweek: gw, context: 'league' });
-  _liveInterval = setInterval(async () => {
-    try {
-      [_liveData, _gwFixtures] = await Promise.all([getLive(gw), getGWFixtures(gw)]);
-      updateLastPolled();
-      refreshOpenPitchViews();
-      refreshLeagueScores();
-    } catch (e) { /* silently ignore poll errors */ }
-  }, 60000);
+  scheduleLivePoll(gw);
+}
+
+// ms until a manual refresh is allowed (cooldown and rolling per-minute budget).
+function manualRefreshWaitMs() {
+  const now = Date.now();
+  const cooldown = _liveLastManualTs + LIVE_REFRESH_COOLDOWN_MS - now;
+  const recent = _liveRoundTimes.filter(t => now - t < 60000).sort((a, b) => a - b);
+  const budget = recent.length >= LIVE_MAX_ROUNDS_PER_MIN
+    ? recent[recent.length - LIVE_MAX_ROUNDS_PER_MIN] + 60000 - now : 0;
+  return Math.max(0, cooldown, budget);
+}
+
+async function manualRefreshScores() {
+  const gw = _liveGW;
+  if (!gw || _liveRefreshing || manualRefreshWaitMs() > 0) return;
+  const ageAtClick = _liveLastFetchTs ? Math.round((Date.now() - _liveLastFetchTs) / 1000) : null;
+  _liveRefreshing = true;
+  _liveLastManualTs = Date.now();
+  renderFreshness();
+  const t0 = performance.now();
+  let ok = true, changed = false;
+  try {
+    changed = await liveFetchRound(gw, true);
+    scheduleLivePoll(gw); // push the next auto-poll back a full minute
+  } catch (e) {
+    ok = false;
+    _liveRefreshFailed = true;
+  }
+  _liveRefreshing = false;
+  window.amplitude?.track('Live Scores Refreshed', {
+    gameweek: gw, trigger: 'manual', success: ok, scores_changed: changed,
+    data_age_seconds: ageAtClick, latency_ms: Math.round(performance.now() - t0),
+  });
+  renderFreshness();
+}
+
+function buildFreshnessUI() {
+  const dot = el('span', { className: 'fresh-dot' });
+  const text = el('span', { className: 'fresh-text' });
+  const label = el('span', { className: 'live-refresh-label' }, 'Refresh scores');
+  const btn = el('button', { className: 'live-refresh-btn', type: 'button' }, icon('refresh-cw'), label);
+  btn.addEventListener('click', manualRefreshScores);
+  const wrap = el('span', { className: 'live-freshness' }, el('span', { className: 'fresh-age' }, dot, text), btn);
+  _freshnessUI = { wrap, dot, text, btn, label };
+  if (_freshnessTimer) clearInterval(_freshnessTimer);
+  _freshnessTimer = setInterval(() => {
+    if (!wrap.isConnected) { clearInterval(_freshnessTimer); _freshnessTimer = null; return; }
+    renderFreshness();
+  }, 1000);
+  renderFreshness();
+  return wrap;
+}
+
+function renderFreshness() {
+  const ui = _freshnessUI;
+  if (!ui) return;
+  const age = _liveLastFetchTs ? Date.now() - _liveLastFetchTs : Infinity;
+  const fresh = age < LIVE_FRESH_MS;
+  ui.text.textContent = _liveRefreshFailed ? "Couldn't refresh, try again shortly"
+    : !isFinite(age) ? 'Updating…'
+    : fresh ? 'Updated just now' : `Updated ${Math.floor(age / 60000)}m ago`;
+  ui.dot.classList.toggle('fresh', fresh && !_liveRefreshFailed);
+  ui.dot.classList.toggle('stale', !fresh || _liveRefreshFailed);
+  const wait = manualRefreshWaitMs();
+  ui.btn.disabled = _liveRefreshing || wait > 0;
+  ui.btn.classList.toggle('loading', _liveRefreshing);
+  ui.label.textContent = _liveRefreshing ? 'Refreshing…' : wait > 0 ? `Refresh in ${Math.ceil(wait / 1000)}s` : 'Refresh scores';
+  ui.btn.title = wait > 0 && !_liveRefreshing ? 'Scores also update automatically every minute' : '';
+}
+
+function pulseFreshness() {
+  const dot = _freshnessUI && _freshnessUI.dot;
+  if (!dot) return;
+  dot.classList.remove('pulse');
+  void dot.offsetWidth; // restart the animation
+  dot.classList.add('pulse');
 }
 
 function stopLivePoll() {
@@ -4818,6 +4958,7 @@ function buildLeagueTab(data) {
         isLiveGW ? getGWFixtures(selectedGW) : Promise.resolve(null),
       ]);
       _liveGW = selectedGW;
+      if (isLiveGW) markLiveFetched(_liveData, _gwFixtures);
       updateLastPolled();
       if (isLiveGW) startLivePoll(selectedGW);
 
@@ -4838,10 +4979,14 @@ function buildLeagueTab(data) {
         : el('span', { className: 'gw-status-text' }, preSeason ? 'Upcoming:' : 'Showing:')
       );
       statusBar.appendChild(gwSelect);
+      // Live GW only: freshness + manual refresh (hidden when an older GW is selected)
+      const freshnessEl = isLiveGW ? buildFreshnessUI() : null;
+      if (freshnessEl) statusBar.appendChild(freshnessEl);
 
       gwSelect.addEventListener('change', async () => {
         const newGW = Number(gwSelect.value);
         const newIsLive = !!(liveEvent && newGW === liveEvent.id);
+        if (freshnessEl) freshnessEl.hidden = !newIsLive;
         tableWrap.querySelectorAll('.pitch-panel.open').forEach(p => p.classList.remove('open'));
         tableWrap.querySelectorAll('.expand-btn.open').forEach(b => b.classList.remove('open'));
         Object.keys(_openPitchRefresh).forEach(k => delete _openPitchRefresh[k]);
