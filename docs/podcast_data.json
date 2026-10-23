@@ -1,6 +1,14 @@
 {
   "episodes": [
     {
+      "gw": 8,
+      "title": "Two Weeks Of Noise",
+      "description": "Two weeks into the drafted season and the predictions are holding up beautifully, apart from all the ones that aren't. Ed benches his own goalscorer, Joe's captain is on a one-point diet, Ant's entire team fails to turn up, and the man we relegated is the form team in the league. We admit nothing.",
+      "audio_file": "podcast-gw8.m4a",
+      "published_at": "2026-10-23",
+      "badge": "Gameweek 8"
+    },
+    {
       "gw": 6,
       "title": "The Verdict",
       "description": "Man City are found guilty of 114 charges, but some of our squads deserve a heavier sentence. The draft room awards (Joe: slowest drafter AND rule-breaker), Arun's one United player, Dave's 'ballers only' manifesto, and our long-range verdict: who wins it, who goes down, and why Arun's poll got it spectacularly wrong.",
