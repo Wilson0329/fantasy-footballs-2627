@@ -1292,6 +1292,14 @@
       margin-bottom: 0.75rem;
     }
     .psd-name { font-weight: 700; font-size: 0.9rem; }
+    .psd-title { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .player-modal .psd-header { padding-right: 1.5rem; } /* clear the × button */
+    .psd-fx-status { font-size: 0.72rem; font-weight: 600; color: var(--muted); line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .psd-fx-status:empty { display: none; }
+    .psd-fx-status.live { color: #dc2626; }
+    .psd-fx-status.live::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-right: 5px; vertical-align: 1px; animation: psdLivePulse 1.6s ease-in-out infinite; }
+    @keyframes psdLivePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .psd-fx-status.ft { color: var(--text); opacity: 0.7; }
     .psd-close { color: var(--muted); cursor: pointer; font-size: 1rem; padding: 0 0.25rem; }
     .psd-close:hover { color: var(--text); }
     .psd-stats-grid {
@@ -2986,6 +2994,42 @@ function getOrCreatePlayerModal() {
   return _playerModalEl;
 }
 
+// ── Fixture status for the player breakdown header ──
+// "v CHE · 15:00" before kick-off, "LIVE 62' · 3 pts" in play, "FT · 0 pts" once
+// finished, so a 0 that hasn't kicked off is distinguishable from a 0 that's final.
+// Double gameweeks list each fixture ("FT / v CHE · Sat 15:00 · 3 pts").
+async function playerFixtureStatus(pm, gw, gwFixtures, teamMap, livePts) {
+  if (!pm) return null;
+  let fx = (Array.isArray(gwFixtures) && gwFixtures.length && gwFixtures.every(f => f.event === gw)) ? gwFixtures : null;
+  if (!fx) {
+    try { fx = await fetchFPL(`fixtures/?event=${gw}`); } catch (e) { return null; }
+  }
+  const mine = (fx || []).filter(f => f.team_h === pm.team || f.team_a === pm.team)
+    .sort((a, b) => (a.kickoff_time || '').localeCompare(b.kickoff_time || ''));
+  if (!mine.length) return { state: 'none', text: 'No fixture this gameweek' };
+  const short = id => (teamMap && teamMap[id] && teamMap[id].short_name) || '?';
+  const today = new Date().toDateString();
+  const parts = mine.map(f => {
+    if (f.finished || f.finished_provisional) return { state: 'ft', label: 'FT' };
+    if (f.started) return { state: 'live', label: `LIVE ${f.minutes || 0}'` };
+    const opp = short(f.team_h === pm.team ? f.team_a : f.team_h);
+    if (!f.kickoff_time) return { state: 'pre', label: `v ${opp} · TBC` };
+    const ko = new Date(f.kickoff_time);
+    const time = ko.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    const day = ko.toDateString() === today ? '' : ko.toLocaleDateString('en-GB', { weekday: 'short' }) + ' ';
+    return { state: 'pre', label: `v ${opp} · ${day}${time}` };
+  });
+  const state = parts.some(p => p.state === 'live') ? 'live' : parts.every(p => p.state === 'ft') ? 'ft' : 'pre';
+  const anyPlayed = parts.some(p => p.state !== 'pre');
+  return { state, text: parts.map(p => p.label).join(' / ') + (anyPlayed ? ` · ${livePts || 0} pts` : '') };
+}
+function fillFixtureStatus(statusEl, st) {
+  if (!statusEl) return;
+  if (!st) { statusEl.remove(); return; }
+  statusEl.textContent = st.text;
+  statusEl.className = `psd-fx-status ${st.state}`;
+}
+
 async function openPlayerModal(pid, gw, liveData, playerMap, teamMap, gwFixtures) {
   const modal = getOrCreatePlayerModal();
   const inner = modal.querySelector('.player-modal');
@@ -2997,9 +3041,15 @@ async function openPlayerModal(pid, gw, liveData, playerMap, teamMap, gwFixtures
   const pm = playerMap && playerMap[pid];
   const teamShort = pm && teamMap && teamMap[pm.team] ? teamMap[pm.team].short_name : '';
 
+  const fxStatusEl = el('div', { className: 'psd-fx-status' });
   inner.appendChild(el('div', { className: 'psd-header' },
-    el('span', { className: 'psd-name' }, pm ? pm.web_name : String(pid)),
-    teamShort ? el('span', { style: 'font-size:0.75rem;color:var(--muted);font-weight:400;margin-left:6px' }, teamShort) : null
+    el('div', { className: 'psd-title' },
+      el('div', {},
+        el('span', { className: 'psd-name' }, pm ? pm.web_name : String(pid)),
+        teamShort ? el('span', { style: 'font-size:0.75rem;color:var(--muted);font-weight:400;margin-left:6px' }, teamShort) : null
+      ),
+      fxStatusEl
+    )
   ));
   inner.appendChild(el('div', { className: 'psd-loading' }, 'Loading…'));
   modal.classList.add('open');
@@ -3022,6 +3072,7 @@ async function openPlayerModal(pid, gw, liveData, playerMap, teamMap, gwFixtures
     const livePlayer = liveGwData?.elements?.find(e => e.id === pid);
     const explainFixtures = livePlayer?.explain || [];
     const liveStats = livePlayer?.stats || {};
+    fillFixtureStatus(fxStatusEl, await playerFixtureStatus(pm, gw, gwFixtures, teamMap, liveStats.total_points));
 
     inner.querySelector('.psd-loading').remove();
 
@@ -4089,9 +4140,15 @@ async function buildPitchView(entryId, gw, container, isLive) {
     async function showPlayerStats(pid) {
       const pm = playerMap[pid];
       rightCol.innerHTML = '';
+      const fxStatusEl = el('div', { className: 'psd-fx-status' });
       rightCol.appendChild(el('div', { className: 'psd-header' },
-        el('span', { className: 'psd-name' }, pm ? pm.web_name : String(pid)),
-        pm && teamMap[pm.team] ? el('span', { style: 'font-size:0.75rem;color:var(--muted);font-weight:400;margin-left:6px' }, teamMap[pm.team].short_name) : null
+        el('div', { className: 'psd-title' },
+          el('div', {},
+            el('span', { className: 'psd-name' }, pm ? pm.web_name : String(pid)),
+            pm && teamMap[pm.team] ? el('span', { style: 'font-size:0.75rem;color:var(--muted);font-weight:400;margin-left:6px' }, teamMap[pm.team].short_name) : null
+          ),
+          fxStatusEl
+        )
       ));
       rightCol.appendChild(el('div', { className: 'psd-loading' }, 'Loading...'));
       try {
@@ -4117,6 +4174,7 @@ async function buildPitchView(entryId, gw, container, isLive) {
         const livePlayer = liveGwData?.elements?.find(e => e.id === pid);
         const explainFixtures = livePlayer?.explain || [];
         const liveStats = livePlayer?.stats || {};
+        fillFixtureStatus(fxStatusEl, await playerFixtureStatus(pm, gw, _gwFixtures, teamMap, liveStats.total_points));
 
         rightCol.querySelector('.psd-loading').remove();
 
