@@ -12,8 +12,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_points": 516,
-      "gw_points": 31
+      "total_points": 543,
+      "gw_points": 58
     },
     {
       "rank": 2,
@@ -21,53 +21,53 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_points": 482,
-      "gw_points": 22
+      "total_points": 499,
+      "gw_points": 39
     },
     {
       "rank": 3,
+      "rank_last": 7,
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
+      "total_points": 477,
+      "gw_points": 59
+    },
+    {
+      "rank": 4,
       "rank_last": 3,
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
       "manager": "Arun Quayum",
-      "total_points": 470,
-      "gw_points": 26
-    },
-    {
-      "rank": 4,
-      "rank_last": 4,
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
-      "total_points": 450,
-      "gw_points": 19
+      "total_points": 474,
+      "gw_points": 30
     },
     {
       "rank": 5,
-      "rank_last": 7,
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
-      "total_points": 441,
-      "gw_points": 23
-    },
-    {
-      "rank": 6,
-      "rank_last": 6,
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "total_points": 440,
-      "gw_points": 18
-    },
-    {
-      "rank": 7,
       "rank_last": 5,
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "total_points": 439,
-      "gw_points": 8
+      "total_points": 465,
+      "gw_points": 34
+    },
+    {
+      "rank": 6,
+      "rank_last": 7,
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
+      "total_points": 464,
+      "gw_points": 46
+    },
+    {
+      "rank": 7,
+      "rank_last": 4,
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
+      "total_points": 461,
+      "gw_points": 30
     },
     {
       "rank": 8,
@@ -75,17 +75,17 @@
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "total_points": 432,
-      "gw_points": 34
+      "total_points": 456,
+      "gw_points": 58
     },
     {
       "rank": 9,
-      "rank_last": 7,
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
-      "total_points": 427,
-      "gw_points": 9
+      "rank_last": 6,
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "total_points": 455,
+      "gw_points": 33
     },
     {
       "rank": 10,
@@ -93,26 +93,26 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_points": 422,
-      "gw_points": 13
+      "total_points": 441,
+      "gw_points": 32
     },
     {
-      "rank": 10,
-      "rank_last": 12,
-      "entry_id": 153220,
-      "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
-      "manager": "Anthony Savvides",
-      "total_points": 422,
-      "gw_points": 27
-    },
-    {
-      "rank": 12,
+      "rank": 11,
       "rank_last": 10,
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_points": 411,
-      "gw_points": 7
+      "total_points": 435,
+      "gw_points": 31
+    },
+    {
+      "rank": 12,
+      "rank_last": 12,
+      "entry_id": 153220,
+      "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+      "manager": "Anthony Savvides",
+      "total_points": 434,
+      "gw_points": 39
     }
   ],
   "trade_differential": [
@@ -131,30 +131,16 @@
       "trades": []
     },
     {
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
+      "net_gain": 0,
+      "trades": []
+    },
+    {
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
       "manager": "Arun Quayum",
-      "net_gain": 0,
-      "trades": []
-    },
-    {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
-      "net_gain": 0,
-      "trades": []
-    },
-    {
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
-      "net_gain": 0,
-      "trades": []
-    },
-    {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
       "net_gain": 0,
       "trades": []
     },
@@ -166,6 +152,20 @@
       "trades": []
     },
     {
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
+      "net_gain": 0,
+      "trades": []
+    },
+    {
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
+      "net_gain": 0,
+      "trades": []
+    },
+    {
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
@@ -173,9 +173,9 @@
       "trades": []
     },
     {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
       "net_gain": 0,
       "trades": []
     },
@@ -187,16 +187,16 @@
       "trades": []
     },
     {
-      "entry_id": 153220,
-      "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
-      "manager": "Anthony Savvides",
+      "entry_id": 5291090,
+      "name": "Change Name",
+      "manager": "Jason Knightly",
       "net_gain": 0,
       "trades": []
     },
     {
-      "entry_id": 5291090,
-      "name": "Change Name",
-      "manager": "Jason Knightly",
+      "entry_id": 153220,
+      "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
+      "manager": "Anthony Savvides",
       "net_gain": 0,
       "trades": []
     }
@@ -1141,15 +1141,15 @@
       "form_rank": 8
     },
     {
-      "entry_id": 6815970,
-      "name": "Tonali-tarian",
-      "manager": "Dominic Byrne",
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
       "last5_scores": [
-        60,
-        71,
-        46,
-        29,
-        52
+        69,
+        69,
+        62,
+        34,
+        24
       ],
       "last5_gws": [
         3,
@@ -1162,15 +1162,15 @@
       "form_rank": 9
     },
     {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
+      "entry_id": 6815970,
+      "name": "Tonali-tarian",
+      "manager": "Dominic Byrne",
       "last5_scores": [
-        69,
-        69,
-        62,
-        34,
-        24
+        60,
+        71,
+        46,
+        29,
+        52
       ],
       "last5_gws": [
         3,
@@ -1769,9 +1769,9 @@
       "hit_rate": 14.3
     },
     {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
       "captain_hits": 1,
       "gws_played": 7,
       "hit_rate": 14.3
@@ -1785,17 +1785,17 @@
       "hit_rate": 14.3
     },
     {
-      "entry_id": 6815970,
-      "name": "Tonali-tarian",
-      "manager": "Dominic Byrne",
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
       "captain_hits": 1,
       "gws_played": 7,
       "hit_rate": 14.3
     },
     {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
+      "entry_id": 6815970,
+      "name": "Tonali-tarian",
+      "manager": "Dominic Byrne",
       "captain_hits": 1,
       "gws_played": 7,
       "hit_rate": 14.3
