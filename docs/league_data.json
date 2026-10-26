@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-10-25",
+    "last_updated": "2026-10-26",
     "current_gw": 8,
     "season": "2026/27"
   },
@@ -21,8 +21,8 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_points": 499,
-      "gw_points": 39
+      "total_points": 513,
+      "gw_points": 53
     },
     {
       "rank": 3,
@@ -30,8 +30,8 @@
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "total_points": 477,
-      "gw_points": 59
+      "total_points": 480,
+      "gw_points": 62
     },
     {
       "rank": 4,
@@ -39,8 +39,8 @@
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
       "manager": "Arun Quayum",
-      "total_points": 474,
-      "gw_points": 30
+      "total_points": 480,
+      "gw_points": 36
     },
     {
       "rank": 5,
@@ -48,8 +48,8 @@
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "total_points": 465,
-      "gw_points": 34
+      "total_points": 466,
+      "gw_points": 35
     },
     {
       "rank": 6,
@@ -62,21 +62,21 @@
     },
     {
       "rank": 7,
+      "rank_last": 11,
+      "entry_id": 6815970,
+      "name": "Tonali-tarian",
+      "manager": "Dominic Byrne",
+      "total_points": 462,
+      "gw_points": 64
+    },
+    {
+      "rank": 8,
       "rank_last": 4,
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
       "total_points": 461,
       "gw_points": 30
-    },
-    {
-      "rank": 8,
-      "rank_last": 11,
-      "entry_id": 6815970,
-      "name": "Tonali-tarian",
-      "manager": "Dominic Byrne",
-      "total_points": 456,
-      "gw_points": 58
     },
     {
       "rank": 9,
@@ -102,8 +102,8 @@
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_points": 435,
-      "gw_points": 31
+      "total_points": 436,
+      "gw_points": 32
     },
     {
       "rank": 12,
@@ -111,8 +111,8 @@
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
-      "total_points": 434,
-      "gw_points": 39
+      "total_points": 436,
+      "gw_points": 41
     }
   ],
   "trade_differential": [
@@ -159,16 +159,16 @@
       "trades": []
     },
     {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
+      "entry_id": 6815970,
+      "name": "Tonali-tarian",
+      "manager": "Dominic Byrne",
       "net_gain": 0,
       "trades": []
     },
     {
-      "entry_id": 6815970,
-      "name": "Tonali-tarian",
-      "manager": "Dominic Byrne",
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
       "net_gain": 0,
       "trades": []
     },
@@ -1230,8 +1230,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_bench_points": 86,
-      "avg_bench_per_gw": 10.8,
+      "total_bench_points": 99,
+      "avg_bench_per_gw": 12.4,
       "by_gw": [
         {
           "gw": 1,
@@ -1263,7 +1263,7 @@
         },
         {
           "gw": 8,
-          "bench_pts": 6
+          "bench_pts": 19
         }
       ]
     },
@@ -1309,52 +1309,11 @@
       ]
     },
     {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
-      "total_bench_points": 66,
-      "avg_bench_per_gw": 8.2,
-      "by_gw": [
-        {
-          "gw": 1,
-          "bench_pts": 0
-        },
-        {
-          "gw": 2,
-          "bench_pts": 27
-        },
-        {
-          "gw": 3,
-          "bench_pts": 4
-        },
-        {
-          "gw": 4,
-          "bench_pts": 12
-        },
-        {
-          "gw": 5,
-          "bench_pts": 1
-        },
-        {
-          "gw": 6,
-          "bench_pts": 2
-        },
-        {
-          "gw": 7,
-          "bench_pts": 19
-        },
-        {
-          "gw": 8,
-          "bench_pts": 1
-        }
-      ]
-    },
-    {
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_bench_points": 60,
-      "avg_bench_per_gw": 7.5,
+      "total_bench_points": 68,
+      "avg_bench_per_gw": 8.5,
       "by_gw": [
         {
           "gw": 1,
@@ -1386,7 +1345,48 @@
         },
         {
           "gw": 8,
+          "bench_pts": 8
+        }
+      ]
+    },
+    {
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
+      "total_bench_points": 68,
+      "avg_bench_per_gw": 8.5,
+      "by_gw": [
+        {
+          "gw": 1,
           "bench_pts": 0
+        },
+        {
+          "gw": 2,
+          "bench_pts": 27
+        },
+        {
+          "gw": 3,
+          "bench_pts": 4
+        },
+        {
+          "gw": 4,
+          "bench_pts": 12
+        },
+        {
+          "gw": 5,
+          "bench_pts": 1
+        },
+        {
+          "gw": 6,
+          "bench_pts": 2
+        },
+        {
+          "gw": 7,
+          "bench_pts": 19
+        },
+        {
+          "gw": 8,
+          "bench_pts": 3
         }
       ]
     },
@@ -1394,8 +1394,8 @@
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "total_bench_points": 53,
-      "avg_bench_per_gw": 6.6,
+      "total_bench_points": 49,
+      "avg_bench_per_gw": 6.1,
       "by_gw": [
         {
           "gw": 1,
@@ -1427,7 +1427,7 @@
         },
         {
           "gw": 8,
-          "bench_pts": 6
+          "bench_pts": 2
         }
       ]
     },
@@ -1558,8 +1558,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_bench_points": 23,
-      "avg_bench_per_gw": 2.9,
+      "total_bench_points": 32,
+      "avg_bench_per_gw": 4.0,
       "by_gw": [
         {
           "gw": 1,
@@ -1591,48 +1591,7 @@
         },
         {
           "gw": 8,
-          "bench_pts": 6
-        }
-      ]
-    },
-    {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
-      "total_bench_points": 17,
-      "avg_bench_per_gw": 2.1,
-      "by_gw": [
-        {
-          "gw": 1,
-          "bench_pts": 1
-        },
-        {
-          "gw": 2,
-          "bench_pts": 0
-        },
-        {
-          "gw": 3,
-          "bench_pts": 0
-        },
-        {
-          "gw": 4,
-          "bench_pts": 0
-        },
-        {
-          "gw": 5,
-          "bench_pts": 0
-        },
-        {
-          "gw": 6,
-          "bench_pts": 3
-        },
-        {
-          "gw": 7,
-          "bench_pts": 8
-        },
-        {
-          "gw": 8,
-          "bench_pts": 5
+          "bench_pts": 15
         }
       ]
     },
@@ -1640,8 +1599,8 @@
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "total_bench_points": 14,
-      "avg_bench_per_gw": 1.8,
+      "total_bench_points": 20,
+      "avg_bench_per_gw": 2.5,
       "by_gw": [
         {
           "gw": 1,
@@ -1673,7 +1632,48 @@
         },
         {
           "gw": 8,
-          "bench_pts": 2
+          "bench_pts": 8
+        }
+      ]
+    },
+    {
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
+      "total_bench_points": 16,
+      "avg_bench_per_gw": 2.0,
+      "by_gw": [
+        {
+          "gw": 1,
+          "bench_pts": 1
+        },
+        {
+          "gw": 2,
+          "bench_pts": 0
+        },
+        {
+          "gw": 3,
+          "bench_pts": 0
+        },
+        {
+          "gw": 4,
+          "bench_pts": 0
+        },
+        {
+          "gw": 5,
+          "bench_pts": 0
+        },
+        {
+          "gw": 6,
+          "bench_pts": 3
+        },
+        {
+          "gw": 7,
+          "bench_pts": 8
+        },
+        {
+          "gw": 8,
+          "bench_pts": 4
         }
       ]
     },
@@ -1785,17 +1785,17 @@
       "hit_rate": 14.3
     },
     {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
+      "entry_id": 6815970,
+      "name": "Tonali-tarian",
+      "manager": "Dominic Byrne",
       "captain_hits": 1,
       "gws_played": 7,
       "hit_rate": 14.3
     },
     {
-      "entry_id": 6815970,
-      "name": "Tonali-tarian",
-      "manager": "Dominic Byrne",
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
       "captain_hits": 1,
       "gws_played": 7,
       "hit_rate": 14.3
