@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-10-31",
+    "last_updated": "2026-11-01",
     "current_gw": 9,
     "season": "2026/27"
   },
@@ -21,8 +21,8 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_points": 539,
-      "gw_points": 26
+      "total_points": 555,
+      "gw_points": 42
     },
     {
       "rank": 3,
@@ -44,6 +44,15 @@
     },
     {
       "rank": 5,
+      "rank_last": 4,
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
+      "total_points": 506,
+      "gw_points": 26
+    },
+    {
+      "rank": 6,
       "rank_last": 9,
       "entry_id": 1442119,
       "name": "GVG XI *",
@@ -52,22 +61,13 @@
       "gw_points": 50
     },
     {
-      "rank": 6,
-      "rank_last": 4,
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
-      "total_points": 503,
-      "gw_points": 23
-    },
-    {
       "rank": 7,
       "rank_last": 6,
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_points": 497,
-      "gw_points": 33
+      "total_points": 498,
+      "gw_points": 34
     },
     {
       "rank": 8,
@@ -75,8 +75,8 @@
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "total_points": 493,
-      "gw_points": 13
+      "total_points": 497,
+      "gw_points": 17
     },
     {
       "rank": 9,
@@ -93,8 +93,8 @@
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_points": 469,
-      "gw_points": 33
+      "total_points": 470,
+      "gw_points": 34
     },
     {
       "rank": 11,
@@ -102,8 +102,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_points": 445,
-      "gw_points": 4
+      "total_points": 447,
+      "gw_points": 6
     },
     {
       "rank": 12,
@@ -145,16 +145,16 @@
       "trades": []
     },
     {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
       "net_gain": 0,
       "trades": []
     },
     {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
       "net_gain": 0,
       "trades": []
     },
@@ -1326,8 +1326,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_bench_points": 99,
-      "avg_bench_per_gw": 11.0,
+      "total_bench_points": 107,
+      "avg_bench_per_gw": 11.9,
       "by_gw": [
         {
           "gw": 1,
@@ -1363,7 +1363,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 0
+          "bench_pts": 8
         }
       ]
     },
@@ -1371,8 +1371,8 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_bench_points": 84,
-      "avg_bench_per_gw": 9.3,
+      "total_bench_points": 85,
+      "avg_bench_per_gw": 9.4,
       "by_gw": [
         {
           "gw": 1,
@@ -1408,7 +1408,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 0
+          "bench_pts": 1
         }
       ]
     },
@@ -1416,8 +1416,8 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_bench_points": 68,
-      "avg_bench_per_gw": 7.6,
+      "total_bench_points": 75,
+      "avg_bench_per_gw": 8.3,
       "by_gw": [
         {
           "gw": 1,
@@ -1453,7 +1453,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 0
+          "bench_pts": 7
         }
       ]
     },
@@ -1461,8 +1461,8 @@
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "total_bench_points": 68,
-      "avg_bench_per_gw": 7.6,
+      "total_bench_points": 72,
+      "avg_bench_per_gw": 8.0,
       "by_gw": [
         {
           "gw": 1,
@@ -1498,7 +1498,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 0
+          "bench_pts": 4
         }
       ]
     },
@@ -1506,8 +1506,8 @@
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "total_bench_points": 49,
-      "avg_bench_per_gw": 5.4,
+      "total_bench_points": 53,
+      "avg_bench_per_gw": 5.9,
       "by_gw": [
         {
           "gw": 1,
@@ -1543,7 +1543,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 0
+          "bench_pts": 4
         }
       ]
     },
@@ -1596,8 +1596,8 @@
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_bench_points": 40,
-      "avg_bench_per_gw": 4.4,
+      "total_bench_points": 41,
+      "avg_bench_per_gw": 4.6,
       "by_gw": [
         {
           "gw": 1,
@@ -1633,52 +1633,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 0
-        }
-      ]
-    },
-    {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
-      "total_bench_points": 33,
-      "avg_bench_per_gw": 3.7,
-      "by_gw": [
-        {
-          "gw": 1,
-          "bench_pts": 6
-        },
-        {
-          "gw": 2,
-          "bench_pts": 0
-        },
-        {
-          "gw": 3,
-          "bench_pts": 4
-        },
-        {
-          "gw": 4,
-          "bench_pts": 2
-        },
-        {
-          "gw": 5,
-          "bench_pts": 13
-        },
-        {
-          "gw": 6,
-          "bench_pts": 2
-        },
-        {
-          "gw": 7,
-          "bench_pts": 6
-        },
-        {
-          "gw": 8,
-          "bench_pts": 0
-        },
-        {
-          "gw": 9,
-          "bench_pts": 0
+          "bench_pts": 1
         }
       ]
     },
@@ -1686,8 +1641,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_bench_points": 32,
-      "avg_bench_per_gw": 3.6,
+      "total_bench_points": 40,
+      "avg_bench_per_gw": 4.4,
       "by_gw": [
         {
           "gw": 1,
@@ -1723,7 +1678,52 @@
         },
         {
           "gw": 9,
+          "bench_pts": 8
+        }
+      ]
+    },
+    {
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
+      "total_bench_points": 34,
+      "avg_bench_per_gw": 3.8,
+      "by_gw": [
+        {
+          "gw": 1,
+          "bench_pts": 6
+        },
+        {
+          "gw": 2,
           "bench_pts": 0
+        },
+        {
+          "gw": 3,
+          "bench_pts": 4
+        },
+        {
+          "gw": 4,
+          "bench_pts": 2
+        },
+        {
+          "gw": 5,
+          "bench_pts": 13
+        },
+        {
+          "gw": 6,
+          "bench_pts": 2
+        },
+        {
+          "gw": 7,
+          "bench_pts": 6
+        },
+        {
+          "gw": 8,
+          "bench_pts": 0
+        },
+        {
+          "gw": 9,
+          "bench_pts": 1
         }
       ]
     },
@@ -1731,8 +1731,8 @@
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "total_bench_points": 20,
-      "avg_bench_per_gw": 2.2,
+      "total_bench_points": 32,
+      "avg_bench_per_gw": 3.6,
       "by_gw": [
         {
           "gw": 1,
@@ -1768,7 +1768,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 0
+          "bench_pts": 12
         }
       ]
     },
@@ -1776,8 +1776,8 @@
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
       "manager": "Arun Quayum",
-      "total_bench_points": 16,
-      "avg_bench_per_gw": 1.8,
+      "total_bench_points": 27,
+      "avg_bench_per_gw": 3.0,
       "by_gw": [
         {
           "gw": 1,
@@ -1813,7 +1813,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 0
+          "bench_pts": 11
         }
       ]
     },
