@@ -12,8 +12,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_points": 579,
-      "gw_points": 36
+      "total_points": 581,
+      "gw_points": 38
     },
     {
       "rank": 2,
@@ -21,8 +21,8 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_points": 555,
-      "gw_points": 42
+      "total_points": 563,
+      "gw_points": 50
     },
     {
       "rank": 3,
@@ -44,6 +44,15 @@
     },
     {
       "rank": 5,
+      "rank_last": 8,
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
+      "total_points": 517,
+      "gw_points": 56
+    },
+    {
+      "rank": 6,
       "rank_last": 4,
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
@@ -52,25 +61,25 @@
       "gw_points": 31
     },
     {
-      "rank": 6,
+      "rank": 7,
+      "rank_last": 6,
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
+      "total_points": 510,
+      "gw_points": 46
+    },
+    {
+      "rank": 8,
       "rank_last": 3,
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "total_points": 507,
-      "gw_points": 27
+      "total_points": 509,
+      "gw_points": 29
     },
     {
-      "rank": 7,
-      "rank_last": 8,
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
-      "total_points": 506,
-      "gw_points": 45
-    },
-    {
-      "rank": 8,
+      "rank": 9,
       "rank_last": 9,
       "entry_id": 1442119,
       "name": "GVG XI *",
@@ -79,22 +88,13 @@
       "gw_points": 50
     },
     {
-      "rank": 9,
-      "rank_last": 6,
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
-      "total_points": 501,
-      "gw_points": 37
-    },
-    {
       "rank": 10,
       "rank_last": 11,
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_points": 473,
-      "gw_points": 37
+      "total_points": 477,
+      "gw_points": 41
     },
     {
       "rank": 11,
@@ -145,9 +145,23 @@
       "trades": []
     },
     {
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
+      "net_gain": 0,
+      "trades": []
+    },
+    {
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
       "manager": "Arun Quayum",
+      "net_gain": 0,
+      "trades": []
+    },
+    {
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
       "net_gain": 0,
       "trades": []
     },
@@ -159,23 +173,9 @@
       "trades": []
     },
     {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
-      "net_gain": 0,
-      "trades": []
-    },
-    {
       "entry_id": 1442119,
       "name": "GVG XI *",
       "manager": "George Georgiou",
-      "net_gain": 0,
-      "trades": []
-    },
-    {
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
       "net_gain": 0,
       "trades": []
     },
@@ -1371,8 +1371,8 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_bench_points": 86,
-      "avg_bench_per_gw": 9.6,
+      "total_bench_points": 87,
+      "avg_bench_per_gw": 9.7,
       "by_gw": [
         {
           "gw": 1,
@@ -1408,7 +1408,52 @@
         },
         {
           "gw": 9,
+          "bench_pts": 3
+        }
+      ]
+    },
+    {
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
+      "total_bench_points": 80,
+      "avg_bench_per_gw": 8.9,
+      "by_gw": [
+        {
+          "gw": 1,
+          "bench_pts": 0
+        },
+        {
+          "gw": 2,
+          "bench_pts": 27
+        },
+        {
+          "gw": 3,
+          "bench_pts": 4
+        },
+        {
+          "gw": 4,
+          "bench_pts": 12
+        },
+        {
+          "gw": 5,
+          "bench_pts": 1
+        },
+        {
+          "gw": 6,
           "bench_pts": 2
+        },
+        {
+          "gw": 7,
+          "bench_pts": 19
+        },
+        {
+          "gw": 8,
+          "bench_pts": 3
+        },
+        {
+          "gw": 9,
+          "bench_pts": 12
         }
       ]
     },
@@ -1458,11 +1503,11 @@
       ]
     },
     {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
-      "total_bench_points": 72,
-      "avg_bench_per_gw": 8.0,
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "total_bench_points": 55,
+      "avg_bench_per_gw": 6.1,
       "by_gw": [
         {
           "gw": 1,
@@ -1470,35 +1515,35 @@
         },
         {
           "gw": 2,
-          "bench_pts": 27
+          "bench_pts": 6
         },
         {
           "gw": 3,
-          "bench_pts": 4
+          "bench_pts": 8
         },
         {
           "gw": 4,
-          "bench_pts": 12
+          "bench_pts": 23
         },
         {
           "gw": 5,
-          "bench_pts": 1
+          "bench_pts": 10
         },
         {
           "gw": 6,
-          "bench_pts": 2
+          "bench_pts": 0
         },
         {
           "gw": 7,
-          "bench_pts": 19
+          "bench_pts": 0
         },
         {
           "gw": 8,
-          "bench_pts": 3
+          "bench_pts": 0
         },
         {
           "gw": 9,
-          "bench_pts": 4
+          "bench_pts": 8
         }
       ]
     },
@@ -1548,56 +1593,11 @@
       ]
     },
     {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "total_bench_points": 47,
-      "avg_bench_per_gw": 5.2,
-      "by_gw": [
-        {
-          "gw": 1,
-          "bench_pts": 0
-        },
-        {
-          "gw": 2,
-          "bench_pts": 6
-        },
-        {
-          "gw": 3,
-          "bench_pts": 8
-        },
-        {
-          "gw": 4,
-          "bench_pts": 23
-        },
-        {
-          "gw": 5,
-          "bench_pts": 10
-        },
-        {
-          "gw": 6,
-          "bench_pts": 0
-        },
-        {
-          "gw": 7,
-          "bench_pts": 0
-        },
-        {
-          "gw": 8,
-          "bench_pts": 0
-        },
-        {
-          "gw": 9,
-          "bench_pts": 0
-        }
-      ]
-    },
-    {
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_bench_points": 41,
-      "avg_bench_per_gw": 4.6,
+      "total_bench_points": 47,
+      "avg_bench_per_gw": 5.2,
       "by_gw": [
         {
           "gw": 1,
@@ -1633,7 +1633,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 1
+          "bench_pts": 7
         }
       ]
     },
@@ -1889,17 +1889,17 @@
       "hit_rate": 37.5
     },
     {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
       "captain_hits": 2,
       "gws_played": 8,
       "hit_rate": 25.0
     },
     {
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
       "captain_hits": 2,
       "gws_played": 8,
       "hit_rate": 25.0
@@ -1929,17 +1929,17 @@
       "hit_rate": 12.5
     },
     {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
       "captain_hits": 1,
       "gws_played": 8,
       "hit_rate": 12.5
     },
     {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
       "captain_hits": 1,
       "gws_played": 8,
       "hit_rate": 12.5
