@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-11-02",
+    "last_updated": "2026-11-03",
     "current_gw": 9,
     "season": "2026/27"
   },
@@ -12,8 +12,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_points": 581,
-      "gw_points": 38
+      "total_points": 586,
+      "gw_points": 43
     },
     {
       "rank": 2,
@@ -21,8 +21,8 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_points": 563,
-      "gw_points": 50
+      "total_points": 566,
+      "gw_points": 53
     },
     {
       "rank": 3,
@@ -39,8 +39,8 @@
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "total_points": 518,
-      "gw_points": 56
+      "total_points": 519,
+      "gw_points": 57
     },
     {
       "rank": 5,
@@ -48,8 +48,8 @@
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
-      "total_points": 517,
-      "gw_points": 56
+      "total_points": 516,
+      "gw_points": 55
     },
     {
       "rank": 6,
@@ -57,8 +57,17 @@
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
       "manager": "Arun Quayum",
+      "total_points": 513,
+      "gw_points": 33
+    },
+    {
+      "rank": 7,
+      "rank_last": 9,
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
       "total_points": 511,
-      "gw_points": 31
+      "gw_points": 56
     },
     {
       "rank": 7,
@@ -66,11 +75,11 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_points": 510,
-      "gw_points": 46
+      "total_points": 511,
+      "gw_points": 47
     },
     {
-      "rank": 8,
+      "rank": 9,
       "rank_last": 3,
       "entry_id": 7067293,
       "name": "currywirtz",
@@ -79,22 +88,13 @@
       "gw_points": 29
     },
     {
-      "rank": 9,
-      "rank_last": 9,
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "total_points": 505,
-      "gw_points": 50
-    },
-    {
       "rank": 10,
       "rank_last": 11,
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_points": 477,
-      "gw_points": 41
+      "total_points": 486,
+      "gw_points": 50
     },
     {
       "rank": 11,
@@ -102,8 +102,8 @@
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
-      "total_points": 465,
-      "gw_points": 29
+      "total_points": 469,
+      "gw_points": 33
     },
     {
       "rank": 12,
@@ -159,6 +159,13 @@
       "trades": []
     },
     {
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "net_gain": 0,
+      "trades": []
+    },
+    {
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
@@ -169,13 +176,6 @@
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "net_gain": 0,
-      "trades": []
-    },
-    {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
       "net_gain": 0,
       "trades": []
     },
@@ -1326,8 +1326,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_bench_points": 108,
-      "avg_bench_per_gw": 12.0,
+      "total_bench_points": 103,
+      "avg_bench_per_gw": 11.4,
       "by_gw": [
         {
           "gw": 1,
@@ -1363,7 +1363,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 9
+          "bench_pts": 4
         }
       ]
     },
@@ -1371,8 +1371,8 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_bench_points": 87,
-      "avg_bench_per_gw": 9.7,
+      "total_bench_points": 86,
+      "avg_bench_per_gw": 9.6,
       "by_gw": [
         {
           "gw": 1,
@@ -1408,7 +1408,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 3
+          "bench_pts": 2
         }
       ]
     },
@@ -1416,8 +1416,8 @@
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "total_bench_points": 80,
-      "avg_bench_per_gw": 8.9,
+      "total_bench_points": 79,
+      "avg_bench_per_gw": 8.8,
       "by_gw": [
         {
           "gw": 1,
@@ -1453,7 +1453,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 12
+          "bench_pts": 11
         }
       ]
     },
@@ -1461,8 +1461,8 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_bench_points": 75,
-      "avg_bench_per_gw": 8.3,
+      "total_bench_points": 73,
+      "avg_bench_per_gw": 8.1,
       "by_gw": [
         {
           "gw": 1,
@@ -1498,52 +1498,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 7
-        }
-      ]
-    },
-    {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "total_bench_points": 55,
-      "avg_bench_per_gw": 6.1,
-      "by_gw": [
-        {
-          "gw": 1,
-          "bench_pts": 0
-        },
-        {
-          "gw": 2,
-          "bench_pts": 6
-        },
-        {
-          "gw": 3,
-          "bench_pts": 8
-        },
-        {
-          "gw": 4,
-          "bench_pts": 23
-        },
-        {
-          "gw": 5,
-          "bench_pts": 10
-        },
-        {
-          "gw": 6,
-          "bench_pts": 0
-        },
-        {
-          "gw": 7,
-          "bench_pts": 0
-        },
-        {
-          "gw": 8,
-          "bench_pts": 0
-        },
-        {
-          "gw": 9,
-          "bench_pts": 8
+          "bench_pts": 5
         }
       ]
     },
@@ -1551,8 +1506,8 @@
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "total_bench_points": 53,
-      "avg_bench_per_gw": 5.9,
+      "total_bench_points": 52,
+      "avg_bench_per_gw": 5.8,
       "by_gw": [
         {
           "gw": 1,
@@ -1588,7 +1543,52 @@
         },
         {
           "gw": 9,
-          "bench_pts": 4
+          "bench_pts": 3
+        }
+      ]
+    },
+    {
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "total_bench_points": 47,
+      "avg_bench_per_gw": 5.2,
+      "by_gw": [
+        {
+          "gw": 1,
+          "bench_pts": 0
+        },
+        {
+          "gw": 2,
+          "bench_pts": 6
+        },
+        {
+          "gw": 3,
+          "bench_pts": 8
+        },
+        {
+          "gw": 4,
+          "bench_pts": 23
+        },
+        {
+          "gw": 5,
+          "bench_pts": 10
+        },
+        {
+          "gw": 6,
+          "bench_pts": 0
+        },
+        {
+          "gw": 7,
+          "bench_pts": 0
+        },
+        {
+          "gw": 8,
+          "bench_pts": 0
+        },
+        {
+          "gw": 9,
+          "bench_pts": 0
         }
       ]
     },
@@ -1596,8 +1596,8 @@
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_bench_points": 47,
-      "avg_bench_per_gw": 5.2,
+      "total_bench_points": 41,
+      "avg_bench_per_gw": 4.6,
       "by_gw": [
         {
           "gw": 1,
@@ -1633,7 +1633,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 7
+          "bench_pts": 1
         }
       ]
     },
@@ -1686,8 +1686,8 @@
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
-      "total_bench_points": 34,
-      "avg_bench_per_gw": 3.8,
+      "total_bench_points": 33,
+      "avg_bench_per_gw": 3.7,
       "by_gw": [
         {
           "gw": 1,
@@ -1723,7 +1723,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 1
+          "bench_pts": 0
         }
       ]
     },
@@ -1776,8 +1776,8 @@
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
       "manager": "Arun Quayum",
-      "total_bench_points": 27,
-      "avg_bench_per_gw": 3.0,
+      "total_bench_points": 25,
+      "avg_bench_per_gw": 2.8,
       "by_gw": [
         {
           "gw": 1,
@@ -1813,7 +1813,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 11
+          "bench_pts": 9
         }
       ]
     },
@@ -1821,8 +1821,8 @@
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
-      "total_bench_points": 17,
-      "avg_bench_per_gw": 1.9,
+      "total_bench_points": 14,
+      "avg_bench_per_gw": 1.6,
       "by_gw": [
         {
           "gw": 1,
@@ -1858,7 +1858,7 @@
         },
         {
           "gw": 9,
-          "bench_pts": 3
+          "bench_pts": 0
         }
       ]
     }
@@ -1889,17 +1889,17 @@
       "hit_rate": 37.5
     },
     {
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
       "captain_hits": 2,
       "gws_played": 8,
       "hit_rate": 25.0
     },
     {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
       "captain_hits": 2,
       "gws_played": 8,
       "hit_rate": 25.0
