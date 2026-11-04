@@ -1744,6 +1744,14 @@
     .trade-cta { font-size: 0.62rem; color: var(--purple); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
     .trade-in-name { font-weight: 800; color: var(--purple); }
     .trade-out-note { font-size: 0.66rem; color: var(--muted); }
+    .trade-table td.trade-skipped { color: var(--muted); }
+    .trade-skip-note { font-size: 0.66rem; font-style: italic; color: var(--muted); }
+    .trade-foot-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-left: auto; }
+    .trade-skip-btn { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 999px; padding: 0.5rem 1rem; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
+    .trade-skip-btn:hover:not(:disabled) { color: var(--text); border-color: var(--text); }
+    .trade-skip-btn.armed { background: var(--gold); border-color: var(--gold); color: #3a2a00; }
+    .trade-skip-btn:disabled { opacity: 0.6; cursor: default; }
+    .trade-skip-banner { margin: 0 1.1rem 0.6rem; padding: 0.6rem 0.8rem; border-radius: 10px; background: var(--surface2); color: var(--muted); font-size: 0.78rem; }
     /* Trade picker modal */
     .trade-picker-overlay { display: none; position: fixed; inset: 0; background: rgba(30,0,33,0.55); z-index: 1100; align-items: center; justify-content: center; padding: 1rem; }
     .trade-picker-overlay.open { display: flex; }
@@ -6034,7 +6042,7 @@ function buildTradeOrderTab() {
   frag.appendChild(el('div', { className: 'section-title' }, icon('repeat'), ' Monthly Trade Order'));
   frag.appendChild(el('div', { className: 'trade-intro' },
     'The rotation follows the draft order (the positions chosen in the Draft Room). Each month, in schedule order, a manager '
-    + 'trades one player out and picks one from the free pool in. Tap the highlighted cell to make the pick. '
+    + 'trades one player out and picks one from the free pool in, or skips their turn. Tap the highlighted cell to make the pick. '
     + 'Picks can be traded too: tap ⇄ on any pick to hand it to another manager or swap places.'));
 
   const schedule    = buildTradeSchedule();
@@ -6156,7 +6164,13 @@ function buildTradeOrderTab() {
         };
         const via = () => trader.swapped ? el('div', { className: 'trade-via' }, `${trader.origName}'s pick`) : null;
 
-        if (trade) {
+        if (trade && trade.skipped) {
+          td.classList.add('trade-done', 'trade-skipped');
+          td.appendChild(el('div', { className: 'trade-mgr' }, trader.name));
+          td.appendChild(el('div', { className: 'trade-skip-note' }, 'Skipped'));
+          td.title = `${trader.name} skipped their ${col.label} trade`;
+          td.addEventListener('click', () => openTradePicker(col, pickIdx, seed, trade));
+        } else if (trade) {
           td.classList.add('trade-done');
           td.appendChild(el('div', { className: 'trade-in-name' }, trade.in && trade.in.name || '?'));
           if (trade.out && trade.out.name) td.appendChild(el('div', { className: 'trade-out-note' }, '⇄ ' + trade.out.name));
@@ -6298,6 +6312,7 @@ function buildTradeOrderTab() {
     modal.appendChild(el('div', { className: 'trade-picker-head' },
       el('div', { className: 'trade-picker-title' }, `${trader.name} · ${col.label} trade`), closeBtn));
 
+    const wasSkipped = !!(existing && existing.skipped);
     let outSel = existing && existing.out || null;
     let inSel  = existing && existing.in || null;
     let inFrom = existing && existing.inFrom || null;   // set when signing from another squad
@@ -6320,7 +6335,7 @@ function buildTradeOrderTab() {
     body.appendChild(outCol.el); body.appendChild(inCol.el);
     modal.appendChild(body);
 
-    const defaultLabel = existing ? 'Update trade' : 'Confirm trade';
+    const defaultLabel = existing && !wasSkipped ? 'Update trade' : 'Confirm trade';
     const excludeKey = existing ? `${col.key}_${pickIdx}` : null;
     let overriding = false;
 
@@ -6388,9 +6403,53 @@ function buildTradeOrderTab() {
       saveTrade(overriding && issues.length > 0);
     });
 
+    // Skip ("pass") this month's trade: the pick is used, nobody moves, the order
+    // moves on. Two-step so it can't happen by accident.
+    const key = `${col.key}_${pickIdx}`;
+    const skipBtn = el('button', { className: 'trade-skip-btn' }, wasSkipped ? 'Keep skipped' : 'Skip this month');
+    let skipArmed = false;
+    skipBtn.addEventListener('click', async () => {
+      if (wasSkipped) { close(); return; }
+      if (!skipArmed) {
+        skipArmed = true;
+        skipBtn.classList.add('armed');
+        skipBtn.textContent = `Confirm: ${trader.name} skips ${col.label}`;
+        return;
+      }
+      skipBtn.disabled = true; skipBtn.textContent = 'Saving…';
+      try {
+        await db.collection('trades').doc(key).set({
+          month: col.key, pickIndex: pickIdx, seed,
+          entryId: entryId || null, managerName: trader.name,
+          skipped: true, out: null, in: null, inFrom: null, override: false,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        window.amplitude?.track('Monthly Trade Skipped', { month: col.key, pick_index: pickIdx, manager_name: trader.name });
+        close();
+      } catch (e) {
+        alert('Save failed: ' + e.message);
+        skipBtn.disabled = false; skipArmed = false; skipBtn.classList.remove('armed'); skipBtn.textContent = 'Skip this month';
+      }
+    });
+    // A skip can be undone only while it's the latest pick made (removing an earlier
+    // one would leave a hole in the order).
+    const isLatest = [...trades.values()].every(t => cellGlobal(t.month, t.pickIndex) <= cellGlobal(col.key, pickIdx));
+    let undoBtn = null;
+    if (wasSkipped && isLatest) {
+      undoBtn = el('button', { className: 'trade-skip-btn' }, 'Undo skip');
+      undoBtn.addEventListener('click', async () => {
+        undoBtn.disabled = true; undoBtn.textContent = 'Undoing…';
+        try { await db.collection('trades').doc(key).delete(); close(); }
+        catch (e) { alert('Undo failed: ' + e.message); undoBtn.disabled = false; undoBtn.textContent = 'Undo skip'; }
+      });
+    }
+    if (wasSkipped) modal.appendChild(el('div', { className: 'trade-skip-banner' },
+      `${trader.name} skipped this month. Pick players below to record a trade instead.`));
+
     modal.appendChild(ask);
     modal.appendChild(warn);
-    modal.appendChild(el('div', { className: 'trade-picker-foot' }, summary, confirm));
+    modal.appendChild(el('div', { className: 'trade-picker-foot' }, summary,
+      el('div', { className: 'trade-foot-actions' }, undoBtn, skipBtn, confirm)));
 
     function refresh() {
       // Any change to the selection resets the override warning.
