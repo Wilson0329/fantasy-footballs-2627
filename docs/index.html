@@ -1742,8 +1742,12 @@
     .trade-table td.trade-locked { color: var(--muted); }
     .trade-mgr { font-weight: 600; }
     .trade-cta { font-size: 0.62rem; color: var(--purple); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
+    .trade-done-mgr { font-size: 0.66rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 1px; }
     .trade-in-name { font-weight: 800; color: var(--purple); }
-    .trade-out-note { font-size: 0.66rem; color: var(--muted); }
+    .trade-out-note { font-size: 0.7rem; color: var(--muted); }
+    .trade-arrow { display: inline-block; width: 0.9em; font-weight: 800; }
+    .trade-arrow.in { color: var(--win, #16a34a); }
+    .trade-arrow.out { color: var(--red, #dc2626); }
     .trade-table td.trade-skipped { color: var(--muted); }
     .trade-skip-note { font-size: 0.66rem; font-style: italic; color: var(--muted); }
     .trade-foot-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-left: auto; }
@@ -6212,9 +6216,14 @@ function buildTradeOrderTab() {
           td.title = `${trader.name} skipped their ${col.label} trade`;
           td.addEventListener('click', () => openTradePicker(col, pickIdx, seed, trade));
         } else if (trade) {
+          // Who made the trade comes first, so a completed cell never reads as the
+          // draft-order name in the left-hand column. Then player in (↑) and out (↓).
           td.classList.add('trade-done');
-          td.appendChild(el('div', { className: 'trade-in-name' }, trade.in && trade.in.name || '?'));
-          if (trade.out && trade.out.name) td.appendChild(el('div', { className: 'trade-out-note' }, '⇄ ' + trade.out.name));
+          td.appendChild(el('div', { className: 'trade-done-mgr' }, trader.name));
+          td.appendChild(el('div', { className: 'trade-in-name' },
+            el('span', { className: 'trade-arrow in', 'aria-label': 'in' }, '↑'), trade.in && trade.in.name || '?'));
+          if (trade.out && trade.out.name) td.appendChild(el('div', { className: 'trade-out-note' },
+            el('span', { className: 'trade-arrow out', 'aria-label': 'out' }, '↓'), trade.out.name));
           if (trade.inFrom) td.appendChild(el('div', { className: 'trade-via' }, `from ${trade.inFrom.managerName}`));
           td.title = `${trader.name} — in: ${trade.in && trade.in.name}${trade.inFrom ? ` (from ${trade.inFrom.managerName})` : ''}, out: ${trade.out && trade.out.name}`;
           td.addEventListener('click', () => openTradePicker(col, pickIdx, seed, trade));
