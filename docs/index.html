@@ -1726,11 +1726,26 @@
     .trade-intro { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 1.25rem; }
     .trade-loading { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1.5rem 0; }
     .trade-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 12px; }
-    .trade-table { border-collapse: collapse; width: 100%; font-size: 0.78rem; background: var(--surface); }
-    .trade-table th, .trade-table td { padding: 0.5rem 0.7rem; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border); }
+    .trade-table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 0.8rem; background: var(--surface); }
+    .trade-table th, .trade-table td { padding: 0.55rem 0.75rem; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border); vertical-align: middle; }
     .trade-table th { background: var(--surface2); font-weight: 800; color: var(--purple); text-transform: uppercase; letter-spacing: 0.03em; font-size: 0.68rem; position: sticky; top: 0; }
     .trade-table tr:last-child td { border-bottom: none; }
-    .trade-pick-h, .trade-pick-num { text-align: center; color: var(--muted); font-weight: 800; width: 40px; }
+    .trade-table .trade-pick-h, .trade-table .trade-pick-num { text-align: center; color: var(--muted); font-weight: 800; width: 44px; min-width: 44px; max-width: 44px; box-sizing: border-box; padding-left: 0.3rem; padding-right: 0.3rem; }
+    /* Pick + draft-order columns stay pinned while the months scroll (mobile) */
+    .trade-table .trade-pick-h, .trade-table .trade-pick-num { position: sticky; left: 0; z-index: 2; }
+    .trade-table .trade-draft-h, .trade-table .trade-draft-cell { position: sticky; left: 44px; z-index: 2; border-right: 1px solid var(--border); }
+    .trade-pick-num, .trade-draft-cell { background: var(--surface); }
+    .trade-table th.trade-pick-h, .trade-table th.trade-draft-h { z-index: 3; }
+    .trade-draft-cell { color: var(--muted); font-weight: 500; }
+    .trade-table td.trade-later { color: var(--muted); }
+    .trade-table td.trade-later .trade-mgr { font-weight: 400; opacity: 0.75; }
+    .trade-table td.trade-swappable { cursor: pointer; }
+    .trade-table td.trade-swappable:hover { background: var(--surface2); }
+    .trade-table td.trade-mine { box-shadow: inset 3px 0 0 var(--green); }
+    .trade-table td.trade-mine .trade-mgr, .trade-table td.trade-mine.trade-draft-cell, .trade-table td.trade-mine .trade-done-mgr { color: var(--purple); font-weight: 800; opacity: 1; }
+    .trade-table td.trade-active.trade-mine { box-shadow: inset 0 0 0 2px var(--green), inset 4px 0 0 var(--green); }
+    .trade-giveaway { padding: 0.5rem 1.1rem 0; }
+    .trade-giveaway-link { background: none; border: none; padding: 0; color: var(--purple); font-size: 0.78rem; font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
     .trade-col-now { background: rgba(0,255,135,0.12); }
     .trade-table th.trade-col-now { color: var(--purple); box-shadow: inset 0 -3px 0 var(--green); }
     .trade-first { font-weight: 700; }
@@ -1787,10 +1802,7 @@
     .trade-warn-item { font-size: 0.78rem; color: var(--text); margin-top: 0.3rem; }
     .trade-warn-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.4rem; }
     .trade-table td { position: relative; }
-    .trade-table td.has-slot-btn { padding-right: 22px; }
     .trade-via { font-size: 0.62rem; color: var(--gold, #b8860b); font-weight: 700; margin-top: 1px; }
-    .trade-slot-btn { position: absolute; top: 2px; right: 2px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); border-radius: 6px; font-size: 0.7rem; line-height: 1; padding: 2px 4px; cursor: pointer; opacity: 0.75; }
-    .trade-slot-btn:hover { opacity: 1; color: var(--text); border-color: var(--accent); }
     .trade-ask { margin: 0 1.1rem 0.6rem; padding: 0.75rem 0.9rem; background: rgba(245,158,11,0.10); border: 1px solid rgba(245,158,11,0.45); border-radius: 10px; }
     .trade-ask-title { font-weight: 800; color: #b45309; font-size: 0.84rem; display: flex; align-items: center; gap: 0.35rem; }
     .trade-ask-title svg { width: 15px; height: 15px; }
@@ -6088,7 +6100,7 @@ function buildTradeOrderTab() {
   frag.appendChild(el('div', { className: 'trade-intro' },
     'The rotation follows the draft order (the positions chosen in the Draft Room). Each month, in schedule order, a manager '
     + 'trades one player out and picks one from the free pool in, or skips their turn. Tap the highlighted cell to make the pick. '
-    + 'Picks can be traded too: tap ⇄ on any pick to hand it to another manager or swap places.'));
+    + 'Picks can be traded too: tap any upcoming pick to hand it to another manager or swap places.'));
 
   const schedule    = buildTradeSchedule();
   const monthKeys   = TRADE_MONTHS.map(m => m.key);          // ['nov'..'may']
@@ -6185,60 +6197,74 @@ function buildTradeOrderTab() {
     const table = el('table', { className: 'trade-table' });
     const head = el('tr', {}, el('th', { className: 'trade-pick-h' }, 'Pick'));
     schedule.forEach(col => head.appendChild(
-      el('th', { className: col.key === nowMonthKey ? 'trade-col-now' : '' }, col.label)));
+      el('th', { className: (col.key === 'draft' ? 'trade-draft-h' : '') + (col.key === nowMonthKey ? ' trade-col-now' : '') },
+        col.key === 'draft' ? 'Draft order' : col.label)));
     table.appendChild(head);
+
+    // First names keep the grid compact (full name on hover); fall back to the full
+    // name if two managers ever share a first name.
+    const firsts = {};
+    (seeds || []).forEach(sd => { const f = (sd.manager || sd.name || '').split(' ')[0]; firsts[f] = (firsts[f] || 0) + 1; });
+    const short = (name) => { const f = (name || '').split(' ')[0]; return f && firsts[f] === 1 ? f : (name || ''); };
+    const myEntry = (getSavedTeam() || {}).entry_id;
+    const isMine = (entryId) => myEntry != null && entryId != null && String(entryId) === String(myEntry);
+    // Months after the one in progress are muted, so the eye lands on what's live.
+    const activeMonthIdx = Math.floor(curr / 12);
 
     for (let p = 1; p <= 12; p++) {
       const tr = el('tr', {}, el('td', { className: 'trade-pick-num' }, String(p)));
       schedule.forEach(col => {
         const seed = col.order[p - 1];
-        if (col.key === 'draft') { tr.appendChild(el('td', {}, nameForSeed(seed))); return; }
+        if (col.key === 'draft') {
+          const td = el('td', { className: 'trade-draft-cell', title: nameForSeed(seed) }, short(nameForSeed(seed)));
+          if (isMine(entryForSeed(seed))) td.classList.add('trade-mine');
+          tr.appendChild(td);
+          return;
+        }
 
         const pickIdx = p - 1;
         const trade = trades.get(`${col.key}_${pickIdx}`);
         const isActive = !trade && cellGlobal(col.key, pickIdx) === curr;
         const td = el('td', { className: col.key === nowMonthKey ? 'trade-col-now' : '' });
-
         const trader = traderFor(col.key, pickIdx, seed);
-        // ⇄ hands an untraded pick to another manager or swaps it (needs real names).
-        const slotBtn = () => {
-          const b = el('button', { className: 'trade-slot-btn', title: 'Change who has this pick' }, '⇄');
-          b.addEventListener('click', (e) => { e.stopPropagation(); openSlotEditor(col, pickIdx); });
-          td.classList.add('has-slot-btn');
-          return b;
-        };
-        const via = () => trader.swapped ? el('div', { className: 'trade-via' }, `${trader.origName}'s pick`) : null;
+        if (isMine(trader.entryId)) td.classList.add('trade-mine');
+        td.title = trader.name;
+        const via = () => trader.swapped ? el('div', { className: 'trade-via' }, `${short(trader.origName)}'s pick`) : null;
 
         if (trade && trade.skipped) {
           td.classList.add('trade-done', 'trade-skipped');
-          td.appendChild(el('div', { className: 'trade-mgr' }, trader.name));
+          td.appendChild(el('div', { className: 'trade-mgr' }, short(trader.name)));
           td.appendChild(el('div', { className: 'trade-skip-note' }, 'Skipped'));
           td.title = `${trader.name} skipped their ${col.label} trade`;
           td.addEventListener('click', () => openTradePicker(col, pickIdx, seed, trade));
         } else if (trade) {
-          // Who made the trade comes first, so a completed cell never reads as the
-          // draft-order name in the left-hand column. Then player in (↑) and out (↓).
+          // Who made the trade comes first, then player in (↑) and out (↓).
           td.classList.add('trade-done');
-          td.appendChild(el('div', { className: 'trade-done-mgr' }, trader.name));
+          td.appendChild(el('div', { className: 'trade-done-mgr' }, short(trader.name)));
           td.appendChild(el('div', { className: 'trade-in-name' },
             el('span', { className: 'trade-arrow in', 'aria-label': 'in' }, '↑'), trade.in && trade.in.name || '?'));
           if (trade.out && trade.out.name) td.appendChild(el('div', { className: 'trade-out-note' },
             el('span', { className: 'trade-arrow out', 'aria-label': 'out' }, '↓'), trade.out.name));
-          if (trade.inFrom) td.appendChild(el('div', { className: 'trade-via' }, `from ${trade.inFrom.managerName}`));
-          td.title = `${trader.name} — in: ${trade.in && trade.in.name}${trade.inFrom ? ` (from ${trade.inFrom.managerName})` : ''}, out: ${trade.out && trade.out.name}`;
+          if (trade.inFrom) td.appendChild(el('div', { className: 'trade-via' }, `from ${short(trade.inFrom.managerName)}`));
+          td.title = `${trader.name}: in ${trade.in && trade.in.name}${trade.inFrom ? ` (from ${trade.inFrom.managerName})` : ''}, out ${trade.out && trade.out.name}`;
           td.addEventListener('click', () => openTradePicker(col, pickIdx, seed, trade));
         } else if (isActive) {
           td.classList.add('trade-active');
-          td.appendChild(el('div', { className: 'trade-mgr' }, trader.name));
+          td.appendChild(el('div', { className: 'trade-mgr' }, short(trader.name)));
           const v = via(); if (v) td.appendChild(v);
           td.appendChild(el('div', { className: 'trade-cta' }, 'Tap to pick'));
-          if (seeds) td.appendChild(slotBtn());
           td.addEventListener('click', () => openTradePicker(col, pickIdx, seed, null));
         } else {
           td.classList.add('trade-locked');
-          td.appendChild(el('div', { className: 'trade-mgr' }, trader.name));
+          if (monthKeys.indexOf(col.key) > activeMonthIdx) td.classList.add('trade-later');
+          td.appendChild(el('div', { className: 'trade-mgr' }, short(trader.name)));
           const v = via(); if (v) td.appendChild(v);
-          if (seeds) td.appendChild(slotBtn());
+          // Tap an upcoming pick to hand it to another manager or swap places.
+          if (seeds) {
+            td.classList.add('trade-swappable');
+            td.title = `${trader.name}: tap to hand this pick to someone else or swap places`;
+            td.addEventListener('click', () => openSlotEditor(col, pickIdx));
+          }
         }
         tr.appendChild(td);
       });
@@ -6361,6 +6387,11 @@ function buildTradeOrderTab() {
     closeBtn.addEventListener('click', close);
     modal.appendChild(el('div', { className: 'trade-picker-head' },
       el('div', { className: 'trade-picker-title' }, `${trader.name} · ${col.label} trade`), closeBtn));
+    if (!existing && seeds) {
+      const giveAway = el('button', { className: 'trade-giveaway-link' }, 'Hand this pick to someone else or swap places →');
+      giveAway.addEventListener('click', () => { close(); openSlotEditor(col, pickIdx); });
+      modal.appendChild(el('div', { className: 'trade-giveaway' }, giveAway));
+    }
 
     const wasSkipped = !!(existing && existing.skipped);
     let outSel = existing && existing.out || null;
