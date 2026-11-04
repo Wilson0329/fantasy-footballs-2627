@@ -2331,6 +2331,7 @@
     }
     .draft-club-select:focus { border-color: var(--accent2); }
     .draft-content { min-height: 200px; }
+    .draft-traded-tag { margin-left: 4px; font-size: 0.7rem; color: var(--accent); font-weight: 700; }
     .draft-loading { display: flex; align-items: center; gap: 0.6rem; color: var(--muted); padding: 2rem 0; font-size: 0.9rem; }
     .draft-count { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.75rem; }
     .draft-empty { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
@@ -5748,9 +5749,11 @@ function buildDraftTab(leagueData) {
       // draft order (settings/draftOrder) mapped to names; fall back to the order
       // managers appear in the picks.
       let draftManagers = [];
+      let draftOrderIds = [];
       try {
         const orderSnap = await db.collection('settings').doc('draftOrder').get();
         const order = orderSnap.exists ? orderSnap.data().order : null;
+        if (Array.isArray(order)) draftOrderIds = order;
         const byId  = {}; standings.forEach(s => { byId[String(s.entry_id)] = s; });
         const nameByIdx = {}; draftPicks.forEach(pk => { if (pk.managerIndex != null) nameByIdx[pk.managerIndex] = pk.managerName; });
         if (Array.isArray(order) && order.length) {
@@ -5773,6 +5776,43 @@ function buildDraftTab(leagueData) {
       // element id → managerIndex, for grouping the squads view
       const pickIdxByPlayer = {};
       draftPicks.forEach(pk => { if (pk.fplPlayerId != null) pickIdxByPlayer[pk.fplPlayerId] = pk.managerIndex; });
+
+      // Apply the monthly trades on top of the draft, in schedule order: the player
+      // traded out goes back to the pool (or, in a manager-to-manager trade, joins that
+      // manager's squad) and the player traded in joins the trader. Skips change nothing.
+      const tradedIn = new Set();
+      try {
+        const tsnap = await db.collection('trades').get();
+        const slotByEntry = {};
+        draftOrderIds.forEach((id, i) => { slotByEntry[String(id)] = i; });
+        const nameBySlot = {};
+        draftManagers.forEach(m => { nameBySlot[m.index] = m.manager; });
+        const slotFor = (entryId, name) => slotByEntry[String(entryId)] ?? draftManagers.find(m => m.manager === name)?.index;
+        const monthIdx = k => TRADE_MONTHS.findIndex(m => m.key === k);
+        tsnap.docs.map(d => d.data())
+          .filter(t => t && !t.skipped && t.month != null && t.pickIndex != null)
+          .sort((a, b) => (monthIdx(a.month) * 12 + a.pickIndex) - (monthIdx(b.month) * 12 + b.pickIndex))
+          .forEach(t => {
+            if (t.out && t.out.id != null) {
+              const toSlot = t.inFrom ? slotFor(t.inFrom.entryId, t.inFrom.managerName) : undefined;
+              tradedIn.delete(t.out.id);
+              if (toSlot != null) {
+                pickIdxByPlayer[t.out.id] = toSlot;
+                ownerMap[t.out.id] = { manager: nameBySlot[toSlot] || t.inFrom.managerName };
+                tradedIn.add(t.out.id);
+              } else {
+                delete pickIdxByPlayer[t.out.id];
+                delete ownerMap[t.out.id];
+              }
+            }
+            const slot = slotFor(t.entryId, t.managerName);
+            if (t.in && t.in.id != null && slot != null) {
+              pickIdxByPlayer[t.in.id] = slot;
+              ownerMap[t.in.id] = { manager: nameBySlot[slot] || t.managerName };
+              tradedIn.add(t.in.id);
+            }
+          });
+      } catch (e) { /* trades unavailable: fall back to the draft alone */ }
 
       // ── Helpers ──
       function applyFilters(players) {
@@ -5865,7 +5905,8 @@ function buildDraftTab(leagueData) {
               section.appendChild(el('div', { className: `draft-squad-pos-label pos-label-${posLabel.toLowerCase()}` }, posLabel));
               visible.forEach(p => {
                 section.appendChild(el('div', { className: 'draft-squad-player' },
-                  el('span', { className: 'draft-player-name' }, p.web_name + statusEmoji(p.status)),
+                  el('span', { className: 'draft-player-name' }, p.web_name + statusEmoji(p.status),
+                    tradedIn.has(p.id) ? el('span', { className: 'draft-traded-tag', title: 'Joined via a monthly trade' }, '⇄') : null),
                   el('span', { className: 'draft-player-club' }, teamMap[p.team] || '?'),
                   el('span', { className: 'draft-squad-pts',   title: 'Total points' }, String(p.total_points))
                 ));
@@ -5880,12 +5921,12 @@ function buildDraftTab(leagueData) {
           contentArea.appendChild(grid);
 
         } else if (currentView === 'available') {
-          // ── Available (undrafted) players view ──
+          // ── Available players view (not in any squad after the draft + trades) ──
           const available = bs.elements.filter(p => !ownerMap[p.id] && p.status !== 'u');
           const filtered  = applyFilters(available).sort((a, b) => b.total_points - a.total_points);
 
           contentArea.appendChild(el('div', { className: 'draft-count' },
-            `${filtered.length} undrafted player${filtered.length !== 1 ? 's' : ''}`
+            `${filtered.length} available player${filtered.length !== 1 ? 's' : ''} · after the draft and monthly trades`
           ));
 
           const list = el('div', { className: 'draft-player-list' });
@@ -5910,7 +5951,7 @@ function buildDraftTab(leagueData) {
           const ownedCount = filtered.filter(p => ownerMap[p.id]).length;
 
           contentArea.appendChild(el('div', { className: 'draft-count' },
-            `${filtered.length} players · ${ownedCount} drafted · ${filtered.length - ownedCount} available`
+            `${filtered.length} players · ${ownedCount} owned · ${filtered.length - ownedCount} available`
           ));
 
           const list = el('div', { className: 'draft-player-list' });
