@@ -1741,8 +1741,6 @@
     .trade-table td.trade-later .trade-mgr { font-weight: 400; opacity: 0.75; }
     .trade-table td.trade-swappable { cursor: pointer; }
     .trade-table td.trade-swappable:hover { background: var(--surface2); }
-    .trade-you { display: inline-block; margin-left: 5px; padding: 0 5px; border-radius: 999px; background: var(--purple); color: #fff; font-size: 0.56rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; vertical-align: 1px; line-height: 1.45; }
-    .trade-table td.trade-mine .trade-mgr, .trade-table td.trade-mine.trade-draft-cell { color: var(--purple); font-weight: 700; opacity: 1; }
     .trade-giveaway { padding: 0.5rem 1.1rem 0; }
     .trade-giveaway-link { background: none; border: none; padding: 0; color: var(--purple); font-size: 0.78rem; font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
     .trade-col-now { background: rgba(0,255,135,0.12); }
@@ -6210,8 +6208,6 @@ function buildTradeOrderTab() {
     const firsts = {};
     (seeds || []).forEach(sd => { const f = (sd.manager || sd.name || '').split(' ')[0]; firsts[f] = (firsts[f] || 0) + 1; });
     const short = (name) => { const f = (name || '').split(' ')[0]; return f && firsts[f] === 1 ? f : (name || ''); };
-    const myEntry = (getSavedTeam() || {}).entry_id;
-    const isMine = (entryId) => myEntry != null && entryId != null && String(entryId) === String(myEntry);
     // Months after the one in progress are muted, so the eye lands on what's live.
     const activeMonthIdx = Math.floor(curr / 12);
 
@@ -6220,11 +6216,7 @@ function buildTradeOrderTab() {
       schedule.forEach(col => {
         const seed = col.order[p - 1];
         if (col.key === 'draft') {
-          const mineDraft = isMine(entryForSeed(seed));
-          const td = el('td', { className: 'trade-draft-cell', title: nameForSeed(seed) }, short(nameForSeed(seed)),
-            mineDraft ? el('span', { className: 'trade-you' }, 'You') : null);
-          if (mineDraft) td.classList.add('trade-mine');
-          tr.appendChild(td);
+          tr.appendChild(el('td', { className: 'trade-draft-cell', title: nameForSeed(seed) }, short(nameForSeed(seed))));
           return;
         }
 
@@ -6233,22 +6225,19 @@ function buildTradeOrderTab() {
         const isActive = !trade && cellGlobal(col.key, pickIdx) === curr;
         const td = el('td', { className: col.key === nowMonthKey ? 'trade-col-now' : '' });
         const trader = traderFor(col.key, pickIdx, seed);
-        const mine = isMine(trader.entryId);
-        if (mine) td.classList.add('trade-mine');
-        const youTag = () => mine ? el('span', { className: 'trade-you' }, 'You') : null;
         td.title = trader.name;
         const via = () => trader.swapped ? el('div', { className: 'trade-via' }, `${short(trader.origName)}'s pick`) : null;
 
         if (trade && trade.skipped) {
           td.classList.add('trade-done', 'trade-skipped');
-          td.appendChild(el('div', { className: 'trade-mgr' }, short(trader.name), youTag()));
+          td.appendChild(el('div', { className: 'trade-mgr' }, short(trader.name)));
           td.appendChild(el('div', { className: 'trade-skip-note' }, 'Skipped'));
           td.title = `${trader.name} skipped their ${col.label} trade`;
           td.addEventListener('click', () => openTradePicker(col, pickIdx, seed, trade));
         } else if (trade) {
           // Who made the trade comes first, then player in (↑) and out (↓).
           td.classList.add('trade-done');
-          td.appendChild(el('div', { className: 'trade-done-mgr' }, short(trader.name), youTag()));
+          td.appendChild(el('div', { className: 'trade-done-mgr' }, short(trader.name)));
           td.appendChild(el('div', { className: 'trade-in-name' },
             el('span', { className: 'trade-arrow in', 'aria-label': 'in' }, '↑'), trade.in && trade.in.name || '?'));
           if (trade.out && trade.out.name) td.appendChild(el('div', { className: 'trade-out-note' },
@@ -6259,14 +6248,14 @@ function buildTradeOrderTab() {
         } else if (isActive) {
           td.classList.add('trade-active');
           td.appendChild(el('div', { className: 'trade-cta' }, 'Up next'));
-          td.appendChild(el('div', { className: 'trade-mgr' }, short(trader.name), youTag()));
+          td.appendChild(el('div', { className: 'trade-mgr' }, short(trader.name)));
           const v = via(); if (v) td.appendChild(v);
           td.appendChild(el('div', { className: 'trade-cta-sub' }, 'Tap to pick'));
           td.addEventListener('click', () => openTradePicker(col, pickIdx, seed, null));
         } else {
           td.classList.add('trade-locked');
           if (monthKeys.indexOf(col.key) > activeMonthIdx) td.classList.add('trade-later');
-          td.appendChild(el('div', { className: 'trade-mgr' }, short(trader.name), youTag()));
+          td.appendChild(el('div', { className: 'trade-mgr' }, short(trader.name)));
           const v = via(); if (v) td.appendChild(v);
           // Tap an upcoming pick to hand it to another manager or swap places.
           if (seeds) {
