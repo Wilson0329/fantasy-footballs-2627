@@ -279,7 +279,7 @@ def build_captain_points(bootstrap, current_gw, player_names):
         print(f"  {team['name']}...")
         total_bonus = 0
         by_gw = []
-        for gw in range(1, current_gw + 1):  # whole season — captains counted from GW1
+        for gw in range(DRAFT_FIRST_GW, current_gw + 1):  # post-draft only
             if not gw_finished.get(gw, False):
                 continue
             picks = get_picks(team["entry_id"], gw)
@@ -326,7 +326,7 @@ def build_form(bootstrap, current_gw):
     gw_live = not is_gw_finished(bootstrap, current_gw)
     result = []
     for team in TEAMS:
-        history = get_team_history(team["entry_id"])
+        history = [h for h in get_team_history(team["entry_id"]) if h["event"] >= DRAFT_FIRST_GW]
         if gw_live and history and history[-1]["event"] == current_gw:
             history = history[:-1]
         last5  = history[-5:]
@@ -352,7 +352,7 @@ def build_bench_points():
     print("\nBuilding bench points...")
     result = []
     for team in TEAMS:
-        history   = get_team_history(team["entry_id"])
+        history   = [h for h in get_team_history(team["entry_id"]) if h["event"] >= DRAFT_FIRST_GW]
         total     = sum(gw["points_on_bench"] for gw in history)
         gws_played = len(history)
         result.append({
@@ -376,7 +376,7 @@ def build_captain_hit_rate(bootstrap, current_gw):
     for team in TEAMS:
         print(f"  {team['name']}...")
         hits = played = 0
-        for gw in range(1, current_gw + 1):
+        for gw in range(DRAFT_FIRST_GW, current_gw + 1):  # post-draft only
             if not gw_finished.get(gw, False):
                 continue
             try:
@@ -433,6 +433,7 @@ def main():
             "last_updated": date.today().isoformat(),
             "current_gw":   current_gw,
             "season":       SEASON,
+            "stats_from_gw": DRAFT_FIRST_GW,  # every stat except the points chart starts here
         },
         "standings":         standings,
         "trade_differential": trade_diff,
