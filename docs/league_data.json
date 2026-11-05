@@ -63,21 +63,21 @@
     },
     {
       "rank": 7,
-      "rank_last": 9,
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "total_points": 511,
-      "gw_points": 56
-    },
-    {
-      "rank": 7,
       "rank_last": 6,
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
       "total_points": 511,
       "gw_points": 47
+    },
+    {
+      "rank": 7,
+      "rank_last": 9,
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "total_points": 511,
+      "gw_points": 56
     },
     {
       "rank": 9,
@@ -160,16 +160,16 @@
       "trades": []
     },
     {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
+      "entry_id": 1552043,
+      "name": "Respect The CV ****",
+      "manager": "Joe Wilson",
       "net_gain": 0,
       "trades": []
     },
     {
-      "entry_id": 1552043,
-      "name": "Respect The CV ****",
-      "manager": "Joe Wilson",
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
       "net_gain": 0,
       "trades": []
     },
