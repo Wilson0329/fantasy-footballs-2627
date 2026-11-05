@@ -6025,7 +6025,7 @@ function buildDraftTab(leagueData) {
 // Monthly Trade Order
 // Draft order = league standings at end of GW5 (seed 1 = leader, picks first).
 // Each monthly trade rotates the order; Feb & Mar are fairness resets, then the
-// "top 4 reversed to the bottom" rule resumes.
+// "top 4 to the bottom" rule resumes.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const TRADE_MONTHS = [
@@ -6040,10 +6040,10 @@ const TRADE_MONTHS = [
 // Calendar month (0=Jan) → trade-month key, for highlighting the current month.
 const TRADE_MONTH_BY_CAL = { 10: 'nov', 11: 'dec', 0: 'jan', 1: 'feb', 2: 'mar', 3: 'apr', 4: 'may' };
 
-// Take the top 4 picks, reverse them, and move them to the bottom.
+// Move the top 4 picks to the bottom, keeping their order. (Reversing them made
+// the averages lumpy: e.g. the 9th drafter got a better schedule than the 12th.)
 function rotateTradeOrder(order) {
-  const top4 = order.slice(0, 4).reverse();
-  return order.slice(4).concat(top4);
+  return order.slice(4).concat(order.slice(0, 4));
 }
 
 // Returns [{ key, label, order:[seed,...] }] — Draft plus each monthly trade.
