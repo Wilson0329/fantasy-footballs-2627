@@ -1756,6 +1756,9 @@
     /* Finished picks are history: no column tint, so only "up next" stands out */
     .trade-table td.trade-done.trade-col-now { background: transparent; }
     .trade-table td.trade-done { cursor: pointer; }
+    /* The viewer's own picks: a light tint, layered over the surface so sticky cells stay opaque */
+    .trade-table td.trade-mine:not(.trade-active) { background: linear-gradient(rgba(55,0,60,0.07), rgba(55,0,60,0.07)), var(--surface); }
+    .trade-table td.trade-mine.trade-swappable:hover, .trade-table td.trade-mine.trade-done:hover { background: linear-gradient(rgba(55,0,60,0.12), rgba(55,0,60,0.12)), var(--surface); }
     .trade-table td.trade-locked { color: var(--muted); }
     .trade-mgr { font-weight: 600; }
     .trade-cta { font-size: 0.62rem; color: var(--purple); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
@@ -6210,13 +6213,17 @@ function buildTradeOrderTab() {
     const short = (name) => { const f = (name || '').split(' ')[0]; return f && firsts[f] === 1 ? f : (name || ''); };
     // Months after the one in progress are muted, so the eye lands on what's live.
     const activeMonthIdx = Math.floor(curr / 12);
+    // Lightly tint the viewer's own picks (team chosen on the splash screen).
+    const myEntry = (getSavedTeam() || {}).entry_id;
+    const isMine = (entryId) => myEntry != null && entryId != null && String(entryId) === String(myEntry);
 
     for (let p = 1; p <= 12; p++) {
       const tr = el('tr', {}, el('td', { className: 'trade-pick-num' }, String(p)));
       schedule.forEach(col => {
         const seed = col.order[p - 1];
         if (col.key === 'draft') {
-          tr.appendChild(el('td', { className: 'trade-draft-cell', title: nameForSeed(seed) }, short(nameForSeed(seed))));
+          tr.appendChild(el('td', { className: 'trade-draft-cell' + (isMine(entryForSeed(seed)) ? ' trade-mine' : ''), title: nameForSeed(seed) },
+            short(nameForSeed(seed))));
           return;
         }
 
@@ -6225,6 +6232,7 @@ function buildTradeOrderTab() {
         const isActive = !trade && cellGlobal(col.key, pickIdx) === curr;
         const td = el('td', { className: col.key === nowMonthKey ? 'trade-col-now' : '' });
         const trader = traderFor(col.key, pickIdx, seed);
+        if (isMine(trader.entryId)) td.classList.add('trade-mine');
         td.title = trader.name;
         const via = () => trader.swapped ? el('div', { className: 'trade-via' }, `${short(trader.origName)}'s pick`) : null;
 
