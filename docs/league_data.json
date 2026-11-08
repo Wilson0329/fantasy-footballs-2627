@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-11-07",
+    "last_updated": "2026-11-08",
     "current_gw": 10,
     "season": "2026/27",
     "stats_from_gw": 6
@@ -31,8 +31,8 @@
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "total_points": 550,
-      "gw_points": 31
+      "total_points": 552,
+      "gw_points": 33
     },
     {
       "rank": 4,
@@ -1103,40 +1103,11 @@
   ],
   "bench_points": [
     {
-      "entry_id": 5171746,
-      "name": "Soucek Sadness",
-      "manager": "Sam Haseltine",
-      "total_bench_points": 36,
-      "avg_bench_per_gw": 7.2,
-      "by_gw": [
-        {
-          "gw": 6,
-          "bench_pts": 8
-        },
-        {
-          "gw": 7,
-          "bench_pts": 5
-        },
-        {
-          "gw": 8,
-          "bench_pts": 19
-        },
-        {
-          "gw": 9,
-          "bench_pts": 4
-        },
-        {
-          "gw": 10,
-          "bench_pts": 0
-        }
-      ]
-    },
-    {
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "total_bench_points": 35,
-      "avg_bench_per_gw": 7.0,
+      "total_bench_points": 41,
+      "avg_bench_per_gw": 8.2,
       "by_gw": [
         {
           "gw": 6,
@@ -1156,7 +1127,36 @@
         },
         {
           "gw": 10,
-          "bench_pts": 0
+          "bench_pts": 6
+        }
+      ]
+    },
+    {
+      "entry_id": 5171746,
+      "name": "Soucek Sadness",
+      "manager": "Sam Haseltine",
+      "total_bench_points": 37,
+      "avg_bench_per_gw": 7.4,
+      "by_gw": [
+        {
+          "gw": 6,
+          "bench_pts": 8
+        },
+        {
+          "gw": 7,
+          "bench_pts": 5
+        },
+        {
+          "gw": 8,
+          "bench_pts": 19
+        },
+        {
+          "gw": 9,
+          "bench_pts": 4
+        },
+        {
+          "gw": 10,
+          "bench_pts": 1
         }
       ]
     },
@@ -1222,8 +1222,8 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_bench_points": 24,
-      "avg_bench_per_gw": 4.8,
+      "total_bench_points": 28,
+      "avg_bench_per_gw": 5.6,
       "by_gw": [
         {
           "gw": 6,
@@ -1243,7 +1243,7 @@
         },
         {
           "gw": 10,
-          "bench_pts": 0
+          "bench_pts": 4
         }
       ]
     },
@@ -1280,8 +1280,8 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_bench_points": 10,
-      "avg_bench_per_gw": 2.0,
+      "total_bench_points": 12,
+      "avg_bench_per_gw": 2.4,
       "by_gw": [
         {
           "gw": 6,
@@ -1301,7 +1301,7 @@
         },
         {
           "gw": 10,
-          "bench_pts": 0
+          "bench_pts": 2
         }
       ]
     },
@@ -1367,8 +1367,8 @@
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
-      "total_bench_points": 1,
-      "avg_bench_per_gw": 0.2,
+      "total_bench_points": 2,
+      "avg_bench_per_gw": 0.4,
       "by_gw": [
         {
           "gw": 6,
@@ -1388,7 +1388,7 @@
         },
         {
           "gw": 10,
-          "bench_pts": 0
+          "bench_pts": 1
         }
       ]
     },
@@ -1396,8 +1396,8 @@
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_bench_points": 1,
-      "avg_bench_per_gw": 0.2,
+      "total_bench_points": 2,
+      "avg_bench_per_gw": 0.4,
       "by_gw": [
         {
           "gw": 6,
@@ -1417,7 +1417,7 @@
         },
         {
           "gw": 10,
-          "bench_pts": 0
+          "bench_pts": 1
         }
       ]
     },
