@@ -13,8 +13,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_points": 673,
-      "gw_points": 42
+      "total_points": 679,
+      "gw_points": 48
     },
     {
       "rank": 2,
@@ -22,8 +22,8 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_points": 643,
-      "gw_points": 26
+      "total_points": 644,
+      "gw_points": 27
     },
     {
       "rank": 3,
@@ -31,8 +31,8 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_points": 607,
-      "gw_points": 21
+      "total_points": 631,
+      "gw_points": 45
     },
     {
       "rank": 4,
@@ -54,6 +54,15 @@
     },
     {
       "rank": 6,
+      "rank_last": 8,
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
+      "total_points": 590,
+      "gw_points": 37
+    },
+    {
+      "rank": 7,
       "rank_last": 4,
       "entry_id": 6815970,
       "name": "Tonali-tarian",
@@ -62,31 +71,22 @@
       "gw_points": 19
     },
     {
-      "rank": 7,
-      "rank_last": 9,
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "total_points": 576,
-      "gw_points": 36
-    },
-    {
       "rank": 8,
-      "rank_last": 8,
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
-      "total_points": 573,
-      "gw_points": 20
-    },
-    {
-      "rank": 9,
       "rank_last": 7,
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "total_points": 570,
-      "gw_points": 16
+      "total_points": 584,
+      "gw_points": 30
+    },
+    {
+      "rank": 9,
+      "rank_last": 9,
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "total_points": 582,
+      "gw_points": 42
     },
     {
       "rank": 10,
@@ -94,8 +94,8 @@
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_points": 563,
-      "gw_points": 26
+      "total_points": 581,
+      "gw_points": 44
     },
     {
       "rank": 11,
@@ -103,8 +103,8 @@
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
-      "total_points": 532,
-      "gw_points": 16
+      "total_points": 537,
+      "gw_points": 21
     },
     {
       "rank": 12,
@@ -112,8 +112,8 @@
       "entry_id": 3285103,
       "name": "Super Park Rateta FC",
       "manager": "David Pontin",
-      "total_points": 504,
-      "gw_points": 8
+      "total_points": 522,
+      "gw_points": 26
     }
   ],
   "trade_differential": [
@@ -145,7 +145,7 @@
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
-      "net_gain": 7,
+      "net_gain": 4,
       "trades": [
         {
           "gw": 10,
@@ -158,10 +158,10 @@
           "player_in": {
             "id": 119,
             "name": "Costinha",
-            "pts_while_held": 7,
+            "pts_while_held": 4,
             "still_in_squad": true
           },
-          "differential": 7
+          "differential": 4
         }
       ]
     },
@@ -238,6 +238,54 @@
       ]
     },
     {
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
+      "net_gain": 1,
+      "trades": [
+        {
+          "gw": 10,
+          "time": "2026-11-04T07:18:58.527637Z",
+          "player_out": {
+            "id": 260,
+            "name": "Wilson",
+            "pts_since": 5
+          },
+          "player_in": {
+            "id": 129,
+            "name": "Ayari",
+            "pts_while_held": 6,
+            "still_in_squad": true
+          },
+          "differential": 1
+        }
+      ]
+    },
+    {
+      "entry_id": 3285103,
+      "name": "Super Park Rateta FC",
+      "manager": "David Pontin",
+      "net_gain": 1,
+      "trades": [
+        {
+          "gw": 10,
+          "time": "2026-11-04T08:37:42.150146Z",
+          "player_out": {
+            "id": 335,
+            "name": "Stach",
+            "pts_since": 1
+          },
+          "player_in": {
+            "id": 122,
+            "name": "Minteh",
+            "pts_while_held": 2,
+            "still_in_squad": true
+          },
+          "differential": 1
+        }
+      ]
+    },
+    {
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
@@ -267,54 +315,6 @@
       "manager": "Adam Georghiou",
       "net_gain": 0,
       "trades": []
-    },
-    {
-      "entry_id": 3285103,
-      "name": "Super Park Rateta FC",
-      "manager": "David Pontin",
-      "net_gain": 0,
-      "trades": [
-        {
-          "gw": 10,
-          "time": "2026-11-04T08:37:42.150146Z",
-          "player_out": {
-            "id": 335,
-            "name": "Stach",
-            "pts_since": 1
-          },
-          "player_in": {
-            "id": 122,
-            "name": "Minteh",
-            "pts_while_held": 1,
-            "still_in_squad": true
-          },
-          "differential": 0
-        }
-      ]
-    },
-    {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
-      "net_gain": -1,
-      "trades": [
-        {
-          "gw": 10,
-          "time": "2026-11-04T07:18:58.527637Z",
-          "player_out": {
-            "id": 260,
-            "name": "Wilson",
-            "pts_since": 5
-          },
-          "player_in": {
-            "id": 129,
-            "name": "Ayari",
-            "pts_while_held": 4,
-            "still_in_squad": true
-          },
-          "differential": -1
-        }
-      ]
     },
     {
       "entry_id": 5291090,
@@ -1653,17 +1653,17 @@
       "hit_rate": 20.0
     },
     {
-      "entry_id": 6815970,
-      "name": "Tonali-tarian",
-      "manager": "Dominic Byrne",
+      "entry_id": 7067293,
+      "name": "currywirtz",
+      "manager": "Ed Pragnell",
       "captain_hits": 1,
       "gws_played": 5,
       "hit_rate": 20.0
     },
     {
-      "entry_id": 7067293,
-      "name": "currywirtz",
-      "manager": "Ed Pragnell",
+      "entry_id": 6815970,
+      "name": "Tonali-tarian",
+      "manager": "Dominic Byrne",
       "captain_hits": 1,
       "gws_played": 5,
       "hit_rate": 20.0
