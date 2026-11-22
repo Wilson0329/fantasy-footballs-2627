@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-11-21",
+    "last_updated": "2026-11-22",
     "current_gw": 11,
     "season": "2026/27",
     "stats_from_gw": 6
@@ -13,8 +13,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_points": 672,
-      "gw_points": 41
+      "total_points": 673,
+      "gw_points": 42
     },
     {
       "rank": 2,
@@ -40,8 +40,8 @@
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
-      "total_points": 591,
-      "gw_points": 29
+      "total_points": 594,
+      "gw_points": 32
     },
     {
       "rank": 5,
@@ -67,8 +67,8 @@
       "entry_id": 1442119,
       "name": "GVG XI *",
       "manager": "George Georgiou",
-      "total_points": 575,
-      "gw_points": 35
+      "total_points": 576,
+      "gw_points": 36
     },
     {
       "rank": 8,
@@ -85,8 +85,8 @@
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "total_points": 568,
-      "gw_points": 14
+      "total_points": 570,
+      "gw_points": 16
     },
     {
       "rank": 10,
@@ -94,8 +94,8 @@
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_points": 559,
-      "gw_points": 22
+      "total_points": 563,
+      "gw_points": 26
     },
     {
       "rank": 11,
@@ -103,8 +103,8 @@
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
-      "total_points": 531,
-      "gw_points": 15
+      "total_points": 532,
+      "gw_points": 16
     },
     {
       "rank": 12,
@@ -145,7 +145,7 @@
       "entry_id": 153220,
       "name": "Zabelta\u2019s Legacy \u2b50\ufe0f",
       "manager": "Anthony Savvides",
-      "net_gain": 6,
+      "net_gain": 7,
       "trades": [
         {
           "gw": 10,
@@ -158,10 +158,10 @@
           "player_in": {
             "id": 119,
             "name": "Costinha",
-            "pts_while_held": 6,
+            "pts_while_held": 7,
             "still_in_squad": true
           },
-          "differential": 6
+          "differential": 7
         }
       ]
     },
@@ -293,6 +293,30 @@
       ]
     },
     {
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
+      "net_gain": -1,
+      "trades": [
+        {
+          "gw": 10,
+          "time": "2026-11-04T07:18:58.527637Z",
+          "player_out": {
+            "id": 260,
+            "name": "Wilson",
+            "pts_since": 5
+          },
+          "player_in": {
+            "id": 129,
+            "name": "Ayari",
+            "pts_while_held": 4,
+            "still_in_squad": true
+          },
+          "differential": -1
+        }
+      ]
+    },
+    {
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
@@ -334,30 +358,6 @@
             "id": 258,
             "name": "Castagne",
             "pts_while_held": 7,
-            "still_in_squad": true
-          },
-          "differential": -2
-        }
-      ]
-    },
-    {
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
-      "net_gain": -2,
-      "trades": [
-        {
-          "gw": 10,
-          "time": "2026-11-04T07:18:58.527637Z",
-          "player_out": {
-            "id": 260,
-            "name": "Wilson",
-            "pts_since": 5
-          },
-          "player_in": {
-            "id": 129,
-            "name": "Ayari",
-            "pts_while_held": 3,
             "still_in_squad": true
           },
           "differential": -2
