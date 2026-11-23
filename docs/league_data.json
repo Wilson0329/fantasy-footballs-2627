@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-11-22",
+    "last_updated": "2026-11-23",
     "current_gw": 11,
     "season": "2026/27",
     "stats_from_gw": 6
@@ -45,21 +45,21 @@
     },
     {
       "rank": 5,
-      "rank_last": 6,
-      "entry_id": 5194548,
-      "name": "Habibi Jeebies",
-      "manager": "Arun Quayum",
-      "total_points": 591,
-      "gw_points": 36
-    },
-    {
-      "rank": 6,
       "rank_last": 8,
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
       "total_points": 590,
       "gw_points": 37
+    },
+    {
+      "rank": 6,
+      "rank_last": 6,
+      "entry_id": 5194548,
+      "name": "Habibi Jeebies",
+      "manager": "Arun Quayum",
+      "total_points": 590,
+      "gw_points": 35
     },
     {
       "rank": 7,
@@ -1259,8 +1259,8 @@
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "total_bench_points": 45,
-      "avg_bench_per_gw": 7.5,
+      "total_bench_points": 57,
+      "avg_bench_per_gw": 9.5,
       "by_gw": [
         {
           "gw": 6,
@@ -1284,7 +1284,7 @@
         },
         {
           "gw": 11,
-          "bench_pts": 2
+          "bench_pts": 14
         }
       ]
     },
@@ -1325,8 +1325,8 @@
       "entry_id": 6415977,
       "name": "Call the Tzolis",
       "manager": "Adam Georghiou",
-      "total_bench_points": 37,
-      "avg_bench_per_gw": 6.2,
+      "total_bench_points": 42,
+      "avg_bench_per_gw": 7.0,
       "by_gw": [
         {
           "gw": 6,
@@ -1350,7 +1350,7 @@
         },
         {
           "gw": 11,
-          "bench_pts": 1
+          "bench_pts": 6
         }
       ]
     },
@@ -1391,8 +1391,8 @@
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
       "manager": "Arun Quayum",
-      "total_bench_points": 30,
-      "avg_bench_per_gw": 5.0,
+      "total_bench_points": 33,
+      "avg_bench_per_gw": 5.5,
       "by_gw": [
         {
           "gw": 6,
@@ -1416,7 +1416,7 @@
         },
         {
           "gw": 11,
-          "bench_pts": 6
+          "bench_pts": 9
         }
       ]
     },
@@ -1424,8 +1424,8 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_bench_points": 16,
-      "avg_bench_per_gw": 2.7,
+      "total_bench_points": 22,
+      "avg_bench_per_gw": 3.7,
       "by_gw": [
         {
           "gw": 6,
@@ -1449,7 +1449,7 @@
         },
         {
           "gw": 11,
-          "bench_pts": 3
+          "bench_pts": 9
         }
       ]
     },
