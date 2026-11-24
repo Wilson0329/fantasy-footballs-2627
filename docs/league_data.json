@@ -1,7 +1,7 @@
 {
   "metadata": {
     "league_id": 271949,
-    "last_updated": "2026-11-23",
+    "last_updated": "2026-11-24",
     "current_gw": 11,
     "season": "2026/27",
     "stats_from_gw": 6
@@ -13,8 +13,8 @@
       "entry_id": 5171746,
       "name": "Soucek Sadness",
       "manager": "Sam Haseltine",
-      "total_points": 679,
-      "gw_points": 48
+      "total_points": 685,
+      "gw_points": 54
     },
     {
       "rank": 2,
@@ -22,8 +22,8 @@
       "entry_id": 8444994,
       "name": "Silverware Foxes *",
       "manager": "Charles Smith",
-      "total_points": 644,
-      "gw_points": 27
+      "total_points": 646,
+      "gw_points": 29
     },
     {
       "rank": 3,
@@ -31,8 +31,8 @@
       "entry_id": 1552043,
       "name": "Respect The CV ****",
       "manager": "Joe Wilson",
-      "total_points": 631,
-      "gw_points": 45
+      "total_points": 633,
+      "gw_points": 47
     },
     {
       "rank": 4,
@@ -40,20 +40,29 @@
       "entry_id": 3523822,
       "name": "Pain in Dias",
       "manager": "Alexander Bodek",
-      "total_points": 594,
-      "gw_points": 32
+      "total_points": 610,
+      "gw_points": 48
     },
     {
       "rank": 5,
+      "rank_last": 7,
+      "entry_id": 6415977,
+      "name": "Call the Tzolis",
+      "manager": "Adam Georghiou",
+      "total_points": 606,
+      "gw_points": 52
+    },
+    {
+      "rank": 6,
       "rank_last": 8,
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "total_points": 590,
-      "gw_points": 37
+      "total_points": 597,
+      "gw_points": 44
     },
     {
-      "rank": 6,
+      "rank": 7,
       "rank_last": 6,
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
@@ -62,22 +71,13 @@
       "gw_points": 35
     },
     {
-      "rank": 7,
+      "rank": 8,
       "rank_last": 4,
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "total_points": 585,
-      "gw_points": 19
-    },
-    {
-      "rank": 8,
-      "rank_last": 7,
-      "entry_id": 6415977,
-      "name": "Call the Tzolis",
-      "manager": "Adam Georghiou",
-      "total_points": 584,
-      "gw_points": 30
+      "total_points": 588,
+      "gw_points": 22
     },
     {
       "rank": 9,
@@ -85,8 +85,8 @@
       "entry_id": 1442119,
       "name": "GVG XI *",
       "manager": "George Georgiou",
-      "total_points": 582,
-      "gw_points": 42
+      "total_points": 583,
+      "gw_points": 43
     },
     {
       "rank": 10,
@@ -94,8 +94,8 @@
       "entry_id": 5291090,
       "name": "Change Name",
       "manager": "Jason Knightly",
-      "total_points": 581,
-      "gw_points": 44
+      "total_points": 583,
+      "gw_points": 46
     },
     {
       "rank": 11,
@@ -121,7 +121,7 @@
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
-      "net_gain": 12,
+      "net_gain": 11,
       "trades": [
         {
           "gw": 10,
@@ -129,7 +129,7 @@
           "player_out": {
             "id": 238,
             "name": "Grealish",
-            "pts_since": 0
+            "pts_since": 1
           },
           "player_in": {
             "id": 183,
@@ -137,7 +137,31 @@
             "pts_while_held": 12,
             "still_in_squad": true
           },
-          "differential": 12
+          "differential": 11
+        }
+      ]
+    },
+    {
+      "entry_id": 3523822,
+      "name": "Pain in Dias",
+      "manager": "Alexander Bodek",
+      "net_gain": 7,
+      "trades": [
+        {
+          "gw": 10,
+          "time": "2026-11-04T14:29:18.738694Z",
+          "player_out": {
+            "id": 532,
+            "name": "Ballard",
+            "pts_since": 0
+          },
+          "player_in": {
+            "id": 85,
+            "name": "Van den Berg",
+            "pts_while_held": 7,
+            "still_in_squad": true
+          },
+          "differential": 7
         }
       ]
     },
@@ -190,54 +214,6 @@
       ]
     },
     {
-      "entry_id": 1442119,
-      "name": "GVG XI *",
-      "manager": "George Georgiou",
-      "net_gain": 2,
-      "trades": [
-        {
-          "gw": 10,
-          "time": "2026-11-03T08:00:20.146296Z",
-          "player_out": {
-            "id": 565,
-            "name": "M.Sangar\u00e9",
-            "pts_since": 1
-          },
-          "player_in": {
-            "id": 261,
-            "name": "Iwobi",
-            "pts_while_held": 3,
-            "still_in_squad": true
-          },
-          "differential": 2
-        }
-      ]
-    },
-    {
-      "entry_id": 3523822,
-      "name": "Pain in Dias",
-      "manager": "Alexander Bodek",
-      "net_gain": 1,
-      "trades": [
-        {
-          "gw": 10,
-          "time": "2026-11-04T14:29:18.738694Z",
-          "player_out": {
-            "id": 532,
-            "name": "Ballard",
-            "pts_since": 0
-          },
-          "player_in": {
-            "id": 85,
-            "name": "Van den Berg",
-            "pts_while_held": 1,
-            "still_in_squad": true
-          },
-          "differential": 1
-        }
-      ]
-    },
-    {
       "entry_id": 5194548,
       "name": "Habibi Jeebies",
       "manager": "Arun Quayum",
@@ -255,6 +231,30 @@
             "id": 129,
             "name": "Ayari",
             "pts_while_held": 6,
+            "still_in_squad": true
+          },
+          "differential": 1
+        }
+      ]
+    },
+    {
+      "entry_id": 1442119,
+      "name": "GVG XI *",
+      "manager": "George Georgiou",
+      "net_gain": 1,
+      "trades": [
+        {
+          "gw": 10,
+          "time": "2026-11-03T08:00:20.146296Z",
+          "player_out": {
+            "id": 565,
+            "name": "M.Sangar\u00e9",
+            "pts_since": 2
+          },
+          "player_in": {
+            "id": 261,
+            "name": "Iwobi",
+            "pts_while_held": 3,
             "still_in_squad": true
           },
           "differential": 1
@@ -1653,6 +1653,14 @@
       "hit_rate": 20.0
     },
     {
+      "entry_id": 6415977,
+      "name": "Call the Tzolis",
+      "manager": "Adam Georghiou",
+      "captain_hits": 1,
+      "gws_played": 5,
+      "hit_rate": 20.0
+    },
+    {
       "entry_id": 7067293,
       "name": "currywirtz",
       "manager": "Ed Pragnell",
@@ -1664,14 +1672,6 @@
       "entry_id": 6815970,
       "name": "Tonali-tarian",
       "manager": "Dominic Byrne",
-      "captain_hits": 1,
-      "gws_played": 5,
-      "hit_rate": 20.0
-    },
-    {
-      "entry_id": 6415977,
-      "name": "Call the Tzolis",
-      "manager": "Adam Georghiou",
       "captain_hits": 1,
       "gws_played": 5,
       "hit_rate": 20.0
